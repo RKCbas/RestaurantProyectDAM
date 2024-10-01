@@ -33,7 +33,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContent {
-            ComposeMultiScreenApp()
+            RestaurantProyectDAMTheme{
+                ComposeMultiScreenApp()
+            }
         }
 
 //        setContent {
@@ -68,8 +70,11 @@ fun GreetingPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ComposeMultiScreenApp(){
+
     val navController = rememberNavController()
-    Surface (color = Color.White) {
+    Surface (
+        //color = Color.White
+    ) {
         SetupNavGraph(navController = navController)
     }
 }

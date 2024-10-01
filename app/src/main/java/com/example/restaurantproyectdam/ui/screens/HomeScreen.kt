@@ -45,10 +45,10 @@ fun HomeScreen (navController: NavController){
     Scaffold(
         topBar= {
             TopAppBar(
-                colors = topAppBarColors(
+                /*colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
+                ),*/
                 title = {
                     Text("Top app bar")
                 }
@@ -56,8 +56,8 @@ fun HomeScreen (navController: NavController){
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary
+                /*containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primary*/
             ){
                 NavbarMenu(navController = navController)
             }
@@ -102,7 +102,7 @@ fun CategoryItem(){
             .height(120.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp)) // Like border radius
-            .background(Color.White),
+            //.background(Color.White),
         //elevation = 6.dp // adds a shadow
 
     ){
@@ -123,7 +123,7 @@ fun CategoryItem(){
 
             Text(
                 text="Test",
-                color=Color.Black,
+                //color=Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -139,7 +139,7 @@ fun NavbarMenu(navController: NavController){
                 onClick = { navController.navigate("login") },
                 modifier = Modifier.padding(5.dp)
             ) {
-                Text(text = "Login", color = Color.White)
+                Text(text = "Login")
             }
         }
         item {
@@ -163,7 +163,7 @@ fun NavbarMenu(navController: NavController){
                 onClick = { navController.navigate("adminOrders") },
                 modifier = Modifier.padding(5.dp)
             ) {
-                Text(text = "Admin Orders", color = Color.White)
+                Text(text = "Admin Orders")
             }
         }
         item {
@@ -171,7 +171,7 @@ fun NavbarMenu(navController: NavController){
                 onClick = { navController.navigate("adminProducts") },
                 modifier = Modifier.padding(5.dp)
             ) {
-                Text(text = "Admin Products", color = Color.White)
+                Text(text = "Admin Products")
             }
         }
 
