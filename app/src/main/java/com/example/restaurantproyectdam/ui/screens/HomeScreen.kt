@@ -42,13 +42,13 @@ import com.example.restaurantproyectdam.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (navController: NavController){
-    Scaffold(
+    /*Scaffold(
         topBar= {
             TopAppBar(
-                colors = topAppBarColors(
+                /*colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
+                ),*/
                 title = {
                     Text("Top app bar")
                 }
@@ -56,17 +56,17 @@ fun HomeScreen (navController: NavController){
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary
+                /*containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primary*/
             ){
-                NavbarMenu(navController = navController)
+                //NavbarMenu(navController = navController)
             }
         }
-    ){ //Main content
-        innerPadding ->
+    ){ //Main content*/
+        //innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding),
+            modifier = Modifier,
+                //.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ){
             LazyColumn(modifier=Modifier.fillMaxHeight(1f)){
@@ -85,7 +85,7 @@ fun HomeScreen (navController: NavController){
 
             }
         }
-    }
+
 
         //
 
@@ -102,7 +102,7 @@ fun CategoryItem(){
             .height(120.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp)) // Like border radius
-            .background(Color.White),
+            //.background(Color.White),
         //elevation = 6.dp // adds a shadow
 
     ){
@@ -123,57 +123,10 @@ fun CategoryItem(){
 
             Text(
                 text="Test",
-                color=Color.Black,
+                //color=Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
         }
-    }
-}
-
-@Composable
-fun NavbarMenu(navController: NavController){
-    LazyRow {
-        item {
-            Button(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Login", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("register") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Register", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("orders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Orders", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminOrders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Orders", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminProducts") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Products", color = Color.White)
-            }
-        }
-
     }
 }
