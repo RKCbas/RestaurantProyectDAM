@@ -42,7 +42,7 @@ import com.example.restaurantproyectdam.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (navController: NavController){
-    Scaffold(
+    /*Scaffold(
         topBar= {
             TopAppBar(
                 /*colors = topAppBarColors(
@@ -59,14 +59,14 @@ fun HomeScreen (navController: NavController){
                 /*containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary*/
             ){
-                NavbarMenu(navController = navController)
+                //NavbarMenu(navController = navController)
             }
         }
-    ){ //Main content
-        innerPadding ->
+    ){ //Main content*/
+        //innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding),
+            modifier = Modifier,
+                //.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ){
             LazyColumn(modifier=Modifier.fillMaxHeight(1f)){
@@ -85,7 +85,7 @@ fun HomeScreen (navController: NavController){
 
             }
         }
-    }
+
 
         //
 
@@ -128,52 +128,5 @@ fun CategoryItem(){
                 fontSize = 16.sp
             )
         }
-    }
-}
-
-@Composable
-fun NavbarMenu(navController: NavController){
-    LazyRow {
-        item {
-            Button(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Login")
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("register") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Register", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("orders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Orders", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminOrders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Orders")
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminProducts") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Products")
-            }
-        }
-
     }
 }
