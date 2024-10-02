@@ -12,15 +12,84 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    /*primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,*/
+
+    primary = DPrimary,
+    onPrimary = DOnPrimary,
+    secondary = DSecondary,
+    onSecondary = DOnSecondary,
+    error=DError,
+    onError = DOnError,
+    tertiary = DTertiary,
+    onTertiary = DOnTertiary,
+    primaryContainer = DPrimaryContainer,
+    onPrimaryContainer = DOnPrimaryContainer,
+    secondaryContainer = DSecondaryContainer,
+    onSecondaryContainer = DOnSecondaryContainer,
+    tertiaryContainer = DTertiaryContainer,
+    onTertiaryContainer = DOnTertiaryContainer,
+    errorContainer = DErrorContainer,
+    onErrorContainer = DOnErrorContainer,
+    surfaceDim = DSurfaceDim,
+    surface = DSurface,
+    surfaceBright = DSurfaceBright,
+    inverseSurface = DInverseSurface,
+    surfaceContainerLowest = DSurfaceContainerLowest,
+    surfaceContainerLow = DSurfaceContainerLow,
+    surfaceContainer = DSurfaceContainer,
+    surfaceContainerHigh = DSurfaceContainerHigh,
+    surfaceContainerHighest = DSurfaceContainerHighest,
+    inverseOnSurface = DInverseOnSurface,
+    inversePrimary = DInversePrimary,
+    onSurface = DOnSurface,
+    onSurfaceVariant = DOnSurfaceVariant,
+    outline = DOutline,
+    outlineVariant = DOutlineVariant,
+    scrim = DScrim,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    /*primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,*/
+
+    primary = Primary,
+    onPrimary = OnPrimary,
+    secondary = Secondary,
+    onSecondary = OnSecondary,
+    error = Error,
+    onError = OnError,
+    tertiary = Tertiary,
+    onTertiary = OnTertiary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
+    secondaryContainer = SecondaryContainer,
+    onSecondaryContainer = OnSecondaryContainer,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    surfaceDim = SurfaceDim,
+    surface = Surface,
+    surfaceBright = SurfaceBright,
+    inverseSurface = InverseSurface,
+    surfaceContainerLowest = SurfaceContainerLowest,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainer = SurfaceContainer,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest,
+    inverseOnSurface = InverseOnSurface,
+    inversePrimary = InversePrimary,
+    onSurface = OnSurface,
+    onSurfaceVariant = OnSurfaceVariant,
+    outline = Outline,
+    outlineVariant = OutlineVariant,
+    scrim = Scrim,
+
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
