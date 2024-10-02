@@ -2,10 +2,13 @@ package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +21,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,18 +32,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 
 //import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+//@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun HomeScreen (navController: NavController){
     /*Scaffold(
@@ -65,13 +75,34 @@ fun HomeScreen (navController: NavController){
     ){ //Main content*/
         //innerPadding ->
         Column(
-            modifier = Modifier,
-                //.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.fillMaxSize()
+                //.padding(25.dp)
         ){
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Icon(
+                    painter=painterResource(R.drawable.logo_fuji),
+                    contentDescription ="logo",
+                    modifier=Modifier
+                            //.size(150.dp)
+                        .width(170.dp)
+                        .height(100.dp)
+                    //tint = Color.Red // Set the color you want here
+                )
+                Text("JAPANESE",
+                    style = MaterialTheme.typography.titleLarge,
+                    //fontSize = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text("Restaurant", style = MaterialTheme.typography.titleSmall)
+            }
             LazyColumn(modifier=Modifier.fillMaxHeight(1f)){
                 item {
-                    Text(text="Categorías")
+                    Text(text="Categories",
+                        modifier = Modifier.padding(10.dp),
+                        style = MaterialTheme.typography.titleMedium)
                 }
                 item{
                     LazyRow {
@@ -80,7 +111,9 @@ fun HomeScreen (navController: NavController){
                         }
                     }
                 }
+                item{
 
+                }
 
 
             }
@@ -98,10 +131,10 @@ fun HomeScreen (navController: NavController){
 fun CategoryItem(){
     Card( // Pattern that applies to all the 10 items
         modifier = Modifier
-            .width(110.dp)
-            .height(120.dp)
+            .width(150.dp)
+            .height(150.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
-            .clip(RoundedCornerShape(10.dp)) // Like border radius
+            .clip(RoundedCornerShape(10.dp)), // Like border radius
             //.background(Color.White),
         //elevation = 6.dp // adds a shadow
 
@@ -116,17 +149,26 @@ fun CategoryItem(){
                 contentDescription = "sushi",
                 //contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(100.dp)
                     .clip(CircleShape)
             )
             //Spacer(modifier = Modifier.padding(5.dp)) //Leaves some space
 
             Text(
                 text="Test",
+                modifier=Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
                 //color=Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
         }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview(){
+    HomeScreen(navController = rememberNavController())
 }
