@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -112,6 +113,14 @@ fun HomeScreen (navController: NavController){
                     }
                 }
                 item{
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ){
+                        Text(text="Suggestions",
+                            modifier = Modifier.padding(10.dp),
+                            style = MaterialTheme.typography.titleMedium)
+                        PagerScreen()
+                    }
 
                 }
 
