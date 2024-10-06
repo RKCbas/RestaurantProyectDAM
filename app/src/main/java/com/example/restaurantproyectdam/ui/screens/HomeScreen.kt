@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -53,28 +55,6 @@ import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
 
 @Composable
 fun HomeScreen (navController: NavController){
-    /*Scaffold(
-        topBar= {
-            TopAppBar(
-                /*colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),*/
-                title = {
-                    Text("Top app bar")
-                }
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                /*containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary*/
-            ){
-                //NavbarMenu(navController = navController)
-            }
-        }
-    ){ //Main content*/
-        //innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize()
                 //.padding(25.dp)
@@ -123,14 +103,31 @@ fun HomeScreen (navController: NavController){
                     }
 
                 }
+                item{
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ){
+                        Text(text="Favorites",
+                            modifier = Modifier.padding(10.dp),
+                            style = MaterialTheme.typography.titleMedium)
+                        PagerScreen()
+                    }
+                }
+                item{
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ){
+                        Text(text="Most Popular",
+                            modifier = Modifier.padding(10.dp),
+                            style = MaterialTheme.typography.titleMedium)
+                        PagerScreen()
+                    }
+
+                }
 
 
             }
         }
-
-
-        //
-
 
 
 }
@@ -138,7 +135,7 @@ fun HomeScreen (navController: NavController){
 @Preview(showBackground=true)
 @Composable
 fun CategoryItem(){
-    Card( // Pattern that applies to all the 10 items
+    Button( // Pattern that applies to all the 10 items
         modifier = Modifier
             .width(150.dp)
             .height(150.dp)
@@ -146,7 +143,11 @@ fun CategoryItem(){
             .clip(RoundedCornerShape(10.dp)), // Like border radius
             //.background(Color.White),
         //elevation = 6.dp // adds a shadow
-
+        onClick={},
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+        elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
+        shape = MaterialTheme.shapes.medium, // Use the shape of a Card
+        //contentPadding = PaddingValues(16.dp) // You can adjust padding to match a Card's style
     ){
         Column(
             modifier= Modifier
@@ -169,6 +170,7 @@ fun CategoryItem(){
                 textAlign = TextAlign.Center,
                 //color=Color.Black,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 16.sp
             )
         }
