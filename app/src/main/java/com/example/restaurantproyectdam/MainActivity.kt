@@ -52,23 +52,12 @@ import com.example.restaurantproyectdam.ui.theme.RestaurantProyectDAMTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
             RestaurantProyectDAMTheme{
                 ComposeMultiScreenApp()
             }
         }
-
-//        setContent {
-//            RestaurantProyectDAMTheme {
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
-//            }
-//        }
     }
 }
 
@@ -122,54 +111,6 @@ fun SetupNavGraph (navController: NavHostController){
     }
 }
 
-
-
-/*@Composable
-fun NavbarMenu(navController: NavController){
-    LazyRow {
-        item {
-            Button(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Login")
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("register") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Register", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("orders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Orders", color = Color.White)
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminOrders") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Orders")
-            }
-        }
-        item {
-            Button(
-                onClick = { navController.navigate("adminProducts") },
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Admin Products")
-            }
-        }
-
-    }
-}*/
 
 @Composable
 fun BottomBar(navController:NavHostController){
