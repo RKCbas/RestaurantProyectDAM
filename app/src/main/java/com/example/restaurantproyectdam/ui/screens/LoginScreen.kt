@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,11 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
@@ -32,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-@Preview
+@Preview(showBackground=true)
 @Composable
 fun PreviewLoginScreen(){
     LoginScreen(navController = rememberNavController())
@@ -53,63 +59,84 @@ fun LoginScreen (navController: NavController){
             Icon(
                 Icons.Filled.ArrowBack,
                 contentDescription = "",
-                modifier = Modifier.align(Alignment.TopStart)
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 10.dp, top = 20.dp)
             )
-            Text(text = "Bienvenido de vuelta", modifier = Modifier.align(Alignment.BottomCenter))
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "Inicia sesion en tu cuenta",
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-
+            Text(text = "BIENVENIDO DE VUELTA", modifier = Modifier.align(Alignment.BottomCenter))
 
         }
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(
+            text = "Inicia sesion en tu cuenta",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
+            InputTextsSamples()
+            LoginButtonExample()
 
-            /*
-        Text(text = "This is Login Screen")
-        LazyRow {
-            item {
-                Button(
-                    onClick = { navController.navigate("home") },
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Text(text = "Home", color = Color.White)
-                }
-            }
-            item {
-                Button(
-                    onClick = { navController.navigate("register") },
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Text(text = "Register", color = Color.White)
-                }
-            }
-            item {
-                Button(
-                    onClick = { navController.navigate("orders") },
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Text(text = "Orders", color = Color.White)
-                }
-            }
-            item {
-                Button(
-                    onClick = { navController.navigate("adminOrders") },
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Text(text = "Admin Orders", color = Color.White)
-                }
-            }
-            item {
-                Button(
-                    onClick = { navController.navigate("adminProducts") },
-                    modifier = Modifier.padding(5.dp)
-                ) {
-                    Text(text = "Admin Products", color = Color.White)
-                }
-            }
-
-        }*/
 
     }
 }
+
+@Composable
+fun InputTextsSamples(){
+    var text by remember { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+
+
+        TextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text("Correo Electrónico") },
+            singleLine = true,
+            modifier = Modifier
+                .width(300.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            singleLine = true,
+            label = { Text("Enter password") },
+            modifier = Modifier
+                .width(300.dp)
+                .align(Alignment.CenterHorizontally),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        TextButton(
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+
+            ) {
+            Text(text = "Has olvidado la contraseña?")
+            
+        }
+    }
+}
+
+@Composable
+fun LoginButtonExample(){
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Button(onClick = {}, modifier = Modifier.width(200.dp).align(Alignment.CenterHorizontally)) {
+            Text(text = "Iniciar Sesion")
+            
+        }
+
+    }
+}
+
+
+
