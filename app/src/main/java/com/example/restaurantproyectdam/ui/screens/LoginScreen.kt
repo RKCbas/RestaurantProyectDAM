@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,10 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
@@ -54,7 +57,7 @@ fun LoginScreen (navController: NavController){
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(240.dp)
         ) {
             Icon(
                 Icons.Filled.ArrowBack,
@@ -63,19 +66,28 @@ fun LoginScreen (navController: NavController){
                     .align(Alignment.TopStart)
                     .padding(start = 10.dp, top = 20.dp)
             )
-            Text(text = "BIENVENIDO DE VUELTA", modifier = Modifier.align(Alignment.BottomCenter))
+
+            Text(
+                text = "BIENVENIDO DE VUELTA!",
+                modifier = Modifier.align(Alignment.BottomCenter).padding(top = 60.dp),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp
+            )
 
         }
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Inicia sesion en tu cuenta",
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
+            fontWeight = FontWeight.Light,
+            fontSize = 13.sp,
+            color = Color.Gray
         )
+            Spacer(modifier = Modifier.height(80.dp))
             InputTextsSamples()
             LoginButtonExample()
-
-
     }
 }
 
@@ -89,14 +101,13 @@ fun InputTextsSamples(){
             .fillMaxWidth()
     ) {
 
-
         TextField(
             value = text,
             onValueChange = { text = it },
             label = { Text("Correo Electrónico") },
             singleLine = true,
             modifier = Modifier
-                .width(300.dp)
+                .width(330.dp)
                 .align(Alignment.CenterHorizontally)
         )
 
@@ -105,9 +116,9 @@ fun InputTextsSamples(){
             value = password,
             onValueChange = { password = it },
             singleLine = true,
-            label = { Text("Enter password") },
+            label = { Text("Contraseña") },
             modifier = Modifier
-                .width(300.dp)
+                .width(330.dp)
                 .align(Alignment.CenterHorizontally),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -119,8 +130,7 @@ fun InputTextsSamples(){
                 .align(Alignment.CenterHorizontally)
 
             ) {
-            Text(text = "Has olvidado la contraseña?")
-            
+            Text(text = "¿Olvidaste tu contraseña?")
         }
     }
 }
@@ -130,7 +140,9 @@ fun LoginButtonExample(){
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Button(onClick = {}, modifier = Modifier.width(200.dp).align(Alignment.CenterHorizontally)) {
+        Button(onClick = {}, modifier = Modifier
+            .width(200.dp)
+            .align(Alignment.CenterHorizontally)) {
             Text(text = "Iniciar Sesion")
             
         }
