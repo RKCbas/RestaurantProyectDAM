@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.components.Header
 import com.example.restaurantproyectdam.ui.components.ordercomponents.OrderTabs
 import kotlinx.coroutines.launch
 
@@ -111,7 +112,7 @@ fun OrdersScreen (navController: NavController){
                 .fillMaxSize()
                 //.padding(top = 100.dp) // to leave the space for the top bar
         ){
-            Header()
+            Header("ORDERS")
             TabRow(
                 selectedTabIndex = selectedTabIndex.value,
                 modifier = Modifier.fillMaxWidth()
@@ -154,30 +155,4 @@ fun OrdersScreen (navController: NavController){
             }
         }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Header(){
-    Box(
-        modifier =Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center,
-    ){
-        Image(
-            imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
-            contentDescription = "Custom SVG Icon",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-                .alpha(0.5f)
-            ,
-        )
-        Text("ORDERS",
-            style = MaterialTheme.typography.titleLarge,
-            //fontSize = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-    }
 }

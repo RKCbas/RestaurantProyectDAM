@@ -1,29 +1,44 @@
 package com.example.restaurantproyectdam.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 
 
+// Bottom Navigation Bar
 @Composable
 fun BottomBar(navController: NavHostController){
     val screens = listOf( //Sealed Classes
@@ -82,5 +97,32 @@ fun SearchButton(onClick: () -> Unit) {
         onClick = { onClick() },
     ) {
         Icon(Icons.Filled.Search, "Floating action button.")
+    }
+}
+
+
+// Header
+@Composable
+fun Header(text : String){
+    Box(
+        modifier =Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
+        contentAlignment = Alignment.Center,
+    ){
+        Image(
+            imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
+            contentDescription = "Custom SVG Icon",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+                .alpha(0.5f)
+            ,
+        )
+        Text(text,
+            style = MaterialTheme.typography.titleLarge,
+            //fontSize = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
