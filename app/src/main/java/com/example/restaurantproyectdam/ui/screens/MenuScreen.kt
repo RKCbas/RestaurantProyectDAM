@@ -115,7 +115,7 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .fillMaxWidth()
             .padding(12.dp)
             .clickable {
-                naveController?.navigate("categoryProducts")
+                naveController?.navigate("categoryProducts/$id")
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,

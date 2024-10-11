@@ -11,7 +11,7 @@ import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
 
 @Composable
-fun CategoryProductsScreen (navController: NavController) {
+fun CategoryProductsScreen (navController: NavController, id: Int) {
     naveController = navController
     Scaffold (
         //color = Color.White
@@ -22,7 +22,7 @@ fun CategoryProductsScreen (navController: NavController) {
             modifier = Modifier.padding(innerPadding)
         )
         {
-
+            Text("Selected Category id: $id")
         }
     }
 }
