@@ -40,6 +40,7 @@ import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
+import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
@@ -93,5 +94,8 @@ fun SetupNavGraph (navController: NavHostController){
         composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
         composable("menu") { MenuScreen(navController) }
+        composable("categoryProducts") { CategoryProductsScreen(navController) }
+
+
     }
 }

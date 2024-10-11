@@ -6,3 +6,4 @@ data class ProductModel(
     val cost:Double,
     val categoria:String
 )
+
