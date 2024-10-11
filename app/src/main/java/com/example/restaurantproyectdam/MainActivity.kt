@@ -40,7 +40,6 @@ import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
-import com.example.restaurantproyectdam.ui.screens.CategoriesScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
