@@ -2,6 +2,7 @@ package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,8 +38,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.ui.Alignment
 
+
+var naveController: NavController ?=null
+
 @Composable
 fun CategoriesScreen(navController: NavController){
+    naveController = navController
+
     val arrayCategories = arrayOf(
         CategoryModel(1,"Categoría", painterResource(R.drawable.sushi)),
         CategoryModel(2,"Categoría", painterResource(R.drawable.sushi)),
@@ -105,7 +111,11 @@ fun CategoryCard(id:Int, name:String, image: Painter){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable {
+
+
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
