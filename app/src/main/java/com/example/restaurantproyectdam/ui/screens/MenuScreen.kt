@@ -2,6 +2,7 @@ package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,11 +36,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.model.CategoryModel
+import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
 
+var naveController: NavController ?=null
+
 @Composable
 fun MenuScreen (navController: NavController) {
+    naveController = navController
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
@@ -55,32 +60,25 @@ fun MenuScreen (navController: NavController) {
 
 @Composable
 private fun Content(){ //CÓDIGO DE YAHAIRA
-        val arrayCategories = arrayOf(
-            CategoryModel(1,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(2,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(3,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(4,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(5,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(6,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(7,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(8,"Categoría", painterResource(R.drawable.sushi)),
-            CategoryModel(9,"Categoría", painterResource(R.drawable.sushi)),
-        )
+        val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)) {
-            searchBar()
+            searchBar("home")
             CategoriesGrid(arrayCategories)
         }
 }
 
 @Composable
-fun searchBar(){
+fun searchBar(route:String){
     Row (modifier = Modifier.statusBarsPadding().fillMaxWidth().padding(12.dp,0.dp)){
         Icon(
             Icons.Sharp.KeyboardArrowLeft,
             contentDescription = "Arrow back Icon",
             modifier = Modifier
                 .padding(7.dp)
+                .clickable {
+                    naveController?.navigate(route)
+                }
         )
         Card(modifier = Modifier
             .fillMaxWidth()
@@ -104,7 +102,6 @@ fun CategoriesGrid(arrayCategories: Array<CategoryModel>){
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
-
     ){
         items(arrayCategories){category ->
             CategoryCard(category.id, category.name, category.image)
@@ -119,7 +116,10 @@ fun CategoryCard(id:Int, name:String, image: Painter){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable {
+                naveController?.navigate("categoryProducts/$id")
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
