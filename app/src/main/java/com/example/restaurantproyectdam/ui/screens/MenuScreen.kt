@@ -18,6 +18,7 @@ import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,7 +67,7 @@ private fun Content(){ //CÓDIGO DE YAHAIRA
             CategoryModel(9,"Categoría", painterResource(R.drawable.sushi)),
         )
         Column(modifier = Modifier.fillMaxSize()
-            .background(Color(0xFFC8DCC8))) {
+            .background(MaterialTheme.colorScheme.secondaryContainer)) {
             searchBar()
             CategoriesGrid(arrayCategories)
         }
