@@ -40,8 +40,6 @@ import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
-import com.example.restaurantproyectdam.ui.screens.CategoriesScreen
-import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
@@ -70,17 +68,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ComposeMultiScreenApp(){ // MAIN CONTENT
     val navController = rememberNavController()
-    Scaffold (
+    //Scaffold (
         //color = Color.White
-        bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
-    ) { innerPadding->
-        Column(
-           modifier = Modifier.padding(innerPadding)
-        ){
+    //    bottomBar={ BottomBar(navController = navController) },
+    //    floatingActionButton = { SearchButton(onClick = {}) }
+    //) { innerPadding->
+    //    Column(
+    //       modifier = Modifier.padding(innerPadding)
+    //    ){
             SetupNavGraph(navController = navController)
-        }
-    }
+    //    }
+    //}
 }
 
 @Composable
@@ -93,7 +91,7 @@ fun SetupNavGraph (navController: NavHostController){
         composable("adminOrders") { AdminOrdersScreen(navController) }
         composable("adminProducts") { AdminProductsScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
-        composable("menu") { CategoriesScreen(navController) }
-        composable("categoryproducts") { CategoryProductsScreen(navController) }
+        //composable("menu") { CategoriesScreen(navController) }
+        composable("menu") { MenuScreen(navController) }
     }
 }

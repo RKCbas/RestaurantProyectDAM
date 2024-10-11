@@ -1,4 +1,5 @@
-package com.example.restaurantproyectdam.ui.screens
+
+/*package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -139,3 +140,5 @@ fun CategoryCard(id:Int, name:String, image: Painter){
         )
     }
 }
+
+ */
