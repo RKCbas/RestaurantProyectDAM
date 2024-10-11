@@ -1,6 +1,8 @@
 package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +64,8 @@ fun CategoryProductsScreen (navController: NavController, id: Int) {
 @Preview(showBackground = true)
 @Composable
 fun Contents(){
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(Color.LightGray)) {
         searchBar("menu")
         CategoriesInfo()
         Products()
@@ -127,7 +131,6 @@ fun CategoriesInfo(){
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
-
     ){
         items(arrayCategories){category ->
             CategorySelected(category.id,category.name)
@@ -140,6 +143,15 @@ fun CategorySelected(id:Int, name:String){
     Row (modifier = Modifier.fillMaxWidth()
         .padding(start = 14.dp)
         , horizontalArrangement = Arrangement.SpaceEvenly){
-        Text(name)
+        Text(
+            text = name,
+            fontWeight = if (idd == id) FontWeight.Bold else FontWeight.Normal,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .clickable {
+                    naveController?.navigate("categoryProducts/$id")
+                }
+        )
+
     }
 }

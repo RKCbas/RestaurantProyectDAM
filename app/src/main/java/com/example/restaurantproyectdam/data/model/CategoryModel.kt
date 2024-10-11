@@ -13,10 +13,10 @@ data class CategoryModel(
 @Composable
 fun createArrayCategories():Array<CategoryModel>{
     val arrayCategories = arrayOf(
-        CategoryModel(1,"Categoría", painterResource(R.drawable.sushi)),
-        CategoryModel(2,"Categoría", painterResource(R.drawable.sushi)),
-        CategoryModel(3,"Categoría", painterResource(R.drawable.sushi)),
-        CategoryModel(4,"Categoría", painterResource(R.drawable.sushi)),
+        CategoryModel(1,"Test 1", painterResource(R.drawable.sushi)),
+        CategoryModel(2,"Test 2", painterResource(R.drawable.sushi)),
+        CategoryModel(3,"Test 3", painterResource(R.drawable.sushi)),
+        CategoryModel(4,"Test 4", painterResource(R.drawable.sushi)),
         CategoryModel(5,"Categoría", painterResource(R.drawable.sushi)),
         CategoryModel(6,"Categoría", painterResource(R.drawable.sushi)),
         CategoryModel(7,"Categoría", painterResource(R.drawable.sushi)),
