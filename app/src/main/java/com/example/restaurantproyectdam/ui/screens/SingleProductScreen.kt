@@ -1,5 +1,6 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,19 +36,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.components.Header
 
 @Composable
-fun SingleProductScreen(navController: NavController){
+fun SingleProductScreen(navController: NavController, title:String, description: String, cost:Float, @DrawableRes image: Int){
     Column (modifier = Modifier
         .fillMaxSize()) {
-        Headers()
-        ProductData()
+        Header("")
+        ProductData(title,description,cost, image)
         ButtonsProduct()
     }
 }
 
 @Composable
-fun ProductData(){
+fun ProductData(title:String, description: String, cost:Float, @DrawableRes image: Int){
     Column (modifier = Modifier
         .fillMaxSize())
     {
@@ -55,7 +57,7 @@ fun ProductData(){
             padding(10.dp)
             .align(Alignment.CenterHorizontally))
         {
-            Image(painter = painterResource(R.drawable.sushi),
+            Image(painter = painterResource(image),
                 contentDescription = "Product Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.width(180.dp)
@@ -63,14 +65,14 @@ fun ProductData(){
                     )
         }
         Column (){
-            Text("Product name",
+            Text(title,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(20.dp,6.dp,20.dp,7.dp))
             Box(modifier = Modifier.fillMaxWidth()
                 .padding(top = 8.dp)
                 ,contentAlignment = Alignment.TopCenter){
-                Text("$999",
+                Text("$" + cost.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 19.sp)
@@ -81,32 +83,13 @@ fun ProductData(){
                     fontWeight = FontWeight.Bold,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(20.dp,2.dp))
-                Text("Descripcion Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+                Text(description,
                     maxLines = 6,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(20.dp,2.dp,20.dp,7.dp),
                     fontSize = 14.sp)
             }
         }
-    }
-}
-
-@Composable
-fun Headers(){
-    Box(
-        modifier =Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center,
-    ){
-        Image(
-            imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
-            contentDescription = "Custom SVG Icon",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-                .alpha(0.5f)
-        )
     }
 }
 
