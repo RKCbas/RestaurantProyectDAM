@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -40,7 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
+import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.ordercomponents.OrderTabs
 import kotlinx.coroutines.launch
 
@@ -48,6 +51,23 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OrdersScreen(navController: NavController) {
+    Scaffold (
+        //color = Color.White
+        bottomBar={ BottomBar(navController = navController) },
+        floatingActionButton = { SearchButton(onClick = {}) }
+    ) { innerPadding->
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ){
+            Content()
+        }
+    }
+}
+
+@SuppressLint("Range")
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun Content(){
     //VARIABLES
     //Trigger suppend function that will animate the scroll inside the horizontal pager
     val scope = rememberCoroutineScope()

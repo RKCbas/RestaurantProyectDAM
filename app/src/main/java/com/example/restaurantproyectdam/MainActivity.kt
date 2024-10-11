@@ -69,17 +69,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ComposeMultiScreenApp(){ // MAIN CONTENT
     val navController = rememberNavController()
-    Scaffold (
+    //Scaffold (
         //color = Color.White
-        bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
-    ) { innerPadding->
-        Column(
-           modifier = Modifier.padding(innerPadding)
-        ){
+    //    bottomBar={ BottomBar(navController = navController) },
+    //    floatingActionButton = { SearchButton(onClick = {}) }
+    //) { innerPadding->
+    //    Column(
+    //       modifier = Modifier.padding(innerPadding)
+    //    ){
             SetupNavGraph(navController = navController)
-        }
-    }
+    //    }
+    //}
 }
 
 @Composable
@@ -92,7 +92,7 @@ fun SetupNavGraph (navController: NavHostController){
         composable("adminOrders") { AdminOrdersScreen(navController) }
         composable("adminProducts") { AdminProductsScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
-        composable("menu") { CategoriesScreen(navController) }
-
+        //composable("menu") { CategoriesScreen(navController) }
+        composable("menu") { MenuScreen(navController) }
     }
 }
