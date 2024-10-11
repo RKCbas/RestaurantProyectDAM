@@ -63,19 +63,22 @@ private fun Content(){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)) {
-            searchBar()
+            searchBar("home")
             CategoriesGrid(arrayCategories)
         }
 }
 
 @Composable
-fun searchBar(){
+fun searchBar(route:String){
     Row (modifier = Modifier.statusBarsPadding().fillMaxWidth().padding(12.dp,0.dp)){
         Icon(
             Icons.Sharp.KeyboardArrowLeft,
             contentDescription = "Arrow back Icon",
             modifier = Modifier
                 .padding(7.dp)
+                .clickable {
+                    naveController?.navigate(route)
+                }
         )
         Card(modifier = Modifier
             .fillMaxWidth()

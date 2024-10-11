@@ -11,7 +11,7 @@ data class ProductModel(
     val description:String,
     val cost:Float,
     val image: Painter,
-    val categoria:Int
+    val category:Int
 )
 @Composable
 fun createArrayProducts():Array<ProductModel>{
