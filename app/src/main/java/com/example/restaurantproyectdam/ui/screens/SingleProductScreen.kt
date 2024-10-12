@@ -172,7 +172,9 @@ fun ButtonsProduct(){
                 .padding(start = 7.dp), color = Color(0xFFFFA59A)
             )
         }
-        OutlinedButton(onClick = {}) {
+        OutlinedButton(onClick = {
+            naveController?.navigate("payment/$idProduct")
+        }) {
             Icon(Icons.Outlined.CheckCircle, contentDescription = "Shop Icon",
                 modifier = Modifier.size(AssistChipDefaults.IconSize),
                 tint = Color.Black)
