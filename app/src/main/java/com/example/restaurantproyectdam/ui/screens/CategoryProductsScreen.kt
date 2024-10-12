@@ -99,7 +99,10 @@ if (idd!=null){
 fun ProductDataa(id:Int, title:String, description:String, cost:Float, image:Painter, category:Int){
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(8.dp),
+        .padding(8.dp)
+        .clickable {
+            naveController?.navigate("singleProduct/$id")
+        },
         horizontalArrangement = Arrangement.SpaceBetween) {
         Column (modifier = Modifier
             .weight(2f)
