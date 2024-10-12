@@ -23,7 +23,6 @@ fun PageIndicator(
     pageCount: Int
 ){
     Row(
-
         horizontalArrangement = Arrangement.Center
     ){
         repeat(pageCount){iteration ->

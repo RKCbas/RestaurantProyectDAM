@@ -19,17 +19,17 @@ enum class OrderTabs(
     val unselectedIcon: ImageVector,
     val text: String
 ) {
-    Shop(
+    Pending(
         unselectedIcon = Icons.Outlined.MailOutline,
         selectedIcon = Icons.Filled.Email,
         text = "Pending"
     ),
-    Favourite(
+    Ready(
         unselectedIcon = Icons.Outlined.ThumbUp,
         selectedIcon = Icons.Filled.ThumbUp,
         text = "Ready"
     ),
-    Profile(
+    Delivered(
         unselectedIcon = Icons.Outlined.ShoppingCart,
         selectedIcon = Icons.Filled.ShoppingCart,
         text = "Delivered"
