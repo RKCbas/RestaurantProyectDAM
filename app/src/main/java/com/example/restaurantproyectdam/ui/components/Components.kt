@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,12 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
@@ -40,7 +38,7 @@ import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 
 // Bottom Navigation Bar
 @Composable
-fun BottomBar(navController: NavHostController){
+fun BottomBar(navController: NavController){
     val screens = listOf( //Sealed Classes
         BottomBarOpt.Menu,
         BottomBarOpt.Orders,
@@ -62,7 +60,7 @@ fun BottomBar(navController: NavHostController){
 fun RowScope.AddItem(// Extends from RowScope
     screen: BottomBarOpt, //Sealed class
     currentDestination: NavDestination?, //Nullable type // The current location
-    navController: NavHostController // To navigate to other destinations
+    navController: NavController // To navigate to other destinations
 ){
     NavigationBarItem(
         onClick = {
