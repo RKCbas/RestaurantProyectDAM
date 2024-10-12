@@ -85,7 +85,7 @@ fun LoginScreen (navController: NavController) {
         )
         Spacer(modifier = Modifier.height(80.dp))
         UserInputs()
-        BottomElement()
+        BottomElement(navController)
     }
 
 }
@@ -195,13 +195,13 @@ fun UserInputs(){
 
 //Link a registro
 @Composable
-fun BottomElement(){
+fun BottomElement(navController: NavController){
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ){
         Text(text = "¿No tienes una cuenta?", modifier = Modifier.align(Alignment.CenterVertically) )
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = {navController.navigate("register")}) {
             Text(text = "Registrate",   fontSize = 17.sp)
         }
 
