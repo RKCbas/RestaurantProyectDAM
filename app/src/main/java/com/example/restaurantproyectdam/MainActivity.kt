@@ -19,6 +19,7 @@ import com.example.restaurantproyectdam.ui.screens.MenuScreen
 import com.example.restaurantproyectdam.ui.screens.OrdersScreen
 import com.example.restaurantproyectdam.ui.screens.ProfileScreen
 import com.example.restaurantproyectdam.ui.screens.RegisterScreen
+import com.example.restaurantproyectdam.ui.screens.SingleProductScreen
 import com.example.restaurantproyectdam.ui.theme.RestaurantProyectDAMTheme
 
 
@@ -71,6 +72,12 @@ fun SetupNavGraph (navController: NavHostController){
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
                 CategoryProductsScreen(navController, it)
+            }
+        }
+        composable("singleProduct/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+            id?.let {
+                SingleProductScreen(navController, it)
             }
         }
 
