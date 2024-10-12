@@ -3,6 +3,7 @@ package com.example.restaurantproyectdam.ui.screens
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -199,14 +201,21 @@ fun InfoCategory() {
 
 @Composable
 fun ShowCategory(name:String){
-    Column(modifier = Modifier
+    Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(end = 30.dp)
-        .padding(top = 20.dp),
-        horizontalAlignment = Alignment.End) {
-        Text(name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color.DarkGray)
+        .padding(top = 30.dp, end = 30.dp, start = 30.dp)
+    ) {
+            Icon(Icons.Filled.KeyboardArrowLeft,
+                contentDescription = "Button Return",
+                modifier = Modifier.align(Alignment.CenterStart)
+                    .clickable {
+                        naveController?.navigate("categoryProducts/$idd")
+                    }
+            )
+            Text(name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray,
+                modifier = Modifier.align(Alignment.CenterEnd))
     }
 }
