@@ -37,10 +37,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -64,7 +67,7 @@ fun RegisterScreen (navController: NavController){
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            .background(color = MaterialTheme.colorScheme.surface)
     ){
         TopElementsRegister(navController)
         MidElementsRegister(navController)
@@ -83,9 +86,20 @@ fun TopElementsRegister(navController: NavController){
             contentDescription = "Icon of arrow back",
             modifier = Modifier
                 .clickable { navController.navigate("home") }
-                .padding(top = 28.dp, start = 23.dp)
+                .padding(top = 28.dp, start = 23.dp),
+            tint = MaterialTheme.colorScheme.onSurface,
+
+            )
+
+        Image(
+            imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
+            contentDescription = "Custom SVG Icon",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+                .alpha(0.5f)
+            ,
         )
-        Icon(
+        /*Icon(
             painter=painterResource(R.drawable.logo_fuji),
             contentDescription ="logo",
             modifier= Modifier
@@ -93,22 +107,25 @@ fun TopElementsRegister(navController: NavController){
                 .height(150.dp)
                 .align(Alignment.CenterHorizontally),
             tint = colorResource(R.color.teal_700)// Set the color you want here
-        )
+        )*/
         Spacer(modifier = Modifier.height(30.dp))
         Text(
-            text = "Registrate",
+            text = "Register",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp
         )
         Text(
-            text = "Crea tu nueva cuenta",
+            text = "Create a new account",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Light,
             style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+
             fontSize = 13.sp
         )
 
@@ -132,7 +149,7 @@ fun MidElementsRegister(navController: NavController){
         TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Nombre de Usuario") },
+            label = { Text("User name") },
             singleLine = true,
             modifier = Modifier
                 .width(330.dp)
@@ -141,7 +158,7 @@ fun MidElementsRegister(navController: NavController){
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo Electrónico") },
+            label = { Text("Email") },
             singleLine = true,
             modifier = Modifier
                 .width(330.dp)
@@ -151,7 +168,7 @@ fun MidElementsRegister(navController: NavController){
             value = password,
             onValueChange = { password = it },
             singleLine = true,
-            label = { Text(text = "Contraseña") },
+            label = { Text(text = "Password") },
             modifier = Modifier
                 .width(330.dp)
                 .align(Alignment.CenterHorizontally),
@@ -162,7 +179,7 @@ fun MidElementsRegister(navController: NavController){
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             singleLine = true,
-            label = { Text(text = "Confirma tu contraseña") },
+            label = { Text(text = "Confirm your password") },
             modifier = Modifier
                 .width(330.dp)
                 .align(Alignment.CenterHorizontally),
@@ -183,7 +200,7 @@ fun MidElementsRegister(navController: NavController){
                 .width(200.dp)
 
         ){
-            Text(text = "Registrarse")
+            Text(text = "Sign Up")
         }
 
     }
@@ -226,7 +243,10 @@ fun BotElementsRegister(navController: NavController){
                     .padding(start = 5.dp, end = 5.dp),
                 color = MaterialTheme.colorScheme.tertiary
             )
-            Text(text = "O registrate con", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Register with",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
+                )
             HorizontalDivider(
                 thickness = 2.dp,
                 modifier = Modifier
@@ -267,14 +287,15 @@ fun BotElementsRegister(navController: NavController){
             horizontalArrangement = Arrangement.Center
         ){
             Text(
-                text = "¿Ya tienes una cuenta?",
+                text = "I have an account",
                 style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             )
             TextButton(
                 onClick = {navController.navigate("login")}) {
-                Text(text = "Inicia Sesión")
+                Text(text = "Log in")
     
 }
         }

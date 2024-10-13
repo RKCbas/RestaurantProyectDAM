@@ -16,7 +16,7 @@ fun ProfileScreen (navController: NavController) {
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
+
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
