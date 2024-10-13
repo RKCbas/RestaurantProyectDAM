@@ -1,5 +1,6 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +33,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -53,6 +58,7 @@ import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
 import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.ProductData
+import kotlinx.coroutines.launch
 
 var idProduct: Int ?=null
 
@@ -63,7 +69,7 @@ fun SingleProductScreen (navController: NavController, id: Int) {
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
+        //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
@@ -140,7 +146,7 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
                     fontSize = 19.sp)
             }
             Column {
-                Text("Descripción",
+                Text("Description",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 19.sp,
@@ -155,20 +161,37 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
     }
 }
 
+@SuppressLint("RememberReturnType")
 @Preview(showBackground = true)
 @Composable
 fun ButtonsProduct(){
+    val snackState = remember{ SnackbarHostState() }
+    val snackScope = rememberCoroutineScope()
+
+    SnackbarHost(hostState = snackState, Modifier)
+
+    fun launchSnackBar(){
+        snackScope.launch { snackState.showSnackbar("Added to the cart") }
+    }
+
+
     Row(horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
         .fillMaxSize()
             .padding(top = 20.dp))
     {
 
-        OutlinedButton(onClick = {}) {
+
+
+
+        OutlinedButton(onClick = {
+            launchSnackBar()
+        }) {
             Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart Icon",
                modifier = Modifier.size(AssistChipDefaults.IconSize),
-                tint = Color.Black)
-            Text("Agregar al Carrito", modifier = Modifier
+                //tint = Color.Black
+            )
+            Text("Add to the cart", modifier = Modifier
                 .padding(start = 7.dp), color = Color(0xFFFFA59A)
             )
         }
@@ -177,8 +200,9 @@ fun ButtonsProduct(){
         }) {
             Icon(Icons.Outlined.CheckCircle, contentDescription = "Shop Icon",
                 modifier = Modifier.size(AssistChipDefaults.IconSize),
-                tint = Color.Black)
-            Text("Ordenar ahora", modifier = Modifier
+                //tint = Color.Black
+                )
+            Text("Order now", modifier = Modifier
                 .padding(start = 10.dp), color = Color(0xFFFFA59A)
             )
         }
@@ -217,7 +241,7 @@ fun ShowCategory(name:String){
             Text(name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.DarkGray,
+                //color = Color.DarkGray,
                 modifier = Modifier.align(Alignment.CenterEnd))
     }
 }

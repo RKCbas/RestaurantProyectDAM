@@ -34,16 +34,19 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.model.ProductModel
+import com.example.restaurantproyectdam.ui.screens.naveController
 
 @Composable
-fun SinglePage(page: ProductData){
-    Card(){
+fun SinglePage(page: ProductModel,navController: NavController){
 
-    }
     Button(
         modifier = Modifier.clip(RoundedCornerShape(30.dp)),
-        onClick={},
+        onClick={
+            navController.navigate("singleProduct/${page.id}")
+        },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
         shape = MaterialTheme.shapes.medium, // Use the shape of a Card
@@ -58,7 +61,7 @@ fun SinglePage(page: ProductData){
             verticalArrangement = Arrangement.Center
         ){
             Image(
-                painter = painterResource(id = page.image),
+                painter = page.image,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -96,9 +99,9 @@ fun SinglePage(page: ProductData){
 
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun SinglePagePreview(){
     val page : ProductData = ProductData("Title","blabalbalalbalblablbalbbllbalalalbalb",100.0f, R.drawable.sushi)
     SinglePage(page = page)
-}
+}*/

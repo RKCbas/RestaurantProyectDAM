@@ -23,6 +23,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +42,7 @@ import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.model.CategoryModel
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.ui.components.BottomBar
+import com.example.restaurantproyectdam.ui.components.Material3SearchBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
 
 var naveController: NavController ?=null
@@ -48,7 +53,7 @@ fun MenuScreen (navController: NavController) {
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
+        //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
@@ -62,7 +67,8 @@ fun MenuScreen (navController: NavController) {
 private fun Content(){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer)) {
+            //.background(MaterialTheme.colorScheme.secondaryContainer)
+        ) {
             searchBar("home")
             CategoriesGrid(arrayCategories)
         }
@@ -80,7 +86,8 @@ fun searchBar(route:String){
                     naveController?.navigate(route)
                 }
         )
-        Card(modifier = Modifier
+
+        /*Card(modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp))
         {
@@ -90,7 +97,18 @@ fun searchBar(route:String){
                 modifier = Modifier
                     .padding(4.dp)
             )
-        }
+        }*/
+        var query by remember { mutableStateOf("") }
+        Material3SearchBar(
+            modifier = Modifier.padding(top = 0.dp),
+            query = query,
+            onQueryChanged = { newQuery ->
+                query = newQuery
+            },
+            onSearch = { searchQuery ->
+                // Perform search logic
+            }
+        )
     }
 
 }
@@ -120,10 +138,10 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .clickable {
                 naveController?.navigate("categoryProducts/$id")
             },
-        colors = CardDefaults.cardColors(
+        /*colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
-        )
+        )*/
     ) {
         Image(
             painter = image,

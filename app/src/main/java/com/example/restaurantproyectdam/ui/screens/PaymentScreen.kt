@@ -16,9 +16,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.sharp.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -26,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,23 +63,23 @@ fun PaymentScreen (navController: NavController, id: Int) {
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
+
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
         )
         {
-            PaymentContent()
+            PaymentContent(navController)
         }
     }
 }
 
 @Composable
-fun PaymentContent(){
+fun PaymentContent(navController: NavController){
     Column(modifier = Modifier.fillMaxSize()) {
-        Header("Pago")
+        Header("Payment")
         Total()
-        ButtonsPayment()
+        ButtonsPayment(navController)
         ProductInfoo()
     }
 }
@@ -89,7 +92,7 @@ fun Total(){
         Text("Total",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Light)
-        Text("$$total MXN",
+        Text("$ $total MXN",
             modifier = Modifier.padding(top = 6.dp),
             style = MaterialTheme.typography.titleLarge
         )
@@ -97,14 +100,43 @@ fun Total(){
             .padding(top = 6.dp)) {
             Icon(Icons.Outlined.Place, contentDescription = "Icon place")
             total += 130
-            Text("Costo Domicilio $ $total MXN",
+            Text("Shipment cost $ $total MXN",
                 modifier = Modifier.padding(start = 10.dp, top = 3.dp))
         }
     }
 }
 
 @Composable
-fun ButtonsPayment(){
+fun ButtonsPayment(navController: NavController){
+
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("") }
+    if(showAlertDialog){
+        AlertDialog(
+            icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "")},
+            title = {Text("Order now?")},
+            text = {Text("Are you sure you want to buy this item?")},
+            onDismissRequest = {},
+            confirmButton = {
+                TextButton(onClick = {
+                    selectedOption = "Confirm"
+                    showAlertDialog=false
+                    navController.navigate("orders")
+                }) {
+                    Text(text = "Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    selectedOption = "Dismiss"
+                    showAlertDialog=false
+                }) {
+                    Text(text = "Dismiss")
+                }
+            }
+        )
+    }
+
     var text by remember { mutableStateOf("") }
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -114,7 +146,7 @@ fun ButtonsPayment(){
             TextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("Codigo de Promoción") },
+                label = { Text("Promotion Code") },
                 singleLine = true,
                 modifier = Modifier
                     .width(250.dp)
@@ -133,14 +165,14 @@ fun ButtonsPayment(){
                     .height(56.dp)
                     .align(Alignment.CenterVertically)
             ){
-                Text("Enviar")
+                Text("Send")
             }
         }
         Button(
-            onClick = {},
+            onClick = {showAlertDialog=true},
             shape = RoundedCornerShape(9.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
+                containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = Color.White
             ),
             modifier = Modifier
@@ -149,7 +181,7 @@ fun ButtonsPayment(){
                 .align(Alignment.CenterHorizontally)
                 .padding(2.dp)
         ){
-            Text("Pagar")
+            Text("Pay")
         }
     }
 }
@@ -231,6 +263,6 @@ fun QuantityProduct(tot:Float){
 fun CalculateTotal(total:Float,quantity:Int){
     var ress by remember { mutableFloatStateOf(0f) }
     ress = (total*quantity).toFloat()
-    Text(ress.toString())
+    Text("$"+ress.toString()+"MXN")
     totall=ress
 }

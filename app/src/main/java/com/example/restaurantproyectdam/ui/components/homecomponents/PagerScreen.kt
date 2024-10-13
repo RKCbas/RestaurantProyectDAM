@@ -13,12 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.restaurantproyectdam.data.model.createArrayProducts
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerScreen(){
+fun PagerScreen(navController : NavController){
     val items :List<ProductData>
-    val pagerState : PagerState = rememberPagerState(pageCount = { pages.size})
+    //pages.size
+    val products = createArrayProducts()
+    val pagerState : PagerState = rememberPagerState(pageCount = { products.size})
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -26,7 +30,7 @@ fun PagerScreen(){
         verticalArrangement = Arrangement.Center
     ){
         HorizontalPager(state=pagerState) { pageIndex->
-            SinglePage(page = pages[pageIndex])
+            SinglePage(page = products[pageIndex], navController)
         }
 
         Spacer(modifier=Modifier.size(16.dp))

@@ -41,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
@@ -48,20 +49,29 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.graphics.shapes.RoundedPolygon
-import androidx.graphics.shapes.toPath
+//import androidx.graphics.shapes.RoundedPolygon
+//import androidx.graphics.shapes.toPath
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
 import kotlinx.coroutines.launch
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview(){
+    LoginScreen(navController = rememberNavController())
+}
 
 @Composable
 fun LoginScreen (navController: NavController) {
@@ -70,17 +80,19 @@ fun LoginScreen (navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         TopElement(navController)
 
         Spacer(modifier = Modifier.height(30.dp))
         Text(
-            text = "Inicia sesion en tu cuenta",
+            text = "Login",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Light,
             style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+
             fontSize = 13.sp
         )
         Spacer(modifier = Modifier.height(80.dp))
@@ -106,9 +118,19 @@ fun TopElement(navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(start = 30.dp, top = 30.dp)
-                    .clickable { navController.navigate("home")}
+                    .clickable { navController.navigate("home") },
+                tint = MaterialTheme.colorScheme.onSurface,
+
+                )
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
+                contentDescription = "Custom SVG Icon",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth()
+                    .alpha(0.5f)
+                ,
             )
-            Icon(
+            /*Icon(
                 painter=painterResource(R.drawable.logo_fuji),
                 contentDescription ="logo",
                 modifier= Modifier
@@ -117,14 +139,15 @@ fun TopElement(navController: NavController) {
                     .height(150.dp)
                     .align(Alignment.Center),
                 tint = colorResource(R.color.login_top_shape)// Set the color you want here
-            )
+            )*/
 
             Text(
-                text = "¡BIENVENIDO DE VUELTA!",
+                text = "¡WELCOM BACK!",
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(top = 60.dp),
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp
             )
@@ -150,7 +173,7 @@ fun UserInputs(){
         TextField(
             value = text,
             onValueChange = { text = it },
-            label = { Text("Correo Electrónico") },
+            label = { Text("Email") },
             singleLine = true,
             modifier = Modifier
                 .width(330.dp)
@@ -161,7 +184,7 @@ fun UserInputs(){
             value = password,
             onValueChange = { password = it },
             singleLine = true,
-            label = { Text("Contraseña") },
+            label = { Text("Password") },
             modifier = Modifier
                 .width(330.dp)
                 .align(Alignment.CenterHorizontally),
@@ -173,7 +196,7 @@ fun UserInputs(){
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
             ) {
-            Text(text = "¿Olvidaste tu contraseña?")
+            Text(text = "Forgot your password?")
         }
         val snackState = remember{ SnackbarHostState() }
         val snackScope = rememberCoroutineScope()
@@ -181,14 +204,14 @@ fun UserInputs(){
         SnackbarHost(hostState = snackState, Modifier)
 
         fun launchSnackBar(){
-            snackScope.launch { snackState.showSnackbar("Sesion iniciada correctamente") }
+            snackScope.launch { snackState.showSnackbar("Log in successfull") }
         }
         Button(onClick = {launchSnackBar()}, modifier = Modifier
             .width(270.dp)
             .align(Alignment.CenterHorizontally)
             .padding(top = 70.dp)
         ){
-            Text(text = "Iniciar Sesion")
+            Text(text = "Log In")
         }
     }
 }
@@ -200,9 +223,13 @@ fun BottomElement(navController: NavController){
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ){
-        Text(text = "¿No tienes una cuenta?", modifier = Modifier.align(Alignment.CenterVertically) )
+        Text(
+            text = "Don't have any account yet?",
+            modifier = Modifier.align(Alignment.CenterVertically),
+            color = MaterialTheme.colorScheme.onSurface,
+            )
         TextButton(onClick = {navController.navigate("register")}) {
-            Text(text = "Registrate",   fontSize = 17.sp)
+            Text(text = "Sign Up",   fontSize = 17.sp)
         }
 
     }
