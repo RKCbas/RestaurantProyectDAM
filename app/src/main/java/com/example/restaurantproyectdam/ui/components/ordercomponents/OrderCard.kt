@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.restaurantproyectdam.data.model.OrderProduct
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -21,8 +22,11 @@ import androidx.compose.ui.unit.sp
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.model.ProductModel
 import androidx.compose.material3.Card
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.restaurantproyectdam.data.model.OrderCardModel
 
 @Composable
 fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navController: NavController) {
@@ -155,4 +159,199 @@ private fun OrderCardPreview() {
     )
 
     OrderCard(id = 1, status = false, products = orderProductsArray, navController = rememberNavController())
+}
+
+
+@Composable
+fun OrderCardAdmin(orderCard: OrderCardModel) {
+    var isAccepted by remember { mutableStateOf(orderCard.status) }
+    var showRejectDialog by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            item {
+                Text(text = "Pedido #${orderCard.id}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
+            item{
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            items(orderCard.orderProducts){ orderProducts ->
+                var areDetails = false
+                if (orderProducts.extraDetails != ""){
+                    Text("- ${orderProducts.orderProduct.title} (${orderProducts.extraDetails})", fontSize = 14.sp)
+                }else{
+                    Text(text = "- ${orderProducts.orderProduct.title}", fontSize = 14.sp)
+                }
+
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+
+            if (!isAccepted) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                isAccepted = true
+                            },
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Text(text = "Aceptar")
+                        }
+
+                        Button(
+                            onClick = {
+                                showRejectDialog = true
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                        ) {
+                            Text(text = "Rechazar")
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Text(
+                        text = "Aceptado",
+                        color = Color.Green,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+
+    // Dialog for rejection
+    if (showRejectDialog) {
+        RejectionDialog(
+            onDismiss = { showRejectDialog = false },
+            onSubmit = { /* Handle submission */ }
+        )
+    }
+}
+
+@Composable
+fun RejectionDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
+    var rejectionReason by remember { mutableStateOf("") }
+
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Escribe una razón de rechazo",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Text input for rejection reason
+                TextField(
+                    value = rejectionReason,
+                    onValueChange = { rejectionReason = it },
+                    label = { Text(text = "Motivo de rechazo") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Buttons for Submit and Cancel
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = {
+                            onSubmit(rejectionReason)
+                            onDismiss()
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text(text = "Enviar")
+                    }
+
+                    Button(
+                        onClick = {
+                            onDismiss()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                    ) {
+                        Text(text = "Cancelar")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OrderCardAdminPreview(){
+    val orderProductsArray = arrayOf(
+        OrderProduct(
+            amount = 1,
+            orderProduct =
+            ProductModel(
+                1,
+                "Tempura",
+                "Tempura is a Japanese dish of lightly battered and deep-fried vegetables and seafood that's known for its unique crispy, non-greasy texture. ",
+                200.00f,
+                painterResource(R.drawable.tempura),
+                1
+            )
+        ),
+        OrderProduct(
+            amount = 2,
+            orderProduct =
+            ProductModel(
+                2,
+                "Dango",
+                "Dango is a Japanese dessert made from rice flour and glutinous rice flour, and is a popular confectionery in the country",
+                100.00f,
+                painterResource(R.drawable.dango),
+                2
+            ),
+            extraDetails = "without many"
+        )
+
+    )
+    val orderCardsArray = arrayOf(
+        OrderCardModel(id = 1, status = true, orderProducts = orderProductsArray),
+        OrderCardModel(id = 2, status = false, orderProducts = orderProductsArray),
+        OrderCardModel(id = 3, status = true, orderProducts = orderProductsArray)
+    )
+    LazyRow {
+        item {
+            OrderCardAdmin(orderCard = orderCardsArray[0])
+        }
+        item {
+            OrderCardAdmin(orderCard = orderCardsArray[1])
+        }
+    }
 }

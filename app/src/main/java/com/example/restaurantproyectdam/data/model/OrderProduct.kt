@@ -4,5 +4,6 @@ import java.time.temporal.TemporalAmount
 
 data class OrderProduct(
     val orderProduct: ProductModel,
-    val amount:Int
+    val amount:Int,
+    val extraDetails: String = ""
 )

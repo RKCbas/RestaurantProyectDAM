@@ -2,6 +2,7 @@ package com.example.restaurantproyectdam.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.painter.Painter
@@ -45,4 +46,15 @@ sealed class BottomBarOpt(
         icon = Icons.Outlined.Person
     )
 
+    object  AdminOrders : BottomBarOpt(
+        route = "adminOrders",
+        title = "Orders",
+        icon = Icons.Outlined.ShoppingCart
+    )
+
+    object  AdminProducts : BottomBarOpt(
+        route = "adminProducts",
+        title = "Products",
+        icon = Icons.Outlined.Menu
+    )
 }

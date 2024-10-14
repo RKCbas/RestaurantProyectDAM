@@ -41,165 +41,166 @@ import androidx.compose.material3.HorizontalDivider
 
 @Composable
 fun OrderScreen(navController: NavController, id: Int) {
-    val orderProductsArray = arrayOf(
-        OrderProduct(
-            amount = 1,
-            orderProduct =
-            ProductModel(
-                1,
-                "Tempura",
-                "Tempura is a Japanese dish of lightly battered and deep-fried vegetables and seafood that's known for its unique crispy, non-greasy texture. ",
-                200.00f,
-                painterResource(R.drawable.tempura),
-                1
-            )
-        ),
-        OrderProduct(
-            amount = 2,
-            orderProduct =
-            ProductModel(
-                2,
-                "Dango",
-                "Dango is a Japanese dessert made from rice flour and glutinous rice flour, and is a popular confectionery in the country",
-                100.00f,
-                painterResource(R.drawable.dango),
-                2
-            )
-        )
-
-    )
-    val orderCardsArray = arrayOf(
-        OrderCardModel(id = 1, status = true, orderProducts = orderProductsArray),
-        OrderCardModel(id = 2, status = false, orderProducts = orderProductsArray),
-        OrderCardModel(id = 3, status = true, orderProducts = orderProductsArray)
-    )
-    val specificOrder = orderCardsArray.find { it.id == id }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray)
     ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFDDDEDD))
-                    .padding(10.dp, 10.dp, 15.dp, 5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back arrow",
-                        tint = Color.Black
-                    )
-                }
-                Column {
-                    Text(
-                        text = "Order",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = "id # $id",
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-                }
-                Box(
-                    modifier = Modifier.width(24.dp)
-                ) {
-                    Text(text = "")
-                }
-            }
 
-            LazyColumn(
-                modifier = Modifier.padding(10.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFDDDEDD))
+                .padding(10.dp, 10.dp, 15.dp, 5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back arrow",
+                    tint = Color.Black
+                )
+            }
+            Column {
+                Text(
+                    text = "Order",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = "id # $id",
+                    color = Color.Black,
+                    fontSize = 16.sp
+                )
+            }
+            Box(
+                modifier = Modifier.width(24.dp)
             ) {
-                if (specificOrder != null) {
-                    items(specificOrder.orderProducts) { item ->
-                        Card(
+                Text(text = "")
+            }
+        }
+
+        val orderProductsArray = arrayOf(
+            OrderProduct(
+                amount = 1,
+                orderProduct =
+                ProductModel(
+                    1,
+                    "Tempura",
+                    "Tempura is a Japanese dish of lightly battered and deep-fried vegetables and seafood that's known for its unique crispy, non-greasy texture. ",
+                    200.00f,
+                    painterResource(R.drawable.tempura),
+                    1
+                )
+            ),
+            OrderProduct(
+                amount = 2,
+                orderProduct =
+                ProductModel(
+                    2,
+                    "Dango",
+                    "Dango is a Japanese dessert made from rice flour and glutinous rice flour, and is a popular confectionery in the country",
+                    100.00f,
+                    painterResource(R.drawable.dango),
+                    2
+                )
+            )
+
+        )
+        val orderCardsArray = arrayOf(
+            OrderCardModel(id = 1, status = true, orderProducts = orderProductsArray),
+            OrderCardModel(id = 2, status = false, orderProducts = orderProductsArray),
+            OrderCardModel(id = 3, status = true, orderProducts = orderProductsArray)
+        )
+        val specificOrder = orderCardsArray.find { it.id == id }
+        
+        LazyColumn(
+            modifier = Modifier.padding(10.dp)
+        ) {
+            if (specificOrder != null) {
+                items(specificOrder.orderProducts) { item ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = item.orderProduct.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
+                        }
+                        HorizontalDivider(thickness = 5.dp)
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(5.dp)
+                                .padding(top = 5.dp)
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = item.orderProduct.title,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
+                            Column {
+                                Image(
                                     modifier = Modifier
-                                        .padding(5.dp)
+                                        .width(150.dp)
+                                        .height(175.dp)
+                                        .padding(start = 10.dp),
+                                    painter = item.orderProduct.image,
+                                    contentDescription = "product Image",
                                 )
+
                             }
-                            HorizontalDivider(thickness = 5.dp)
-                            Row(
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 5.dp)
+                                    .padding(5.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Column {
-                                    Image(
-                                        modifier = Modifier
-                                            .width(150.dp)
-                                            .height(175.dp)
-                                            .padding(start = 10.dp),
-                                        painter = item.orderProduct.image,
-                                        contentDescription = "product Image",
-                                    )
-
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(5.dp),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = "Description",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                    Text(
-                                        text = item.orderProduct.description,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        modifier = Modifier.padding(bottom = 5.dp)
-                                    )
-                                    Text(
-                                        text = "Quantity",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                    Text(
-                                        text = item.amount.toString(),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        modifier = Modifier.padding(bottom = 5.dp)
-                                    )
-                                    Text(
-                                        text = "Cost",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                    val totalCost = item.amount * item.orderProduct.cost
-                                    Text(
-                                        text = totalCost.toString(),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Normal,
-                                    )
-                                }
+                                Text(
+                                    text = "Description",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    text = item.orderProduct.description,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(bottom = 5.dp)
+                                )
+                                Text(
+                                    text = "Quantity",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    text = item.amount.toString(),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(bottom = 5.dp)
+                                )
+                                Text(
+                                    text = "Cost",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                val totalCost = item.amount * item.orderProduct.cost
+                                Text(
+                                    text = totalCost.toString(),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Normal,
+                                )
                             }
                         }
                     }
                 }
             }
         }
+
     }
 
 }

@@ -65,11 +65,28 @@ fun BottomBar(navController: NavController){
     )
     //Whenever its value is changed, we will be notified about that
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestionation = navBackStackEntry?.destination // Nullable type // current location
+    val currentDestination = navBackStackEntry?.destination // Nullable type // current location
     //Predefined composable function to add items to the nav bar
     NavigationBar(){
         screens.forEach{screen ->
-            AddItem(screen = screen, currentDestination = currentDestionation, navController = navController)
+            AddItem(screen = screen, currentDestination = currentDestination, navController = navController)
+        }
+    }
+}
+
+@Composable
+fun AdminBottomBar(navController: NavController){
+    val screens = listOf(
+        BottomBarOpt.AdminOrders,
+        BottomBarOpt.AdminProducts
+    )
+    //Whenever its value is changed, we will be notified about that
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination // Nullable type // current location
+    //Predefined composable function to add items to the nav bar
+    NavigationBar(){
+        screens.forEach{screen ->
+            AddItem(screen = screen, currentDestination = currentDestination, navController = navController)
         }
     }
 }

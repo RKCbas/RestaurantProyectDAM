@@ -30,9 +30,12 @@ fun ProfileScreen (navController: NavController) {
 private fun Content(navController: NavController){
     Column {
         TextButton(onClick = {navController.navigate("register")}) {
-            Text(text="Hola")
+            Text(text="Register")
 
             }
+        }
+        TextButton(onClick = { navController.navigate("adminOrders") }) {
+            Text(text = "Administration")
         }
 
     }

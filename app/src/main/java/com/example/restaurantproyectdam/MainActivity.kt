@@ -82,7 +82,6 @@ fun SetupNavGraph (navController: NavHostController){
                 SingleProductScreen(navController, it)
             }
         }
-
         composable("payment/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
