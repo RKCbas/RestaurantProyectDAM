@@ -76,8 +76,9 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
             Text(text = "Summary", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
 
-            var total by remember { mutableStateOf(0.00) }
+            //var total by remember { mutableStateOf(0.00) }
 
+            var total = 0.0
             LazyColumn {
                 items(products) { product ->
                     Row(
@@ -111,7 +112,9 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
 
             // Details button
             Button(
-                onClick = { navController.navigate("OrderScreen/{$id}") },
+                onClick = {
+                    navController.navigate("OrderScreen/{$id}")
+                          },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9FA89F))
