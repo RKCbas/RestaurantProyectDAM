@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
@@ -35,15 +37,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.model.OrderCardModel
+import com.example.restaurantproyectdam.data.model.OrderProduct
+import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
 import com.example.restaurantproyectdam.ui.components.SearchButton
+import com.example.restaurantproyectdam.ui.components.ordercomponents.OrderCard
 import com.example.restaurantproyectdam.ui.components.ordercomponents.OrderTabs
 import kotlinx.coroutines.launch
 
@@ -59,7 +66,7 @@ fun OrdersScreen(navController: NavController) {
         Column(
             modifier = Modifier.padding(innerPadding)
         ){
-            Content()
+            Content(navController)
         }
     }
 }
@@ -67,9 +74,9 @@ fun OrdersScreen(navController: NavController) {
 @SuppressLint("Range")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun Content(){
+private fun Content(navController: NavController){
     //VARIABLES
-    //Trigger suppend function that will animate the scroll inside the horizontal pager
+    //Trigger suspend function that will animate the scroll inside the horizontal pager
     val scope = rememberCoroutineScope()
 
     //pager states should passed directly to the horizontal pager composable to control its behavior
@@ -122,13 +129,46 @@ private fun Content(){
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = OrderTabs.entries[selectedTabIndex.value].text)
+            val orderProductsArray = arrayOf(
+                OrderProduct(
+                    amount = 1,
+                    orderProduct =
+                    ProductModel(
+                        1,
+                        "Tempura",
+                        "Tempura is a Japanese dish of lightly battered and deep-fried vegetables and seafood that's known for its unique crispy, non-greasy texture. ",
+                        200.00f,
+                        painterResource(R.drawable.tempura),
+                        1
+                    )
+                ),
+                OrderProduct(
+                    amount = 2,
+                    orderProduct =
+                    ProductModel(
+                        2,
+                        "Dango",
+                        "Dango is a Japanese dessert made from rice flour and glutinous rice flour, and is a popular confectionery in the country",
+                        100.00f,
+                        painterResource(R.drawable.dango),
+                        2
+                    )
+                )
+
+            )
+            val orderCardsArray = arrayOf(
+                OrderCardModel(id = 1, status = true, orderProducts = orderProductsArray),
+                OrderCardModel(id = 2, status = false, orderProducts = orderProductsArray),
+                OrderCardModel(id = 3, status = true, orderProducts = orderProductsArray)
+            )
+
+            LazyColumn {
+                items(orderCardsArray){ orderCard ->
+                    OrderCard(id = orderCard.id, status = orderCard.status, products = orderCard.orderProducts, navController)
+                }
             }
         }
     }
 
 }
+

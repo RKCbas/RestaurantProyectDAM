@@ -16,6 +16,7 @@ import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
+import com.example.restaurantproyectdam.ui.screens.OrderScreen
 import com.example.restaurantproyectdam.ui.screens.OrdersScreen
 import com.example.restaurantproyectdam.ui.screens.PaymentScreen
 import com.example.restaurantproyectdam.ui.screens.ProfileScreen
@@ -81,10 +82,17 @@ fun SetupNavGraph (navController: NavHostController){
                 SingleProductScreen(navController, it)
             }
         }
+
         composable("payment/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
                 PaymentScreen(navController, it)
+            }
+        }
+        composable("OrderScreen/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+            id?.let {
+                OrderScreen(navController, it)
             }
         }
 
