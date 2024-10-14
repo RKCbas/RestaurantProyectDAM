@@ -22,6 +22,7 @@ import com.example.restaurantproyectdam.ui.screens.PaymentScreen
 import com.example.restaurantproyectdam.ui.screens.ProfileScreen
 import com.example.restaurantproyectdam.ui.screens.RegisterScreen
 import com.example.restaurantproyectdam.ui.screens.SingleProductScreen
+import com.example.restaurantproyectdam.ui.screens.WelcomeScreen
 import com.example.restaurantproyectdam.ui.theme.RestaurantProyectDAMTheme
 
 
@@ -59,7 +60,7 @@ fun ComposeMultiScreenApp(){ // MAIN CONTENT
 
 @Composable
 fun SetupNavGraph (navController: NavHostController){
-    NavHost(navController = navController, startDestination = "home"){
+    NavHost(navController = navController, startDestination = "onboarding"){
         composable("home"){ HomeScreen(navController) }
         composable("login"){ LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
@@ -69,6 +70,7 @@ fun SetupNavGraph (navController: NavHostController){
         composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
         composable("menu") { MenuScreen(navController) }
+        composable("onboarding"){ WelcomeScreen(navController = navController)}
         //Ruta con parametro para CategoryProducts
         composable("categoryProducts/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
