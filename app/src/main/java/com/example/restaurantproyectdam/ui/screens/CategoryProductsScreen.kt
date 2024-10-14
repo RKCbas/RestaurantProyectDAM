@@ -50,7 +50,7 @@ fun CategoryProductsScreen (navController: NavController, id: Int) {
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
-        floatingActionButton = { SearchButton(onClick = {}) }
+        //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
@@ -65,7 +65,8 @@ fun CategoryProductsScreen (navController: NavController, id: Int) {
 @Composable
 fun Contents(){
     Column(modifier = Modifier.fillMaxSize()
-        .background(Color.LightGray)) {
+        //.background(Color.LightGray)
+    ) {
         searchBar("menu")
         CategoriesInfo()
         Products()
