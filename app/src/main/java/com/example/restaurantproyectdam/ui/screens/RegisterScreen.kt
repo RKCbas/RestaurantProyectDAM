@@ -55,58 +55,98 @@ import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
 
-//@Preview
-@Composable
-fun PreviewPortraitScreen(){
-    PortraitRegister(navController = rememberNavController())
-}
-
-@Preview(
-    device = Devices.TABLET,
-    showBackground = true
-)
-@Composable
-fun PreviewLandScreen(){
-    LandscapeRegister(navController = rememberNavController())
-}
 
 @Composable
-fun RegisterScreen (navController: NavController){
-    var windowSize = currentWindowAdaptiveInfo().windowSizeClass
-    var windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
-    var windowWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+fun RegisterScreen(navController: NavController) {
+    val windowSize = currentWindowAdaptiveInfo().windowSizeClass
+    val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    val windowWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
 
-    if(windowWidth == WindowWidthSizeClass.COMPACT){
-        PortraitRegister(navController = rememberNavController())
-    }
-    else if(windowHeight == WindowHeightSizeClass.COMPACT){
-        LandscapeRegister(navController = rememberNavController())
-    }
-    else{
+    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var showSnackbar by remember { mutableStateOf(false) }
+
+    if (windowWidth == WindowWidthSizeClass.COMPACT) {
+        PortraitRegister(
+            navController = navController,
+            username = username,
+            onUsernameChange = { username = it },
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it },
+            confirmPassword = confirmPassword,
+            onConfirmPasswordChange = { confirmPassword = it },
+            showSnackbar = showSnackbar,
+            onDismissSnackbar = { showSnackbar = false },
+            onShowSnackbar = { showSnackbar = true }
+        )
+    } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
+        LandscapeRegister(
+            navController = navController,
+            username = username,
+            onUsernameChange = { username = it },
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it },
+            confirmPassword = confirmPassword,
+            onConfirmPasswordChange = { confirmPassword = it },
+            showSnackbar = showSnackbar,
+            onDismissSnackbar = { showSnackbar = false },
+            onShowSnackbar = { showSnackbar = true }
+        )
+    } else {
         Text(text = "Landscape")
     }
 }
 
 @Composable
-fun PortraitRegister(navController: NavController){
+fun PortraitRegister(
+    navController: NavController,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    confirmPassword: String,
+    onConfirmPasswordChange: (String) -> Unit,
+    showSnackbar: Boolean,
+    onDismissSnackbar: () -> Unit,
+    onShowSnackbar: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(color = MaterialTheme.colorScheme.surface)
-    ){
+    ) {
         TopElementsRegister(navController)
-        MidElementsRegister(navController)
+        MidElementsRegister(
+            navController,
+            username,
+            onUsernameChange,
+            email,
+            onEmailChange,
+            password,
+            onPasswordChange,
+            confirmPassword,
+            onConfirmPasswordChange,
+            showSnackbar,
+            onDismissSnackbar,
+            onShowSnackbar
+        )
     }
 }
 
-
 @Composable
-fun TopElementsRegister(navController: NavController){
+fun TopElementsRegister(navController: NavController) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Icon(
             Icons.Filled.ArrowBack,
             contentDescription = "Icon of arrow back",
@@ -114,8 +154,7 @@ fun TopElementsRegister(navController: NavController){
                 .clickable { navController.navigate("home") }
                 .padding(top = 28.dp, start = 23.dp),
             tint = MaterialTheme.colorScheme.onSurface,
-
-            )
+        )
 
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
@@ -123,14 +162,12 @@ fun TopElementsRegister(navController: NavController){
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f)
-            ,
+                .alpha(0.5f),
         )
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Register",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
@@ -138,26 +175,30 @@ fun TopElementsRegister(navController: NavController){
         )
         Text(
             text = "Create a new account",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Light,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface,
-
             fontSize = 20.sp
         )
-
     }
 }
 
 @Composable
-fun MidElementsRegister(navController: NavController){
-    var username by remember{ mutableStateOf("") }
-    var email by remember{ mutableStateOf("")}
-    var password by rememberSaveable { mutableStateOf("")}
-    var confirmPassword by rememberSaveable { mutableStateOf("")}
-    var showSnackbar by remember { mutableStateOf(false) }
-
+fun MidElementsRegister(
+    navController: NavController,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    confirmPassword: String,
+    onConfirmPasswordChange: (String) -> Unit,
+    showSnackbar: Boolean,
+    onDismissSnackbar: () -> Unit,
+    onShowSnackbar: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -166,7 +207,7 @@ fun MidElementsRegister(navController: NavController){
     ) {
         TextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = onUsernameChange,
             label = { Text("User name") },
             singleLine = true,
             modifier = Modifier
@@ -175,7 +216,7 @@ fun MidElementsRegister(navController: NavController){
         )
         TextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = onEmailChange,
             label = { Text("Email") },
             singleLine = true,
             modifier = Modifier
@@ -184,7 +225,7 @@ fun MidElementsRegister(navController: NavController){
         )
         TextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = onPasswordChange,
             singleLine = true,
             label = { Text(text = "Password") },
             modifier = Modifier
@@ -195,7 +236,7 @@ fun MidElementsRegister(navController: NavController){
         )
         TextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = onConfirmPasswordChange,
             singleLine = true,
             label = { Text(text = "Confirm your password") },
             modifier = Modifier
@@ -207,9 +248,8 @@ fun MidElementsRegister(navController: NavController){
         Button(
             onClick = {
                 if (password != confirmPassword) {
-                    showSnackbar = true
-                }
-                else{
+                    onShowSnackbar()
+                } else {
                     navController.navigate("home")
                 }
             },
@@ -217,36 +257,45 @@ fun MidElementsRegister(navController: NavController){
                 .align(Alignment.CenterHorizontally)
                 .width(200.dp)
                 .padding(top = 20.dp)
-
-        ){
+        ) {
             Text(text = "Sign Up")
         }
-
     }
 
-    if (showSnackbar){
+    if (showSnackbar) {
         Snackbar(
             action = {
-                TextButton(onClick = {showSnackbar=false}) {
+                TextButton(onClick = onDismissSnackbar) {
                     Icon(imageVector = Icons.Filled.Close, contentDescription = "Cerrar icono")
-                    
                 }
-
             },
-            modifier = Modifier
-                .padding(8.dp)
-        ){
+            modifier = Modifier.padding(8.dp)
+        ) {
             Text(text = "Las contraseñas no coinciden")
         }
     }
 }
 
 @Composable
-fun LandscapeRegister(navController: NavController) {
+fun LandscapeRegister(
+    navController: NavController,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    confirmPassword: String,
+    onConfirmPasswordChange: (String) -> Unit,
+    showSnackbar: Boolean,
+    onDismissSnackbar: () -> Unit,
+    onShowSnackbar: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         Icon(
             Icons.Filled.ArrowBack,
@@ -257,7 +306,6 @@ fun LandscapeRegister(navController: NavController) {
                 .size(28.dp),
             tint = MaterialTheme.colorScheme.onSurface,
         )
-        // Columna para el logo en la izquierda
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -270,18 +318,9 @@ fun LandscapeRegister(navController: NavController) {
                 imageVector = ImageVector.vectorResource(id = R.drawable.logo_fuji),
                 contentDescription = "Custom SVG Icon",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        var username by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var password by rememberSaveable { mutableStateOf("") }
-        var confirmPassword by rememberSaveable { mutableStateOf("") }
-        var showSnackbar by remember { mutableStateOf(false) }
-
-
-        // Columna desplazable para los campos de texto en la derecha
         LazyColumn(
             modifier = Modifier
                 .fillMaxHeight()
@@ -307,62 +346,66 @@ fun LandscapeRegister(navController: NavController) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
             }
             item {
                 TextField(
                     value = username,
-                    onValueChange = { username = it },
+                    onValueChange = onUsernameChange,
                     label = { Text("User name") },
                     singleLine = true,
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(bottom = 16.dp)
+                    modifier = Modifier.width(330.dp)
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.height(16.dp)) // Espacio adicional
             }
             item {
                 TextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = onEmailChange,
                     label = { Text("Email") },
                     singleLine = true,
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(bottom = 16.dp)
+                    modifier = Modifier.width(330.dp)
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.height(16.dp)) // Espacio adicional
             }
             item {
                 TextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = onPasswordChange,
                     singleLine = true,
                     label = { Text(text = "Password") },
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(bottom = 16.dp),
+                    modifier = Modifier.width(330.dp),
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }
             item {
+                Spacer(modifier = Modifier.height(16.dp)) // Espacio adicional
+            }
+            item {
                 TextField(
                     value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
+                    onValueChange = onConfirmPasswordChange,
                     singleLine = true,
                     label = { Text(text = "Confirm your password") },
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(bottom = 16.dp),
+                    modifier = Modifier.width(330.dp),
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.height(24.dp)) // Espacio adicional para el botón
             }
             item {
                 Button(
                     onClick = {
                         if (password != confirmPassword) {
-                            showSnackbar = true
+                            onShowSnackbar()
                         } else {
                             navController.navigate("home")
                         }
@@ -374,23 +417,23 @@ fun LandscapeRegister(navController: NavController) {
                     Text(text = "Sign Up")
                 }
             }
+        }
 
-            item {
-                if (showSnackbar) {
-                    Snackbar(
-                        action = {
-                            TextButton(onClick = { showSnackbar = false }) {
-                                Icon(imageVector = Icons.Filled.Close, contentDescription = "Cerrar icono")
-                            }
-                        },
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Text(text = "Las contraseñas no coinciden")
+        if (showSnackbar) {
+            Snackbar(
+                action = {
+                    TextButton(onClick = onDismissSnackbar) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Cerrar icono")
                     }
-                }
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(text = "Las contraseñas no coinciden")
             }
         }
     }
 }
+
+
 
 
