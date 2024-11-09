@@ -4,17 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -22,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
@@ -38,13 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -71,7 +62,6 @@ fun RegisterScreen (navController: NavController){
     ){
         TopElementsRegister(navController)
         MidElementsRegister(navController)
-        BotElementsRegister(navController)
     }
 }
 
@@ -99,15 +89,6 @@ fun TopElementsRegister(navController: NavController){
                 .alpha(0.5f)
             ,
         )
-        /*Icon(
-            painter=painterResource(R.drawable.logo_fuji),
-            contentDescription ="logo",
-            modifier= Modifier
-                .width(300.dp)
-                .height(150.dp)
-                .align(Alignment.CenterHorizontally),
-            tint = colorResource(R.color.teal_700)// Set the color you want here
-        )*/
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Register",
@@ -116,7 +97,7 @@ fun TopElementsRegister(navController: NavController){
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp
+            fontSize = 60.sp
         )
         Text(
             text = "Create a new account",
@@ -126,7 +107,7 @@ fun TopElementsRegister(navController: NavController){
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface,
 
-            fontSize = 13.sp
+            fontSize = 20.sp
         )
 
     }
@@ -198,6 +179,7 @@ fun MidElementsRegister(navController: NavController){
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(200.dp)
+                .padding(top=20.dp)
 
         ){
             Text(text = "Sign Up")
@@ -220,85 +202,4 @@ fun MidElementsRegister(navController: NavController){
             Text(text = "Las contraseñas no coinciden")
         }
     }
-}
-
-@Composable
-fun BotElementsRegister(navController: NavController){
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(170.dp)
-    ){
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ){
-            HorizontalDivider(
-                thickness = 2.dp,
-                modifier = Modifier
-                    .width(150.dp)
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 5.dp, end = 5.dp),
-                color = MaterialTheme.colorScheme.tertiary
-            )
-            Text(text = "Register with",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface
-                )
-            HorizontalDivider(
-                thickness = 2.dp,
-                modifier = Modifier
-                    .width(150.dp)
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 5.dp, end = 5.dp),
-                color = MaterialTheme.colorScheme.tertiary
-            )
-
-
-        }
-
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ){
-            Image(
-                painter = painterResource(R.drawable.facebook_logo),
-                contentDescription = "facebook logo",
-                modifier = Modifier
-                    .size(60.dp),
-            )
-            Image(
-                painter = painterResource(R.drawable.google_logo),
-                contentDescription = "google logo",
-                modifier = Modifier
-                    .size(60.dp)
-                    .padding(10.dp)
-            )
-        }
-
-        Row (
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text(
-                text = "I have an account",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-            )
-            TextButton(
-                onClick = {navController.navigate("login")}) {
-                Text(text = "Log in")
-    
-}
-        }
-    }
-
 }
