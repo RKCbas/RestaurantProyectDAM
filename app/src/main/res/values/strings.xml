@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">RestaurantProyectDAM</string>
+    <string name="eat_here">Comer aqui</string>
+    <string name="to_go">Para llevar</string>
+    <string name="pick_up">Recoger</string>
 </resources>

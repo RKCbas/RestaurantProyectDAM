@@ -3,6 +3,7 @@ package com.example.restaurantproyectdam.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +19,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,7 +89,7 @@ private fun Content(){
             Icon(
                 painter=painterResource(R.drawable.logo_fuji),
                 contentDescription ="logo",
-                modifier=Modifier
+                modifier= Modifier
                     //.size(150.dp)
                     .width(170.dp)
                     .height(100.dp)
@@ -97,6 +101,43 @@ private fun Content(){
                 fontWeight = FontWeight.Bold
             )
             Text("Restaurant", style = MaterialTheme.typography.titleSmall)
+
+            var selectedOption by remember {
+                mutableStateOf(R.string.to_go)
+            }
+
+            var QRinfo by remember {
+                mutableStateOf("")
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+
+                listOf(R.string.eat_here,R.string.to_go,R.string.pick_up).forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(end = 16.dp)
+                    ) {
+                        RadioButton(
+                            selected = (selectedOption == option),
+                            onClick = {
+                                if(selectedOption == R.string.eat_here){
+                                    //Aqui ejecutar el lector de QR
+
+                                }else{
+                                    selectedOption = option
+                                }
+                            }
+                        )
+                        Text(stringResource(id = option))
+                    }
+                }
+            }
+
+            //Temporal Arrangement before we implement the QR
+            Text(text = QRinfo)
+
             var query by remember { mutableStateOf("") }
             Material3SearchBar(
                 modifier = Modifier.padding(top = 0.dp),
