@@ -20,7 +20,6 @@ import com.example.restaurantproyectdam.ui.screens.OrderScreen
 import com.example.restaurantproyectdam.ui.screens.OrdersScreen
 import com.example.restaurantproyectdam.ui.screens.PaymentScreen
 import com.example.restaurantproyectdam.ui.screens.ProfileScreen
-import com.example.restaurantproyectdam.ui.screens.RegisterPortraitScreen
 import com.example.restaurantproyectdam.ui.screens.RegisterScreen
 import com.example.restaurantproyectdam.ui.screens.SingleProductScreen
 import com.example.restaurantproyectdam.ui.screens.WelcomeScreen
