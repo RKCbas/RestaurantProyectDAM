@@ -110,6 +110,10 @@ private fun Content(){
                 mutableStateOf("")
             }
 
+            val permissions = rememberMultiplePermissionsState(
+
+            )
+
             Row(
                 horizontalArrangement = Arrangement.Start
             ) {

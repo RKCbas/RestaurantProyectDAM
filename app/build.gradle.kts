@@ -65,7 +65,7 @@ dependencies {
 
     //QR
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation("com.google.accompanist:accompanist-permisssions:0.35.1-alpha")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
