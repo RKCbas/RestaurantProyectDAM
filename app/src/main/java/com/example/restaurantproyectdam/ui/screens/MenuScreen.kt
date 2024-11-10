@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +68,7 @@ fun MenuScreen (navController: NavController) {
 private fun Content(){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
-            //.background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             searchBar("home")
             CategoriesGrid(arrayCategories)
@@ -138,6 +139,7 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .clickable {
                 naveController?.navigate("categoryProducts/$id")
             },
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
         /*colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
@@ -154,8 +156,10 @@ fun CategoryCard(id:Int, name:String, image: Painter){
         )
         Text(
             text=name,
+            style = MaterialTheme.typography.titleMedium,
+            color=MaterialTheme.colorScheme.primary,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(10.dp)
                 .align(Alignment.CenterHorizontally)
         )
