@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -47,6 +50,9 @@ import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Material3SearchBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -55,9 +61,14 @@ var myNavController: NavController ?= null;
 
 @Composable
 fun HomeScreen (navController: NavController){
+    //val scrollState = rememberScrollState()
 
     myNavController = navController
-
+    // Stores the dimensions of the actual screen
+    var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
+    //Sets variables with the height and width of the screen
+    var height = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    var width = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
 
     Scaffold (
         //color = Color.White
@@ -65,111 +76,57 @@ fun HomeScreen (navController: NavController){
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                //.verticalScroll(scrollState)
+
         ){
-            Content()
+            if(width == WindowWidthSizeClass.COMPACT){
+                //PORTAIT
+                ContentPortrait()
+
+            }else if(height == WindowHeightSizeClass.COMPACT){
+                //LANDSCAPE
+                //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
+                ContentLandscape()
+            }else{
+                //Posts(post, "PhoneL")
+                ContentLandscape()
+            }
+            //Content()
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun Content(){
-    val categories =createArrayCategories()
+private fun ContentPortrait(){
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primaryContainer)
-
         //.padding(25.dp)
     ){
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Icon(
-                painter=painterResource(R.drawable.logo_fuji),
-                contentDescription ="logo",
-                modifier= Modifier
-                    //.size(150.dp)
-                    .width(170.dp)
-                    .height(100.dp),
-                tint = MaterialTheme.colorScheme.inversePrimary // Set the color you want here
-            )
-            Text("JAPANESE",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.inversePrimary,
-                //fontSize = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text("Restaurant",
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.inversePrimary,
-            )
-            var query by remember { mutableStateOf("") }
-            Material3SearchBar(
-                modifier = Modifier.padding(top = 0.dp),
-                query = query,
-                onQueryChanged = { newQuery ->
-                    query = newQuery
-                },
-                onSearch = { searchQuery ->
-                    // Perform search logic
-                }
-            )
-        }
-        LazyColumn(modifier=Modifier.fillMaxHeight(1f)){
-            item {
-                Text(text="Categories",
-                    modifier = Modifier.padding(10.dp),
-                    style = MaterialTheme.typography.titleMedium)
-            }
-            item{
-                LazyRow {
-
-                    items(categories.size){
-                        index ->
-                        CategoryItem(categories[index])
-                    }
-                }
-            }
-            item{
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ){
-                    Text(text="Suggestions",
-                        modifier = Modifier.padding(10.dp),
-                        style = MaterialTheme.typography.titleMedium)
-                    myNavController?.let { PagerScreen(it) }
-                }
-
-            }
-            item{
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ){
-                    Text(text="Favorites",
-                        modifier = Modifier.padding(10.dp),
-                        style = MaterialTheme.typography.titleMedium)
-                    myNavController?.let { PagerScreen(it) }
-                }
-            }
-            item{
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ){
-                    Text(text="Most Popular",
-                        modifier = Modifier.padding(10.dp),
-                        style = MaterialTheme.typography.titleMedium)
-                    myNavController?.let { PagerScreen(it) }
-                }
-
-            }
-
-
-        }
+        HeaderPortrait(true)
+        MainContent()
     }
 }
+@Preview(showBackground = true)
+@Composable
+private fun ContentLandscape(){
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+        //.padding(25.dp)
+    ){
+        HeaderPortrait(false)
+        MainContent()
+    }
+}
+
+
 
 //@Preview(showBackground=true)
 @Composable
@@ -224,6 +181,99 @@ private fun CategoryItem(category: CategoryModel){
     }
 }
 
+@Composable
+private fun MainContent(){
+    val categories =createArrayCategories()
+    LazyColumn(modifier=Modifier.fillMaxHeight(1f)){
+        item {
+            Text(text="Categories",
+                modifier = Modifier.padding(10.dp),
+                style = MaterialTheme.typography.titleMedium)
+        }
+        item{
+            LazyRow {
+
+                items(categories.size){
+                        index ->
+                    CategoryItem(categories[index])
+                }
+            }
+        }
+        item{
+            Column(
+                modifier = Modifier.padding(20.dp)
+            ){
+                Text(text="Suggestions",
+                    modifier = Modifier.padding(10.dp),
+                    style = MaterialTheme.typography.titleMedium)
+                myNavController?.let { PagerScreen(it) }
+            }
+
+        }
+        item{
+            Column(
+                modifier = Modifier.padding(20.dp)
+            ){
+                Text(text="Favorites",
+                    modifier = Modifier.padding(10.dp),
+                    style = MaterialTheme.typography.titleMedium)
+                myNavController?.let { PagerScreen(it) }
+            }
+        }
+        item{
+            Column(
+                modifier = Modifier.padding(20.dp)
+            ){
+                Text(text="Most Popular",
+                    modifier = Modifier.padding(10.dp),
+                    style = MaterialTheme.typography.titleMedium)
+                myNavController?.let { PagerScreen(it) }
+            }
+
+        }
+
+
+    }
+}
+
+@Composable
+private fun HeaderPortrait(vertical: Boolean){
+    Column(
+        modifier =
+        if (vertical) Modifier.fillMaxWidth(1f)  else Modifier.fillMaxWidth(0.5f),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Icon(
+            painter=painterResource(R.drawable.logo_fuji),
+            contentDescription ="logo",
+            modifier=
+            if (vertical) Modifier.width(170.dp).height(100.dp)
+            else Modifier.width(85.dp).height(50.dp),
+            tint = MaterialTheme.colorScheme.inversePrimary // Set the color you want here
+        )
+        Text("JAPANESE",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.inversePrimary,
+            //fontSize = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Text("Restaurant",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.inversePrimary,
+        )
+        var query by remember { mutableStateOf("") }
+        Material3SearchBar(
+            modifier = Modifier.padding(top = 0.dp),
+            query = query,
+            onQueryChanged = { newQuery ->
+                query = newQuery
+            },
+            onSearch = { searchQuery ->
+                // Perform search logic
+            }
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
