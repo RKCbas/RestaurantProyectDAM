@@ -91,13 +91,13 @@ fun SetupNavGraph (navController: NavHostController){
                 PaymentScreen(navController, it)
             }
         }
-        composable("OrderScreen/{id}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
-            id?.let {
-                OrderScreen(navController, it)
-            }
-        }
-
+//        composable("OrderScreen/{id}") {
+//            val id = it.arguments?.getString("id")?.toIntOrNull()
+//            id?.let {
+//                OrderScreen(navController, id)
+//            }
+//        }
+        composable("OrderScreen") { OrderScreen(navController = navController) }
 
     }
 }
