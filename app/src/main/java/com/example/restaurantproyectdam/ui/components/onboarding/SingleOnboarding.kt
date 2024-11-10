@@ -82,7 +82,10 @@ fun SingleOnboarding(page: OnboardingData,navController: NavController){
                     color = Color.White,
                 )
                 Spacer(modifier = Modifier.size((70.dp)))
-                TextButton(onClick = { navController.navigate("login")}) {
+                Button(
+                    onClick = { navController.navigate("login")},
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer)
+                ) {
                     Text(
                         text = "GET STARTED",
                         fontWeight = FontWeight.Bold,
