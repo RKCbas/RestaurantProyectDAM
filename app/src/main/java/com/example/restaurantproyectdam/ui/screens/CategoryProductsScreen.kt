@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -147,15 +148,15 @@ fun CategorySelected(id:Int, name:String){
     Row (modifier = Modifier.fillMaxWidth()
         .padding(start = 14.dp)
         , horizontalArrangement = Arrangement.SpaceEvenly){
-        Text(
-            text = name,
-            fontWeight = if (idd == id) FontWeight.Bold else FontWeight.Normal,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .clickable {
-                    naveController?.navigate("categoryProducts/$id")
-                }
-        )
+        Button(
+            onClick = {naveController?.navigate("categoryProducts/$id")},
+        ){
+            Text(
+                text = name,
+                fontWeight = if (idd == id) FontWeight.Bold else FontWeight.Normal,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
 
     }
 }

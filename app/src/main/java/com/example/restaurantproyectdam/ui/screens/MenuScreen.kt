@@ -3,12 +3,14 @@ package com.example.restaurantproyectdam.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -77,7 +79,13 @@ private fun Content(){ //CÓDIGO DE YAHAIRA
 
 @Composable
 fun searchBar(route:String){
-    Row (modifier = Modifier.statusBarsPadding().fillMaxWidth().padding(12.dp,0.dp)){
+    Row (
+        modifier = Modifier
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .padding(12.dp,0.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
         Icon(
             Icons.Sharp.KeyboardArrowLeft,
             contentDescription = "Arrow back Icon",
@@ -86,6 +94,7 @@ fun searchBar(route:String){
                 .clickable {
                     naveController?.navigate(route)
                 }
+                .size(40.dp)
         )
 
         /*Card(modifier = Modifier
