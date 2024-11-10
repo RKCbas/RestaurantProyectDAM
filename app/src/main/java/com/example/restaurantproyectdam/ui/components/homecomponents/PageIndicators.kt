@@ -26,7 +26,7 @@ fun PageIndicator(
         horizontalArrangement = Arrangement.Center
     ){
         repeat(pageCount){iteration ->
-            val color : Color = if(pagerState.currentPage==iteration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
+            val color : Color = if(pagerState.currentPage==iteration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             Box(modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .clip(CircleShape)

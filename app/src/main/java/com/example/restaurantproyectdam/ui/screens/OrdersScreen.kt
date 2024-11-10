@@ -135,6 +135,7 @@ private fun Content(navController: NavController){
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
              page ->
                 when(page) {

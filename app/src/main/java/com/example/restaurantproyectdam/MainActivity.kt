@@ -53,7 +53,9 @@ fun ComposeMultiScreenApp(){ // MAIN CONTENT
     //    Column(
     //       modifier = Modifier.padding(innerPadding)
     //    ){
+    RestaurantProyectDAMTheme{
             SetupNavGraph(navController = navController)
+    }
     //    }
     //}
 }

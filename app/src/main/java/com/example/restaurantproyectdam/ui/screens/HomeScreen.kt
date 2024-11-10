@@ -1,6 +1,7 @@
 package com.example.restaurantproyectdam.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -57,6 +58,7 @@ fun HomeScreen (navController: NavController){
 
     myNavController = navController
 
+
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
@@ -75,7 +77,10 @@ fun HomeScreen (navController: NavController){
 private fun Content(){
     val categories =createArrayCategories()
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+
         //.padding(25.dp)
     ){
         Column(
@@ -85,18 +90,22 @@ private fun Content(){
             Icon(
                 painter=painterResource(R.drawable.logo_fuji),
                 contentDescription ="logo",
-                modifier=Modifier
+                modifier= Modifier
                     //.size(150.dp)
                     .width(170.dp)
-                    .height(100.dp)
-                //tint = Color.Red // Set the color you want here
+                    .height(100.dp),
+                tint = MaterialTheme.colorScheme.inversePrimary // Set the color you want here
             )
             Text("JAPANESE",
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.inversePrimary,
                 //fontSize = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Text("Restaurant", style = MaterialTheme.typography.titleSmall)
+            Text("Restaurant",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.inversePrimary,
+            )
             var query by remember { mutableStateOf("") }
             Material3SearchBar(
                 modifier = Modifier.padding(top = 0.dp),
@@ -165,17 +174,22 @@ private fun Content(){
 //@Preview(showBackground=true)
 @Composable
 private fun CategoryItem(category: CategoryModel){
-    Button( // Pattern that applies to all the 10 items
+    Button(
+        // Pattern that applies to all the 10 items
         modifier = Modifier
             .width(150.dp)
             .height(150.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp)), // Like border radius
-            //.background(Color.White),
+        //.background(color = MaterialTheme.colorScheme.surface),
+        //.background(Color.White),
         //elevation = 6.dp // adds a shadow
-        onClick={
+        onClick = {
             myNavController?.navigate("categoryProducts/${category.id}")
         },
+        //MaterialTheme.colorScheme.surface
+        //ButtonDefaults.buttonColors(Primary)
+        //colors = MaterialTheme.colorScheme.surface,
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
         shape = MaterialTheme.shapes.medium, // Use the shape of a Card
