@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,7 @@ fun SingleOnboarding(page: OnboardingData,navController: NavController){
                     style= MaterialTheme.typography.titleLarge,
                     //fontFamily= FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 40.sp,
+                    fontSize = 60.sp,
                     color = Color.White,
                     //fontSize = 28.sp
                 )
@@ -79,6 +80,9 @@ fun SingleOnboarding(page: OnboardingData,navController: NavController){
                 Text(
                     text = page.description,
                     style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 30.sp,
+                    lineHeight = 40.sp,  // Set your desired line spacing here
+                    textAlign = TextAlign.Center,
                     color = Color.White,
                 )
                 Spacer(modifier = Modifier.size((70.dp)))
