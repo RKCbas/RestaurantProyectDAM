@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,11 +56,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(navController: NavController) {
-    val windowSize = currentWindowAdaptiveInfo().windowSizeClass
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
     val windowWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
 
@@ -66,7 +68,6 @@ fun RegisterScreen(navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
-    var showSnackbar by remember { mutableStateOf(false) }
 
     if (windowWidth == WindowWidthSizeClass.COMPACT) {
         PortraitRegister(
@@ -78,10 +79,7 @@ fun RegisterScreen(navController: NavController) {
             password = password,
             onPasswordChange = { password = it },
             confirmPassword = confirmPassword,
-            onConfirmPasswordChange = { confirmPassword = it },
-            showSnackbar = showSnackbar,
-            onDismissSnackbar = { showSnackbar = false },
-            onShowSnackbar = { showSnackbar = true }
+            onConfirmPasswordChange = { confirmPassword = it }
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeRegister(
@@ -93,13 +91,20 @@ fun RegisterScreen(navController: NavController) {
             password = password,
             onPasswordChange = { password = it },
             confirmPassword = confirmPassword,
-            onConfirmPasswordChange = { confirmPassword = it },
-            showSnackbar = showSnackbar,
-            onDismissSnackbar = { showSnackbar = false },
-            onShowSnackbar = { showSnackbar = true }
+            onConfirmPasswordChange = { confirmPassword = it }
         )
     } else {
-        Text(text = "Landscape")
+        LandscapeRegister(
+            navController = navController,
+            username = username,
+            onUsernameChange = { username = it },
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it },
+            confirmPassword = confirmPassword,
+            onConfirmPasswordChange = { confirmPassword = it }
+        )
     }
 }
 
@@ -113,10 +118,7 @@ fun PortraitRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit,
-    showSnackbar: Boolean,
-    onDismissSnackbar: () -> Unit,
-    onShowSnackbar: () -> Unit
+    onConfirmPasswordChange: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -134,11 +136,24 @@ fun PortraitRegister(
             password,
             onPasswordChange,
             confirmPassword,
-            onConfirmPasswordChange,
-            showSnackbar,
-            onDismissSnackbar,
-            onShowSnackbar
+            onConfirmPasswordChange
         )
+        Spacer(modifier = Modifier.height(15.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "Do you have an account?",
+                modifier = Modifier.align(Alignment.CenterVertically),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            TextButton(onClick = {navController.navigate("login")}) {
+                Text(text = "Login",   fontSize = 17.sp)
+            }
+
+        }
+      
     }
 }
 
@@ -194,11 +209,11 @@ fun MidElementsRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit,
-    showSnackbar: Boolean,
-    onDismissSnackbar: () -> Unit,
-    onShowSnackbar: () -> Unit
+    onConfirmPasswordChange: (String) -> Unit
 ) {
+    val snackState = remember { SnackbarHostState() }
+    val snackScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -245,12 +260,21 @@ fun MidElementsRegister(
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
+
         Button(
             onClick = {
-                if (password != confirmPassword) {
-                    onShowSnackbar()
-                } else {
-                    navController.navigate("home")
+                snackScope.launch {
+                    when {
+                        username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
+                            snackState.showSnackbar("Please fill all fields")
+                        }
+                        password != confirmPassword -> {
+                            snackState.showSnackbar("The passwords are not equal")
+                        }
+                        else -> {
+                            navController.navigate("home")
+                        }
+                    }
                 }
             },
             modifier = Modifier
@@ -259,19 +283,6 @@ fun MidElementsRegister(
                 .padding(top = 20.dp)
         ) {
             Text(text = "Sign Up")
-        }
-    }
-
-    if (showSnackbar) {
-        Snackbar(
-            action = {
-                TextButton(onClick = onDismissSnackbar) {
-                    Icon(imageVector = Icons.Filled.Close, contentDescription = "Cerrar icono")
-                }
-            },
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(text = "Las contraseñas no coinciden")
         }
     }
 }
@@ -286,11 +297,11 @@ fun LandscapeRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit,
-    showSnackbar: Boolean,
-    onDismissSnackbar: () -> Unit,
-    onShowSnackbar: () -> Unit
+    onConfirmPasswordChange: (String) -> Unit
 ) {
+    val snackState = remember { SnackbarHostState() }
+    val snackScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -404,10 +415,18 @@ fun LandscapeRegister(
             item {
                 Button(
                     onClick = {
-                        if (password != confirmPassword) {
-                            onShowSnackbar()
-                        } else {
-                            navController.navigate("home")
+                        snackScope.launch {
+                            when {
+                                username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
+                                    snackState.showSnackbar("Please fill all fields")
+                                }
+                                password != confirmPassword -> {
+                                    snackState.showSnackbar("The passwords are not equal")
+                                }
+                                else -> {
+                                    navController.navigate("home")
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -417,19 +436,22 @@ fun LandscapeRegister(
                     Text(text = "Sign Up")
                 }
             }
-        }
-
-        if (showSnackbar) {
-            Snackbar(
-                action = {
-                    TextButton(onClick = onDismissSnackbar) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Cerrar icono")
-                    }
-                },
-                modifier = Modifier.padding(8.dp)
+            item{
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "Las contraseñas no coinciden")
+                Text(
+                    text = "Do you have an account?",
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                TextButton(onClick = { navController.navigate("login") }) {
+                    Text(text = "Login", fontSize = 17.sp)
+                }
+
             }
+        }
         }
     }
 }
