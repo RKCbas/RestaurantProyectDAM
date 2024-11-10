@@ -2,8 +2,10 @@ package com.example.restaurantproyectdam.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -73,6 +75,7 @@ fun SingleProductScreen (navController: NavController, id: Int) {
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
             content()
@@ -186,24 +189,32 @@ fun ButtonsProduct(){
 
         OutlinedButton(onClick = {
             launchSnackBar()
-        }) {
+        },
+            border = BorderStroke(2.dp,color = MaterialTheme.colorScheme.error)
+        ) {
             Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart Icon",
                modifier = Modifier.size(AssistChipDefaults.IconSize),
                 //tint = Color.Black
+                tint = MaterialTheme.colorScheme.error
             )
             Text("Add to the cart", modifier = Modifier
-                .padding(start = 7.dp), color = Color(0xFFFFA59A)
+                .padding(start = 7.dp),
+                color = MaterialTheme.colorScheme.error
             )
         }
         OutlinedButton(onClick = {
             naveController?.navigate("payment/$idProduct")
-        }) {
+        },
+            border = BorderStroke(2.dp,color = MaterialTheme.colorScheme.error),
+        ) {
             Icon(Icons.Outlined.CheckCircle, contentDescription = "Shop Icon",
                 modifier = Modifier.size(AssistChipDefaults.IconSize),
+                tint = MaterialTheme.colorScheme.error
                 //tint = Color.Black
                 )
             Text("Order now", modifier = Modifier
-                .padding(start = 10.dp), color = Color(0xFFFFA59A)
+                .padding(start = 10.dp),
+                color = MaterialTheme.colorScheme.error
             )
         }
     }

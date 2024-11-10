@@ -3,12 +3,14 @@ package com.example.restaurantproyectdam.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +70,7 @@ fun MenuScreen (navController: NavController) {
 private fun Content(){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
-            //.background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             searchBar("home")
             CategoriesGrid(arrayCategories)
@@ -76,7 +79,13 @@ private fun Content(){ //CÓDIGO DE YAHAIRA
 
 @Composable
 fun searchBar(route:String){
-    Row (modifier = Modifier.statusBarsPadding().fillMaxWidth().padding(12.dp,0.dp)){
+    Row (
+        modifier = Modifier
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .padding(12.dp,0.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
         Icon(
             Icons.Sharp.KeyboardArrowLeft,
             contentDescription = "Arrow back Icon",
@@ -85,6 +94,7 @@ fun searchBar(route:String){
                 .clickable {
                     naveController?.navigate(route)
                 }
+                .size(40.dp)
         )
 
         /*Card(modifier = Modifier
@@ -138,6 +148,7 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .clickable {
                 naveController?.navigate("categoryProducts/$id")
             },
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
         /*colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
@@ -154,8 +165,10 @@ fun CategoryCard(id:Int, name:String, image: Painter){
         )
         Text(
             text=name,
+            style = MaterialTheme.typography.titleMedium,
+            color=MaterialTheme.colorScheme.primary,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(10.dp)
                 .align(Alignment.CenterHorizontally)
         )

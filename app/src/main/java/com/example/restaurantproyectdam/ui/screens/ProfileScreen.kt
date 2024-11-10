@@ -1,80 +1,52 @@
 package com.example.restaurantproyectdam.ui.screens
 
-import android.graphics.Paint.Align
-import androidx.compose.foundation.Image
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.data.model.ProfileOptionsModel
 import com.example.restaurantproyectdam.ui.components.BottomBar
-import com.example.restaurantproyectdam.ui.components.SearchButton
-import java.lang.StackWalker.Option
 
 @Composable
-fun ProfileScreen (navController: NavController) {
-    Scaffold (
-        //color = Color.White
-        bottomBar={ BottomBar(navController = navController) },
-
-    ) { innerPadding->
+fun ProfileScreen(navController: NavController) {
+    Scaffold(
+        bottomBar = { BottomBar(navController = navController) },
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-
-        ){
+        ) {
             Content(navController)
         }
     }
 }
 
+
 @Composable
-private fun Content(navController: NavController){
+private fun Content(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.surface)
-    ){
+    ) {
         TopContentProfile()
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(
@@ -83,7 +55,7 @@ private fun Content(navController: NavController){
                 .padding(horizontal = 10.dp) // Aumentar padding del separador
         )
         Spacer(modifier = Modifier.height(20.dp))
-        MidContentProfile()
+        MidContentProfile(navController)
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(
             modifier = Modifier
@@ -92,12 +64,11 @@ private fun Content(navController: NavController){
         )
         Spacer(modifier = Modifier.height(20.dp))
         BotContentProfile(navController)
-
     }
 }
 
 @Composable
-private fun TopContentProfile(){
+private fun TopContentProfile() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,27 +78,26 @@ private fun TopContentProfile(){
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.primary
         )
-    ){
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Icon(
                 imageVector = Icons.Filled.Person,
                 contentDescription = "Person logo",
                 modifier = Modifier
-                    //.padding(top = 15.dp, start = 15.dp, bottom = 15.dp)
                     .size(50.dp)
             )
             Column(
-                modifier=Modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceEvenly
-            ){
+            ) {
                 Text(
-                    text ="Armando Vallejo",
+                    text = "Armando Vallejo",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
@@ -135,45 +105,64 @@ private fun TopContentProfile(){
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text="Sesion iniciada con Google",
+                    text = "4492616564",
                     style = MaterialTheme.typography.bodySmall
                 )
-
             }
-
         }
     }
 }
 
 @Composable
-private fun MidContentProfile(){
-    var options = listOf(
-        ProfileOptionsModel(1,"Mi perfil",Icons.Filled.Person),
-        ProfileOptionsModel(2,"Mis direcciones",Icons.Filled.LocationOn),
-        ProfileOptionsModel(3,"Mis formas de pago",Icons.Filled.Email),
-        ProfileOptionsModel(4,"Mis pedidos",Icons.Filled.ShoppingCart),
-        ProfileOptionsModel(5,"Terminos y condiciones",Icons.Filled.Check),
-        ProfileOptionsModel(6,"Calificanos en PlayStore",Icons.Filled.Favorite),
-        ProfileOptionsModel(7,"Contactanos",Icons.Filled.Edit)
+private fun MidContentProfile(navController: NavController) {
+    val context = LocalContext.current
+
+    val options = listOf(
+        ProfileOptionsModel(1, "My Profile", Icons.Filled.Person, "profile"),
+        ProfileOptionsModel(2, "My Adresses", Icons.Filled.LocationOn, "addresses"),
+        ProfileOptionsModel(3, "My Payment Methods", Icons.Filled.Email, "payment_methods"),
+        ProfileOptionsModel(4, "My Orders", Icons.Filled.ShoppingCart, "orders"),
+        ProfileOptionsModel(5, "Rate Us on PlayStore", Icons.Filled.Favorite, "rate_us"),
+        ProfileOptionsModel(6, "Contact Us", Icons.Filled.Edit, "contact_us")
     )
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        items(options){option->
-            OptionCard(title=option.title, icon=option.icon)
+        items(options) { option ->
+            OptionCard(
+                title = option.title,
+                icon = option.icon,
+                onClick = {
+                    if (option.id == 5) {
+                        openPlayStore(context) // Llamamos a la función para abrir Play Store
+                    } else {
+                        navController.navigate(option.route) // De lo contrario, navegamos a la pantalla correspondiente
+                    }
+                }
+            )
         }
+    }
+}
 
+fun openPlayStore(context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store")) // URL de la Play Store
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    try {
+        context.startActivity(intent) // Iniciar el Intent para abrir la Play Store
+    } catch (e: Exception) {
+        // Manejo de excepciones si no se puede abrir la Play Store
     }
 }
 
 @Composable
-private fun OptionCard(title: String, icon: ImageVector) {
+private fun OptionCard(title: String, icon: ImageVector, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp), // Aumentar padding externo
+            .padding(10.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.primary
@@ -182,50 +171,46 @@ private fun OptionCard(title: String, icon: ImageVector) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp), // Aumentar padding interno
+                .padding(15.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically // Alinear contenido verticalmente
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(25.dp) // Aumentar tamaño del icono
+                    modifier = Modifier.size(25.dp)
                 )
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyMedium, // Aumentar el estilo del texto
-                    modifier = Modifier
-                        .padding(start = 10.dp) // Aumentar padding entre el ícono y el texto
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 10.dp)
                 )
             }
             Icon(
                 imageVector = Icons.Filled.ArrowForward,
                 contentDescription = null,
-                modifier = Modifier.size(20.dp) // Aumentar tamaño del ícono de flecha
+                modifier = Modifier.size(20.dp)
             )
         }
     }
 }
 
 @Composable
-private fun BotContentProfile(navController:NavController){
+private fun BotContentProfile(navController: NavController) {
     Column(
-        modifier=Modifier
+        modifier = Modifier
             .fillMaxWidth(),
-
     ) {
         Button(
             onClick = { navController.navigate("login") },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(300.dp)
-        )
-        {
-            Text(text = "Iniciar Sesion", color = Color.Red)
+        ) {
+            Text(text = "Login")
         }
         Spacer(modifier = Modifier.height(30.dp))
         Button(
@@ -233,13 +218,8 @@ private fun BotContentProfile(navController:NavController){
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(300.dp)
-        )
-        {
-            Text(text = "Eliminar Cuenta", color = Color.Red)
+        ) {
+            Text(text = "Delete Account")
         }
-
     }
-
 }
-
-

@@ -15,9 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material3.AlertDialog
+
+import androidx.compose.foundation.verticalScroll
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -58,11 +63,17 @@ import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Material3SearchBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
+
 import com.example.restaurantproyectdam.ui.components.homecomponents.PermissionRequiredDialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
+
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +81,9 @@ import com.journeyapps.barcodescanner.ScanOptions
 var myNavController: NavController? = null;
 
 @Composable
+
 fun HomeScreen(navController: NavController) {
+
     //val scrollState = rememberScrollState()
 
     myNavController = navController
@@ -88,18 +101,20 @@ fun HomeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-            //.verticalScroll(scrollState)
 
-        ) {
-            if (width == WindowWidthSizeClass.COMPACT) {
+                //.verticalScroll(scrollState)
+
+        ){
+            if(width == WindowWidthSizeClass.COMPACT) {
                 //PORTAIT
                 ContentPortrait()
 
-            } else if (height == WindowHeightSizeClass.COMPACT) {
+            }else if(height == WindowHeightSizeClass.COMPACT) {
                 //LANDSCAPE
                 //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
                 ContentLandscape()
-            } else {
+            }else{
+
                 //Posts(post, "PhoneL")
                 ContentLandscape()
             }
@@ -137,13 +152,14 @@ private fun ContentLandscape() {
         HeaderPortrait(false)
         MainContent()
     }
-
+    
 }
 
 
 //@Preview(showBackground=true)
 @Composable
 private fun CategoryItem(category: CategoryModel) {
+
     Button(
         // Pattern that applies to all the 10 items
         modifier = Modifier
@@ -214,6 +230,7 @@ private fun MainContent() {
                 }
             }
         }
+
         item {
             Column(
                 modifier = Modifier.padding(20.dp)
@@ -256,6 +273,7 @@ private fun MainContent() {
 
     }
 }
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -309,6 +327,7 @@ private fun HeaderPortrait(vertical: Boolean) {
             //fontSize = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
+
         Text(
             "Restaurant",
             style = MaterialTheme.typography.titleSmall,
