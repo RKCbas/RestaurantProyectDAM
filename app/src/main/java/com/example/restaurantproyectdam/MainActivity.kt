@@ -10,14 +10,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.restaurantproyectdam.ui.screens.AddressesScreen
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
 import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
+import com.example.restaurantproyectdam.ui.screens.ContactUsScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
 import com.example.restaurantproyectdam.ui.screens.OrderScreen
 import com.example.restaurantproyectdam.ui.screens.OrdersScreen
+import com.example.restaurantproyectdam.ui.screens.PaymentMethodsScreen
 import com.example.restaurantproyectdam.ui.screens.PaymentScreen
 import com.example.restaurantproyectdam.ui.screens.ProfileScreen
 import com.example.restaurantproyectdam.ui.screens.RegisterScreen
@@ -53,7 +56,9 @@ fun ComposeMultiScreenApp(){ // MAIN CONTENT
     //    Column(
     //       modifier = Modifier.padding(innerPadding)
     //    ){
+    RestaurantProyectDAMTheme{
             SetupNavGraph(navController = navController)
+    }
     //    }
     //}
 }
@@ -91,12 +96,22 @@ fun SetupNavGraph (navController: NavHostController){
                 PaymentScreen(navController, it)
             }
         }
-        composable("OrderScreen/{id}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
-            id?.let {
-                OrderScreen(navController, it)
-            }
-        }
+
+//        composable("OrderScreen/{id}") {
+//            val id = it.arguments?.getString("id")?.toIntOrNull()
+//            id?.let {
+//                OrderScreen(navController, id)
+//            }
+//        }
+        composable("OrderScreen") { OrderScreen(navController = navController) }
+
+        
+
+        composable("profile") { ProfileScreen(navController) }
+        composable("addresses") { AddressesScreen(navController) }
+        composable("payment_methods") { PaymentMethodsScreen(navController) }
+        composable("orders") { OrdersScreen(navController) }
+        composable("contact_us") { ContactUsScreen(navController) }
 
 
     }

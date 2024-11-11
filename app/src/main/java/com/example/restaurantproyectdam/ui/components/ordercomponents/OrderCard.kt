@@ -30,6 +30,12 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
     val statusText = if (status) "Ready" else "Pending"
     val statusColor = if (status) Color.Green else Color.Red
 
+    var total by remember { mutableStateOf(0.0) }
+
+    LaunchedEffect(products) {
+        total = products.sumOf { (it.amount * it.orderProduct.cost).toDouble() }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +64,6 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.End,
-                //horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Status: ", fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -70,35 +75,32 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
                 )
             }
 
-//                Spacer(modifier = Modifier.height(8.dp))
-
             // Product summary
             Text(text = "Summary", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
 
-            //var total by remember { mutableStateOf(0.00) }
-
-            var total = 0.0
+            // LazyColumn para los productos
             LazyColumn {
                 items(products) { product ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
-                    )
-                    {
+                    ) {
                         Text(
                             text = "${product.amount} x ${product.orderProduct.title}",
                             fontSize = 16.sp
                         )
                         Text(
-                            text = " $${product.amount * product.orderProduct.cost}MXN",
+                            text = " $${(product.amount * product.orderProduct.cost).toDouble()}MXN",
                             fontSize = 16.sp
-                        ) // buscar funcion para redondear a 2 decimales
+                        )
                     }
-                    total += product.amount * product.orderProduct.cost
                 }
             }
+
             Spacer(modifier = Modifier.height(4.dp))
+
+            // Mostrar el total actualizado
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -107,23 +109,26 @@ fun OrderCard(id: Int, status: Boolean, products: Array<OrderProduct>, navContro
                 Text(text = "$${total}MXN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
-
             Spacer(modifier = Modifier.height(8.dp))
 
             // Details button
             Button(
                 onClick = {
-                    navController.navigate("OrderScreen/{$id}")
-                          },
+//                    navController.navigate("OrderScreen/{$id}")
+                    navController.navigate("OrderScreen")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9FA89F))
             ) {
                 Text(text = "DETAILS", color = Color.White, fontSize = 16.sp)
             }
+
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

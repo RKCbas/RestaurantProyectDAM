@@ -59,8 +59,8 @@ import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 fun BottomBar(navController: NavController){
     val screens = listOf( //Sealed Classes
         BottomBarOpt.Menu,
-        BottomBarOpt.Orders,
         BottomBarOpt.Home,
+        BottomBarOpt.Orders,
         BottomBarOpt.Profile
     )
     //Whenever its value is changed, we will be notified about that

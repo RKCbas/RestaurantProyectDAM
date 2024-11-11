@@ -62,6 +62,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.graphics.shapes.android)
+
+    //QR
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
+    
+    implementation(libs.androidx.adaptive.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
