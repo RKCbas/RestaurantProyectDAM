@@ -28,6 +28,7 @@ import com.example.restaurantproyectdam.data.model.OrderCardModel
 import com.example.restaurantproyectdam.data.model.OrderProduct
 import com.example.restaurantproyectdam.data.model.ProductModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.compose.rememberNavController
 
@@ -61,14 +62,14 @@ fun OrderScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray)
+            .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
-        Column {
+        Column{
             // Encabezado con icono de navegación y detalles de la orden
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFDDDEDD))
+                    .background(MaterialTheme.colorScheme.inversePrimary)
                     .padding(10.dp, 25.dp, 15.dp, 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -76,7 +77,7 @@ fun OrderScreen(navController: NavController) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back arrow",
-                        tint = Color.Black
+                        tint = MaterialTheme.colorScheme.surface
                     )
                 }
                 Column {
@@ -98,6 +99,7 @@ fun OrderScreen(navController: NavController) {
             if (orientation == 1) { // Portrait
                 LazyColumn(
                     modifier = Modifier.padding(10.dp)
+
                 ) {
                     specificOrder?.orderProducts?.let { products ->
                         items(products) { item ->
