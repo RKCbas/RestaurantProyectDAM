@@ -381,6 +381,8 @@ private fun HeaderPortrait(vertical: Boolean) {
             )
         }
 
+
+
         //Temporal arrangement before we implement the QR
         Text(
             text = QRinfo,
