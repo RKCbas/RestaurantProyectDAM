@@ -129,7 +129,7 @@ private fun ContentPortrait() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
         HeaderPortrait(true)
@@ -145,7 +145,7 @@ private fun ContentLandscape() {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
         HeaderPortrait(false)
@@ -165,8 +165,10 @@ private fun CategoryItem(category: CategoryModel) {
             .width(150.dp)
             .height(150.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
-            .clip(RoundedCornerShape(10.dp)), // Like border radius
-        //.background(color = MaterialTheme.colorScheme.surface),
+            .clip(RoundedCornerShape(10.dp)) // Like border radius
+            .background(color = MaterialTheme.colorScheme.surface),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+        //color = MaterialTheme.colorScheme.surface
         //.background(Color.White),
         //elevation = 6.dp // adds a shadow
         onClick = {
@@ -175,7 +177,7 @@ private fun CategoryItem(category: CategoryModel) {
         //MaterialTheme.colorScheme.surface
         //ButtonDefaults.buttonColors(Primary)
         //colors = MaterialTheme.colorScheme.surface,
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
         shape = MaterialTheme.shapes.medium, // Use the shape of a Card
         //contentPadding = PaddingValues(16.dp) // You can adjust padding to match a Card's style
@@ -183,6 +185,7 @@ private fun CategoryItem(category: CategoryModel) {
         Column(
             modifier = Modifier
                 .padding(5.dp),
+                //.background(color = MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -322,7 +325,7 @@ private fun HeaderPortrait(vertical: Boolean) {
         Text(
             "JAPANESE",
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.inversePrimary,
+            //color = MaterialTheme.colorScheme.inversePrimary,
             //fontSize = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -330,7 +333,7 @@ private fun HeaderPortrait(vertical: Boolean) {
         Text(
             "Restaurant",
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.inversePrimary,
+            //color = MaterialTheme.colorScheme.inversePrimary,
         )
 
         Row(

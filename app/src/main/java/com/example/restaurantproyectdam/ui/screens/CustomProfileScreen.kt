@@ -28,7 +28,7 @@ fun CustomProfileScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.surface)
     ){
         Column(
             modifier = Modifier
@@ -78,7 +78,7 @@ fun CustomProfileScreen(navController: NavController) {
                 onClick = { /* Handle save action */
                     navController.navigate("profile")},
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer)
+                //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer)
             ) {
                 Text("Save")
             }
