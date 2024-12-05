@@ -76,4 +76,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // ------------------------------
+    //Location
+    //Mapas
+    implementation("com.google.maps.android:maps-compose:2.14.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Places
+    implementation("com.google.android.libraries.places:places:4.0.0")
+    // ------------------------------
 }

@@ -118,7 +118,7 @@ private fun MidContentProfile(navController: NavController) {
     val context = LocalContext.current
 
     val options = listOf(
-        ProfileOptionsModel(1, "My Profile", Icons.Filled.Person, "profile"),
+        ProfileOptionsModel(1, "My Profile", Icons.Filled.Person, "edit_profile"),
         ProfileOptionsModel(2, "My Adresses", Icons.Filled.LocationOn, "addresses"),
         ProfileOptionsModel(3, "My Payment Methods", Icons.Filled.Email, "payment_methods"),
         ProfileOptionsModel(4, "My Orders", Icons.Filled.ShoppingCart, "orders"),
