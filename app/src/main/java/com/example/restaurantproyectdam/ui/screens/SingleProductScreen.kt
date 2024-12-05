@@ -75,7 +75,7 @@ fun SingleProductScreen (navController: NavController, id: Int) {
     ) { innerPadding->
         Column(
             modifier = Modifier.padding(innerPadding)
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
             content()
@@ -190,7 +190,9 @@ fun ButtonsProduct(){
         OutlinedButton(onClick = {
             launchSnackBar()
         },
-            border = BorderStroke(2.dp,color = MaterialTheme.colorScheme.error)
+            border = BorderStroke(2.dp,
+                color = MaterialTheme.colorScheme.error
+            )
         ) {
             Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart Icon",
                modifier = Modifier.size(AssistChipDefaults.IconSize),

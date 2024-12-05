@@ -60,15 +60,25 @@ fun MapsSearchView(lat: Double=21.8853, long: Double= -102.2916, address: String
                 CardMarker(address = address)
             }
         }
-        Row(){
+        Row(
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 40.dp)
+        ){
             Button(
-                onClick = {navController.navigate("addresses")},
+                onClick = {
+                    //ADD THIS ADDRESS
+                        navController.popBackStack()
+                          },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer)
             ){
                 Icon(Icons.Filled.Check, contentDescription = "")
             }
             Button(
-                onClick = {navController.navigate("addresses")},
+                onClick = {
+                    //Cancel
+                    navController.popBackStack()
+                          },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.errorContainer)
             ){
                 Icon(Icons.Filled.Clear, contentDescription = "")

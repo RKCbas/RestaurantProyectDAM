@@ -70,7 +70,7 @@ fun MenuScreen (navController: NavController) {
 private fun Content(){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             searchBar("home")
             CategoriesGrid(arrayCategories)
@@ -148,7 +148,7 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .clickable {
                 naveController?.navigate("categoryProducts/$id")
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
         /*colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black

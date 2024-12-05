@@ -210,9 +210,9 @@ private fun BotContentProfile(navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .width(300.dp)
         ) {
-            Text(text = "Login")
+            Text(text = "Log out")
         }
-        Spacer(modifier = Modifier.height(30.dp))
+        /*Spacer(modifier = Modifier.height(30.dp))
         Button(
             onClick = { /*TODO*/ },
             modifier = Modifier
@@ -220,6 +220,6 @@ private fun BotContentProfile(navController: NavController) {
                 .width(300.dp)
         ) {
             Text(text = "Delete Account")
-        }
+        }*/
     }
 }
