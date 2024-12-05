@@ -95,7 +95,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)
-
+    implementation(libs.converter.gson)
 
 
 }
