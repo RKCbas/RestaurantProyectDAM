@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.restaurantproyectdam"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.restaurantproyectdam"
@@ -86,4 +87,15 @@ dependencies {
     //Places
     implementation("com.google.android.libraries.places:places:4.0.0")
     // ------------------------------
+
+    val room_version = "2.6.1"
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+
+
+
 }
