@@ -1,18 +1,22 @@
 package com.example.restaurantproyectdam.data.model
 
-data class LoginResponse(
-    val login: String,
-    val user: List<User>
+data class LoginRequest(
+    val email: String,
+    val password: String
 )
 
-data class LoginRequest(
-    val username: String,
-    val password: String
+data class LoginResponse(
+    val message: String,
+    val user: User? // User puede ser null si el login falla
 )
 
 data class User(
-    val id: Int,
+    val user_id: Int,
     val name: String,
-    val username: String,
-    val password: String
+    val email: String,
+    val phone: String?,
+    val profile_image: String?,
+    val created_at: String,
+    val updated_at: String
 )
+

@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RestaurantProyectDAMTheme{
+            RestaurantProyectDAMTheme {
                 val viewModel: SearchViewModel by viewModels()
 
                 ComposeMultiScreenApp(viewModel)
@@ -55,27 +55,31 @@ class MainActivity : ComponentActivity() {
 
 //@Preview(showBackground = true)
 @Composable
-fun ComposeMultiScreenApp(viewModel: SearchViewModel){ // MAIN CONTENT
+fun ComposeMultiScreenApp(viewModel: SearchViewModel) { // MAIN CONTENT
     val navController = rememberNavController()
     //Scaffold (
-        //color = Color.White
+    //color = Color.White
     //    bottomBar={ BottomBar(navController = navController) },
     //    floatingActionButton = { SearchButton(onClick = {}) }
     //) { innerPadding->
     //    Column(
     //       modifier = Modifier.padding(innerPadding)
     //    ){
-    RestaurantProyectDAMTheme{
-            SetupNavGraph(navController = navController,viewModel)
+    RestaurantProyectDAMTheme {
+        SetupNavGraph(navController = navController, viewModel)
     }
     //    }
     //}
 }
 
 @Composable
-fun SetupNavGraph (navController: NavHostController, viewModel:SearchViewModel ){
+fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) {
     NavHost(navController = navController, startDestination = "onboarding") {
-        composable("home") { HomeScreen(navController) }
+        composable("home/{userId}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+            id?.let { HomeScreen(navController, userId = it) }
+
+        }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("orders") { OrdersScreen(navController) }
@@ -133,7 +137,7 @@ fun SetupNavGraph (navController: NavHostController, viewModel:SearchViewModel )
             val lat = it.arguments?.getFloat("lat") ?: 0.0
             val long = it.arguments?.getFloat("long") ?: 0.0
             val address = it.arguments?.getString("address") ?: ""
-            MapsSearchView(lat.toDouble(), long.toDouble(), address,navController )
+            MapsSearchView(lat.toDouble(), long.toDouble(), address, navController)
         }
 
     }
