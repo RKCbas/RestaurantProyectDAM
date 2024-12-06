@@ -81,7 +81,7 @@ var myNavController: NavController? = null;
 
 @Composable
 
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, userId: Int) {
 
     //val scrollState = rememberScrollState()
 
@@ -409,6 +409,6 @@ private fun HeaderPortrait(vertical: Boolean) {
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen(navController = rememberNavController(), 0)
 }
 

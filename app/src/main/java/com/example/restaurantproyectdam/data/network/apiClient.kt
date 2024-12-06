@@ -6,7 +6,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
     // Aquí va el endpoint de lo que vamos a consumir
-    private const val BASE_URL = "https://fakeapi.rickbit.net/fakeapi/public/api/"
+    // En caso de que se este corriendo en otra computadora dentro de la misma red
+    // private const val BASE_URL = "http://127.0.0.1:8000/api/"
+    // En caso de que el servidor este corriendo en la misma computadora
+    private const val BASE_URL = "http://10.0.2.2:8000/api/"
+
 
     val api: ApiService by lazy {
         Retrofit.Builder()

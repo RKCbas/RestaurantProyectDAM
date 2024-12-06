@@ -10,20 +10,34 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String) {
         _loginState.value = LoginState.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.api.login(LoginRequest(username, password))
-                if (response.isSuccessful && response.body()?.login == "success") {
-                    _loginState.value = LoginState.Success(response.body()!!.user[0])
+                val response = RetrofitClient.api.loginUser(LoginRequest(email, password))
+                // Verificar la respuesta del servidor
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse?.user != null) {
+                        // Login exitoso, actualizar el estado
+                        _loginState.value = LoginState.Success(loginResponse.user)
+                    } else {
+                        // Respuesta del servidor pero sin usuario válido
+                        _loginState.value = LoginState.Error("Usuario o contraseña incorrectos")
+                    }
                 } else {
-                    _loginState.value = LoginState.Error("Usuario o contraseña incorrectos")
+                    // Error en la respuesta (e.g., 4xx o 5xx)
+                    _loginState.value =
+                        LoginState.Error(
+                            "Error: ${
+                                response.errorBody()?.string() ?: "Error desconocido"
+                            }"
+                        )
                 }
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error("Error de red: ${e.message}")
