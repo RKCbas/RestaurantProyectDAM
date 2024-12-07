@@ -76,6 +76,8 @@ fun ComposeMultiScreenApp(viewModel: SearchViewModel) { // MAIN CONTENT
 @Composable
 fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) {
     NavHost(navController = navController, startDestination = "onboarding") {
+
+        composable("onboarding") { WelcomeScreen(navController = navController) }
         composable("home/{userId}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
             id?.let { HomeScreen(navController, userId = it) }
@@ -83,15 +85,39 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
         }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("orders") { OrdersScreen(navController) }
+
+
+        composable("orders/{userId}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+            id?.let { OrdersScreen(navController, userId = it) }
+        }
+        composable("order/{orderId}"){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("orderId")?.toIntOrNull()
+            id?.let { OrderScreen(navController, orderId = it) }
+        }
+
+
+
+
+
         composable("adminOrders") { AdminOrdersScreen(navController) }
-        composable("cart"){ CartScreen(navController = navController)}
+
+
+        composable("cart/{userId}"){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+            id?.let {CartScreen(navController, userId = it)}
+        }
 
         composable("adminProducts") { AdminProductsScreen(navController) }
-        composable("profile") { ProfileScreen(navController) }
+
+
+        //composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
-        composable("menu") { MenuScreen(navController) }
-        composable("onboarding") { WelcomeScreen(navController = navController) }
+        composable("menu/{userId}") {backStackEntry ->
+            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+            id?.let { MenuScreen(navController, userId = it) }
+        }
+
         //Ruta con parametro para CategoryProducts
         composable("categoryProducts/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
@@ -99,10 +125,11 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
                 CategoryProductsScreen(navController, it)
             }
         }
-        composable("singleProduct/{id}") { backStackEntry ->
+        composable("singleProduct/{id}/{userId}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
             id?.let {
-                SingleProductScreen(navController, it)
+                SingleProductScreen(navController, it,userId)
             }
         }
 
@@ -119,14 +146,14 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
 //                OrderScreen(navController, id)
 //            }
 //        }
-        composable("OrderScreen") { OrderScreen(navController = navController) }
+        //composable("OrderScreen") { OrderScreen(navController = navController) }
 
 
         //Profile
         composable("profile") { ProfileScreen(navController) }
         composable("addresses") { AddressesScreen(navController, viewModel) }
         composable("payment_methods") { PaymentMethodsScreen(navController) }
-        composable("orders") { OrdersScreen(navController) }
+        //composable("orders") { OrdersScreen(navController) }
         composable("edit_profile") { CustomProfileScreen(navController = navController) }
         composable("contact_us") { ContactUsScreen(navController) }
 

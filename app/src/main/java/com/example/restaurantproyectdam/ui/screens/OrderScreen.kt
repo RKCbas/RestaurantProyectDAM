@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun OrderScreen(navController: NavController) {
+fun OrderScreen(navController: NavController, orderId:Int) {
     val id = 1
     val orderProductsArray = arrayOf(
         OrderProduct(
@@ -187,5 +187,5 @@ fun OrderProductCard(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWi
 @Preview(showBackground = true)
 @Composable
 private fun OrderScreenPreview() {
-    OrderScreen(navController = rememberNavController())
+    OrderScreen(navController = rememberNavController(),1)
 }

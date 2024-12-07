@@ -78,6 +78,8 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 //@OptIn(ExperimentalMaterial3Api::class)
 
 var myNavController: NavController? = null;
+var myUserId: Int ?= null;
+
 
 @Composable
 
@@ -86,6 +88,7 @@ fun HomeScreen(navController: NavController, userId: Int) {
     //val scrollState = rememberScrollState()
 
     myNavController = navController
+    myUserId = userId
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen
@@ -242,7 +245,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it, myUserId) }
             }
 
         }
@@ -255,7 +258,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it,myUserId) }
             }
         }
         item {
@@ -267,7 +270,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it,myUserId) }
             }
 
         }
