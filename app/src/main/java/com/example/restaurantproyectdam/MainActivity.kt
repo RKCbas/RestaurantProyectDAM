@@ -18,6 +18,7 @@ import com.example.restaurantproyectdam.ui.components.maps.SearchViewModel
 import com.example.restaurantproyectdam.ui.screens.AddressesScreen
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
+import com.example.restaurantproyectdam.ui.screens.CartScreen
 import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
 import com.example.restaurantproyectdam.ui.screens.ContactUsScreen
 import com.example.restaurantproyectdam.ui.screens.CustomProfileScreen
@@ -84,6 +85,8 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
         composable("register") { RegisterScreen(navController) }
         composable("orders") { OrdersScreen(navController) }
         composable("adminOrders") { AdminOrdersScreen(navController) }
+        composable("cart"){ CartScreen(navController = navController)}
+
         composable("adminProducts") { AdminProductsScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
