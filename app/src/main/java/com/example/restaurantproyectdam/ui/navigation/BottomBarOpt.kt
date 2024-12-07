@@ -32,7 +32,7 @@ sealed class BottomBarOpt(
     object Orders : BottomBarOpt(
         route ="orders",
         title = "Orders",
-        icon = Icons.Outlined.ShoppingCart
+        icon = R.drawable.bag
     )
     object Home : BottomBarOpt(
         route ="home",
@@ -43,6 +43,11 @@ sealed class BottomBarOpt(
         route ="profile",
         title = "Profile",
         icon = Icons.Outlined.Person
+    )
+    object Cart: BottomBarOpt(
+        route = "cart",
+        title = "Cart",
+        icon = Icons.Outlined.ShoppingCart
     )
 
 }

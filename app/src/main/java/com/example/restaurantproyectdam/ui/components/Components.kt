@@ -59,6 +59,7 @@ import com.example.restaurantproyectdam.ui.navigation.BottomBarOpt
 fun BottomBar(navController: NavController){
     val screens = listOf( //Sealed Classes
         BottomBarOpt.Menu,
+        BottomBarOpt.Cart,
         BottomBarOpt.Home,
         BottomBarOpt.Orders,
         BottomBarOpt.Profile

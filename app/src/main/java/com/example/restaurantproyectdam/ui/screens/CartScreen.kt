@@ -1,40 +1,71 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.model.OrderCardModel
 import com.example.restaurantproyectdam.data.model.OrderProduct
 import com.example.restaurantproyectdam.data.model.ProductModel
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.navigation.compose.rememberNavController
+import com.example.restaurantproyectdam.ui.components.BottomBar
+import com.example.restaurantproyectdam.ui.components.Header
 
 @Composable
-fun OrderScreen(navController: NavController) {
+fun CartScreen(navController: NavController) {
+
+    Scaffold(
+        bottomBar = { BottomBar(navController = navController) },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            Header("CART")
+            Content(navController)
+        }
+    }
+}
+
+
+@Composable
+private fun Content(navController: NavController){
     val id = 1
     val orderProductsArray = arrayOf(
         OrderProduct(
@@ -67,38 +98,6 @@ fun OrderScreen(navController: NavController) {
     ) {
         Column{
             // Encabezado con icono de navegación y detalles de la orden
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    //.background(MaterialTheme.colorScheme.surface)
-                    .padding(10.dp, 25.dp, 15.dp, 5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back arrow",
-                        tint = MaterialTheme.colorScheme.surface
-                    )
-                }
-                Column {
-                    Text(
-                        text = "Order",
-                        //color = Color.Black,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
-                    Text(
-                        text = "id # $id",
-                        style = MaterialTheme.typography.titleSmall,
-
-                        //color = Color.Black,
-                        fontSize = 14.sp
-                    )
-                }
-                Box(modifier = Modifier.width(24.dp))
-            }
 
             if (orientation == 1) { // Portrait
                 LazyColumn(
@@ -107,9 +106,18 @@ fun OrderScreen(navController: NavController) {
                 ) {
                     specificOrder?.orderProducts?.let { products ->
                         items(products) { item ->
-                            OrderProductCard(item)
+                            ProductCart(item)
                         }
+
                     }
+
+                }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(text = "Order")
                 }
             } else { // Landscape
                 LazyRow(
@@ -119,22 +127,43 @@ fun OrderScreen(navController: NavController) {
                 ) {
                     specificOrder?.orderProducts?.let { products ->
                         items(products) { item ->
-                            OrderProductCard(item, Modifier.width(300.dp))
+                            ProductCart(item, Modifier.width(300.dp))
                         }
                     }
+                }
+                Button(
+                    modifier = Modifier.width(300.dp),
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(text = "Order")
                 }
             }
         }
     }
 }
-
 @Composable
-fun OrderProductCard(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWidth()) {
+private fun ProductCart(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWidth()) {
     Card(
         modifier = modifier.padding(5.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        CardContent(item = item)
+    }
+}
+
+@Composable
+private fun CardContent(item: OrderProduct){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ){
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             // Columna de la imagen del producto
             Column(
                 modifier = Modifier
@@ -179,13 +208,30 @@ fun OrderProductCard(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWi
                     fontWeight = FontWeight.Normal,
                 )
             }
+            Column(
+                modifier = Modifier
+                    .weight(0.8f)
+                    .padding(5.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Button(
+
+                    onClick = {
+                        //Cancelar
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                ) {
+                    Icon(imageVector =  Icons.Filled.Delete, contentDescription = "")
+                }
+            }
+
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-private fun OrderScreenPreview() {
-    OrderScreen(navController = rememberNavController())
+private fun CartScreenPreview() {
+    CartScreen(navController = rememberNavController())
 }
