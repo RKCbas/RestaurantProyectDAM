@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
@@ -64,9 +65,17 @@ import kotlinx.coroutines.launch
 
 var idProduct: Int ?=null
 
+
+@Preview(showBackground = true)
 @Composable
-fun SingleProductScreen (navController: NavController, id: Int) {
+fun PreviewSingleProductScreen(){
+    SingleProductScreen(navController = rememberNavController(), id = 1,1)
+}
+
+@Composable
+fun SingleProductScreen (navController: NavController, id: Int, userId:Int?) {
     naveController = navController
+    myUserId = userId
     idProduct = id
     Scaffold (
         //color = Color.White
@@ -123,7 +132,8 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
         .fillMaxSize())
     {
         Box(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp)
                 .align(Alignment.CenterHorizontally)
         )
         {
@@ -131,7 +141,8 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
                 painter = image,
                 contentDescription = "Product Image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.width(180.dp)
+                modifier = Modifier
+                    .width(180.dp)
                     .height(170.dp)
             )
         }
@@ -140,7 +151,8 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(20.dp,6.dp,20.dp,7.dp))
-            Box(modifier = Modifier.fillMaxWidth()
+            Box(modifier = Modifier
+                .fillMaxWidth()
                 .padding(top = 8.dp)
                 ,contentAlignment = Alignment.TopCenter){
                 Text("$" + cost.toString(),
@@ -180,7 +192,7 @@ fun ButtonsProduct(){
 
     Row(horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
-        .fillMaxSize()
+            .fillMaxSize()
             .padding(top = 20.dp))
     {
 
@@ -188,6 +200,9 @@ fun ButtonsProduct(){
 
 
         OutlinedButton(onClick = {
+            //Aquí se agrega al carrito
+
+
             launchSnackBar()
         },
             border = BorderStroke(2.dp,
@@ -246,7 +261,8 @@ fun ShowCategory(name:String){
     ) {
             Icon(Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "Button Return",
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
                     .clickable {
                         naveController?.navigate("categoryProducts/$idd")
                     }

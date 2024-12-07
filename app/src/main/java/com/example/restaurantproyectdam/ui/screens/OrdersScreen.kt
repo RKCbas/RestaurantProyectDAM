@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 
 
 @Composable
-fun OrdersScreen(navController: NavController) {
+fun OrdersScreen(navController: NavController, userId: Int) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -262,5 +262,5 @@ private fun Content(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 private fun OrdersScreenPreview() {
-    OrdersScreen(navController = rememberNavController())
+    OrdersScreen(navController = rememberNavController(),1)
 }

@@ -18,7 +18,7 @@ import com.example.restaurantproyectdam.data.model.createArrayProducts
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerScreen(navController : NavController){
+fun PagerScreen(navController : NavController,userId: Int?){
     val items :List<ProductData>
     //pages.size
     val products = createArrayProducts()
@@ -30,7 +30,7 @@ fun PagerScreen(navController : NavController){
         verticalArrangement = Arrangement.Center
     ){
         HorizontalPager(state=pagerState) { pageIndex->
-            SinglePage(page = products[pageIndex], navController)
+            SinglePage(page = products[pageIndex], navController,userId)
         }
 
         Spacer(modifier=Modifier.size(16.dp))
