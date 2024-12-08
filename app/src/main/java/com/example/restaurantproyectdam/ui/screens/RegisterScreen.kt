@@ -391,7 +391,7 @@ fun LandscapeRegister(
             Icons.Filled.ArrowBack,
             contentDescription = "Icon of arrow back",
             modifier = Modifier
-                .clickable { navController.navigate("home") }
+                .clickable { navController.popBackStack() }
                 .padding(top = 30.dp, start = 30.dp)
                 .size(28.dp),
             tint = MaterialTheme.colorScheme.onSurface,
@@ -560,7 +560,7 @@ fun LandscapeRegister(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
-                    TextButton(onClick = { navController.navigate("login") }) {
+                    TextButton(onClick = { navController.popBackStack() }) {
                         Text(text = "Login", fontSize = 17.sp)
                     }
 
