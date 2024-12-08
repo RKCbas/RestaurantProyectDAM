@@ -1,11 +1,7 @@
 package com.example.restaurantproyectdam.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,11 +25,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.SnackbarHost
@@ -46,45 +37,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.CartViewModel
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
 
 import com.example.restaurantproyectdam.data.controller.DishViewModel
 
-import com.example.restaurantproyectdam.data.controller.LoginViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
 import com.example.restaurantproyectdam.data.model.DishEntity
-import com.example.restaurantproyectdam.data.model.createArrayCategories
-import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
-import com.example.restaurantproyectdam.ui.components.SearchButton
-import com.example.restaurantproyectdam.ui.components.homecomponents.ProductData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-var idProduct: Int ?=null
+var idProduct: Int? = null
 
 
 /*@Preview(showBackground = true)
@@ -95,7 +72,13 @@ fun PreviewSingleProductScreen(){
 
 @Composable
 
-fun SingleProductScreen (navController: NavController,  userIdViewModel: UserIdViewModel,id: Int, categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun SingleProductScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    id: Int,
+    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
 
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
@@ -104,22 +87,22 @@ fun SingleProductScreen (navController: NavController,  userIdViewModel: UserIdV
 
     var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
 
-    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList())  }
+    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList()) }
 
     naveController = navController
     idProduct = id
-    Scaffold (
+    Scaffold(
         //color = Color.White
-        bottomBar={ BottomBar(navController = navController) },
+        bottomBar = { BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
-    ) { innerPadding->
+    ) { innerPadding ->
 
         LaunchedEffect(Unit) {
-            categories =  withContext(Dispatchers.IO) {
+            categories = withContext(Dispatchers.IO) {
                 categoryViewModel.getCategories(db)
                 categoryDao.getCategories()
             }
-            dishes =  withContext(Dispatchers.IO) {
+            dishes = withContext(Dispatchers.IO) {
                 dishViewModel.getDishes(db)
                 dishDao.getDishes()
             }
@@ -129,23 +112,28 @@ fun SingleProductScreen (navController: NavController,  userIdViewModel: UserIdV
 
         Column(
             modifier = Modifier.padding(innerPadding)
-                //.background(MaterialTheme.colorScheme.primaryContainer)
+            //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
 
-            content(categories,userIdViewModel.cartId,id, dishes)
+            content(categories, userViewModel.cartId, id, dishes)
 
         }
     }
 }
 
 @Composable
-fun content(categories: List<CategoryEntity>, cart_id: Int?, product_id: Int,dishes: List<DishEntity>){
+fun content(
+    categories: List<CategoryEntity>,
+    cart_id: Int?,
+    product_id: Int,
+    dishes: List<DishEntity>
+) {
     Header("")
-    InfoCategory(categories,dishes)
+    InfoCategory(categories, dishes)
     SendSingleId(dishes)
     if (cart_id != null) {
-        ButtonsProduct(cart_id,product_id)
+        ButtonsProduct(cart_id, product_id)
     }
 
 }
@@ -170,15 +158,24 @@ fun SendSingleId(dishes: List<DishEntity>) {
                 }
             }
         }
-    }else{
+    } else {
         Text("Page 505")
     }
 }
 
 @Composable
-fun InfoProduct(dish_id:Int, name:String, description:String, price:String, dish_image:String, category_id:Int){
-    Column (modifier = Modifier
-        .fillMaxSize())
+fun InfoProduct(
+    dish_id: Int,
+    name: String,
+    description: String,
+    price: String,
+    dish_image: String,
+    category_id: Int
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    )
     {
         Box(
             modifier = Modifier
@@ -195,31 +192,40 @@ fun InfoProduct(dish_id:Int, name:String, description:String, price:String, dish
                     .height(170.dp)
             )
         }
-        Column (){
-            Text(name,
+        Column() {
+            Text(
+                name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(20.dp,6.dp,20.dp,7.dp))
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                ,contentAlignment = Alignment.TopCenter){
-                Text("$" + price.toString(),
+                modifier = Modifier.padding(20.dp, 6.dp, 20.dp, 7.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp), contentAlignment = Alignment.TopCenter
+            ) {
+                Text(
+                    "$" + price.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 19.sp)
+                    fontSize = 19.sp
+                )
             }
             Column {
-                Text("Description",
+                Text(
+                    "Description",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 19.sp,
-                    modifier = Modifier.padding(20.dp,2.dp))
-                Text(description,
+                    modifier = Modifier.padding(20.dp, 2.dp)
+                )
+                Text(
+                    description,
                     maxLines = 6,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(20.dp,2.dp,20.dp,7.dp),
-                    fontSize = 14.sp)
+                    modifier = Modifier.padding(20.dp, 2.dp, 20.dp, 7.dp),
+                    fontSize = 14.sp
+                )
             }
         }
     }
@@ -228,70 +234,78 @@ fun InfoProduct(dish_id:Int, name:String, description:String, price:String, dish
 @SuppressLint("RememberReturnType")
 //@Preview(showBackground = true)
 @Composable
-fun ButtonsProduct(cart_id: Int,
-                   product_id: Int,
-                   viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-                   //onNewDish  = { viewModel.api.addToCart(email, password) }
+fun ButtonsProduct(
+    cart_id: Int,
+    product_id: Int,
+    viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    //onNewDish  = { viewModel.api.addToCart(email, password) }
 
-){
-    val snackState = remember{ SnackbarHostState() }
+) {
+    val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
 
     SnackbarHost(hostState = snackState, Modifier)
 
-    fun launchSnackBar(){
+    fun launchSnackBar() {
         snackScope.launch { snackState.showSnackbar("Added to the cart") }
     }
 
 
-    Row(horizontalArrangement = Arrangement.SpaceEvenly,
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 20.dp))
+            .padding(top = 20.dp)
+    )
     {
 
 
+        OutlinedButton(
+            onClick = {
+                //Aquí se agrega al carrito
+                if (cart_id != null) {
+                    println("entra")
+                    viewModel.addToCart(
+                        cart_id,
+                        dish_id = product_id,
+                        AddToCartModelRequest(1)
+                    )
+                }
 
-
-        OutlinedButton(onClick = {
-            //Aquí se agrega al carrito
-            if (cart_id != null) {
-                println("entra")
-                viewModel.addToCart(
-                    cart_id,
-                    dish_id = product_id,
-                    AddToCartModelRequest(1)
-                )
-            }
-
-            launchSnackBar()
-        },
-            border = BorderStroke(2.dp,
+                launchSnackBar()
+            },
+            border = BorderStroke(
+                2.dp,
                 color = MaterialTheme.colorScheme.error
             )
         ) {
-            Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart Icon",
-               modifier = Modifier.size(AssistChipDefaults.IconSize),
+            Icon(
+                Icons.Outlined.ShoppingCart, contentDescription = "Cart Icon",
+                modifier = Modifier.size(AssistChipDefaults.IconSize),
                 //tint = Color.Black
                 tint = MaterialTheme.colorScheme.error
             )
-            Text("Add to the cart", modifier = Modifier
-                .padding(start = 7.dp),
+            Text(
+                "Add to the cart", modifier = Modifier
+                    .padding(start = 7.dp),
                 color = MaterialTheme.colorScheme.error
             )
         }
-        OutlinedButton(onClick = {
-            naveController?.navigate("payment/$idProduct")
-        },
-            border = BorderStroke(2.dp,color = MaterialTheme.colorScheme.error),
+        OutlinedButton(
+            onClick = {
+                naveController?.navigate("payment/$idProduct")
+            },
+            border = BorderStroke(2.dp, color = MaterialTheme.colorScheme.error),
         ) {
-            Icon(Icons.Outlined.CheckCircle, contentDescription = "Shop Icon",
+            Icon(
+                Icons.Outlined.CheckCircle, contentDescription = "Shop Icon",
                 modifier = Modifier.size(AssistChipDefaults.IconSize),
                 tint = MaterialTheme.colorScheme.error
                 //tint = Color.Black
-                )
-            Text("Order now", modifier = Modifier
-                .padding(start = 10.dp),
+            )
+            Text(
+                "Order now", modifier = Modifier
+                    .padding(start = 10.dp),
                 color = MaterialTheme.colorScheme.error
             )
         }
@@ -300,10 +314,10 @@ fun ButtonsProduct(cart_id: Int,
 
 @Composable
 fun InfoCategory(categories: List<CategoryEntity>, dishes: List<DishEntity>) {
-    for (dish in dishes ){
+    for (dish in dishes) {
         if (dish.dish_id == idProduct) {
-            for(category in categories){
-                if(category.category_id == dish.category_id){
+            for (category in categories) {
+                if (category.category_id == dish.category_id) {
                     ShowCategory(category.name)
                 }
             }
@@ -312,23 +326,26 @@ fun InfoCategory(categories: List<CategoryEntity>, dishes: List<DishEntity>) {
 }
 
 @Composable
-fun ShowCategory(name:String){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 30.dp, end = 30.dp, start = 30.dp)
+fun ShowCategory(name: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, end = 30.dp, start = 30.dp)
     ) {
-            Icon(Icons.Filled.KeyboardArrowLeft,
-                contentDescription = "Button Return",
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .clickable {
-                        naveController?.navigate("categoryProducts/$idd")
-                    }
-            )
-            Text(name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                //color = Color.DarkGray,
-                modifier = Modifier.align(Alignment.CenterEnd))
+        Icon(Icons.Filled.KeyboardArrowLeft,
+            contentDescription = "Button Return",
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable {
+                    naveController?.navigate("categoryProducts/$idd")
+                }
+        )
+        Text(
+            name,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            //color = Color.DarkGray,
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
     }
 }

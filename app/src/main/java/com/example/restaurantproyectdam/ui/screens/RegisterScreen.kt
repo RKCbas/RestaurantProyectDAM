@@ -1,6 +1,5 @@
 package com.example.restaurantproyectdam.ui.screens
 
-import android.graphics.Paint.Align
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,18 +21,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,26 +49,22 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.RegisterState
 import com.example.restaurantproyectdam.data.controller.RegisterViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    userIdViewModel: UserIdViewModel,
+    userViewModel: UserViewModel,
     viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
@@ -104,7 +96,7 @@ fun RegisterScreen(
                     name = username
                 )
             },
-            userIdViewModel
+            userViewModel
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeRegister(
@@ -125,7 +117,7 @@ fun RegisterScreen(
                     name = username
                 )
             },
-            userIdViewModel
+            userViewModel
         )
     } else {
         LandscapeRegister(
@@ -146,7 +138,7 @@ fun RegisterScreen(
                     name = username
                 )
             },
-            userIdViewModel
+            userViewModel
         )
     }
 }
@@ -164,7 +156,7 @@ fun PortraitRegister(
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
     onRegisterClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     Column(
         modifier = Modifier
@@ -185,7 +177,7 @@ fun PortraitRegister(
             onConfirmPasswordChange,
             registerState = registerState,
             onRegisterClick = onRegisterClick,
-            userIdViewModel
+            userViewModel
         )
         Spacer(modifier = Modifier.height(15.dp))
         Row(
@@ -261,7 +253,7 @@ fun MidElementsRegister(
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
     onRegisterClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -356,8 +348,8 @@ fun MidElementsRegister(
             is RegisterState.Success -> {
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
-                    userIdViewModel.UpdateUserId(registerState.registerUser.user_id)
-                    registerState.cart?.let { userIdViewModel.UpdateCartId(it.cart_id) }
+                    userViewModel.UpdateUserId(registerState.registerUser.user_id)
+                    registerState.cart?.let { userViewModel.UpdateCartId(it.cart_id) }
                     Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
                     navController.navigate("home") {
                         popUpTo("register") { inclusive = true }
@@ -388,7 +380,7 @@ fun LandscapeRegister(
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
     onRegisterClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -548,7 +540,7 @@ fun LandscapeRegister(
                     is RegisterState.Success -> {
                         val context = LocalContext.current
                         LaunchedEffect(Unit) {
-                            userIdViewModel.UpdateUserId(registerState.registerUser.user_id)
+                            userViewModel.UpdateUserId(registerState.registerUser.user_id)
                             Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
                             navController.navigate("home") {
                                 popUpTo("register") { inclusive = true }

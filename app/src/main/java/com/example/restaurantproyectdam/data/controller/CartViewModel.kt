@@ -35,8 +35,8 @@ class CartViewModel: ViewModel() {
             try {
                 val response = api.showCart(id)
                 onResult(response)
-            }catch (expection: Exception){
-                print(expection)
+            }catch (exception: Exception){
+                print(exception)
             }
         }
     }
