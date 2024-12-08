@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
@@ -28,24 +29,43 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
 import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 var idd: Int ?=null
 
 @Composable
-fun CategoryProductsScreen (navController: NavController, id: Int) {
+fun CategoryProductsScreen (navController: NavController, id: Int, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+
+
     naveController = navController
     idd = id
     Scaffold (
@@ -53,23 +73,32 @@ fun CategoryProductsScreen (navController: NavController, id: Int) {
         bottomBar={ BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
+
+        LaunchedEffect(Unit) {
+            categories =  withContext(Dispatchers.IO) {
+                viewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+        }
+
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier.padding(innerPadding)
         )
         {
-            Contents()
+            Contents(categories)
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Contents(){
+fun Contents(categories: List<CategoryEntity>){
     Column(modifier = Modifier.fillMaxSize()
         //.background(Color.LightGray)
     ) {
         searchBar("menu")
-        CategoriesInfo()
+        CategoriesInfo(categories)
         Products()
     }
 }
@@ -130,14 +159,14 @@ fun ProductDataa(id:Int, title:String, description:String, cost:Float, image:Pai
 }
 
 @Composable
-fun CategoriesInfo(){
+fun CategoriesInfo(categories: List<CategoryEntity>){
     val arrayCategories = createArrayCategories()
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
     ){
-        items(arrayCategories){category ->
+        items(categories){category ->
             CategorySelected(category.category_id,category.name)
         }
     }

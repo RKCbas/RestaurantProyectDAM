@@ -34,11 +34,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,13 +61,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
 import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.ProductData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 var idProduct: Int ?=null
 
@@ -73,7 +85,14 @@ fun PreviewSingleProductScreen(){
 }
 
 @Composable
-fun SingleProductScreen (navController: NavController, id: Int) {
+fun SingleProductScreen (navController: NavController, id: Int, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+
+
     naveController = navController
     idProduct = id
     Scaffold (
@@ -81,20 +100,29 @@ fun SingleProductScreen (navController: NavController, id: Int) {
         bottomBar={ BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
+
+        LaunchedEffect(Unit) {
+            categories =  withContext(Dispatchers.IO) {
+                viewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+        }
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier.padding(innerPadding)
                 //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content()
+            content(categories)
         }
     }
 }
 
 @Composable
-fun content(){
+fun content(categories: List<CategoryEntity>){
     Header("")
-    InfoCategory()
+    InfoCategory(categories)
     SendSingleId()
     ButtonsProduct()
 }
@@ -237,13 +265,12 @@ fun ButtonsProduct(){
 }
 
 @Composable
-fun InfoCategory() {
+fun InfoCategory(categories: List<CategoryEntity>) {
     val arrayProductss = createArrayProducts()
-    val arrayCategoriess = createArrayCategories()
 
     for (product in arrayProductss ){
         if (product.id == idProduct) {
-            for(category in arrayCategoriess){
+            for(category in categories){
                 if(category.category_id == product.category){
                     ShowCategory(category.name)
                 }
