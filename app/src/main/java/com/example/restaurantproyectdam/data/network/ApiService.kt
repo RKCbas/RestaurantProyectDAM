@@ -11,6 +11,8 @@ import com.example.restaurantproyectdam.data.model.DeleteCartModelResponse
 import com.example.restaurantproyectdam.data.model.DishWithPivot
 import com.example.restaurantproyectdam.data.model.LoginRequest
 import com.example.restaurantproyectdam.data.model.LoginResponse
+import com.example.restaurantproyectdam.data.model.RegisterRequest
+import com.example.restaurantproyectdam.data.model.RegisterResponse
 import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -26,6 +28,9 @@ interface ApiService {
     @POST("users/login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
+        //register
+    @POST("users")
+    suspend fun registerUser(@Body registerRequest: RegisterRequest): Response<RegisterResponse>
 
     //Cart
     //Creation
