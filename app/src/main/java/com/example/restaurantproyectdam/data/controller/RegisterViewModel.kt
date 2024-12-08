@@ -3,6 +3,7 @@ package com.example.restaurantproyectdam.data.controller
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projecto1.data.network.RetrofitClient
+import com.example.restaurantproyectdam.data.model.CartModelRequest
 import com.example.restaurantproyectdam.data.model.RegisterRequest
 import com.example.restaurantproyectdam.data.model.RegisterUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,17 +15,21 @@ class RegisterViewModel : ViewModel() {
     private val _registerState = MutableStateFlow<RegisterState>(RegisterState.Idle)
     val registerState: StateFlow<RegisterState> = _registerState.asStateFlow()
 
+    val api = RetrofitClient.api
+
     fun register(email: String, password: String, name: String) {
         _registerState.value = RegisterState.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.api.registerUser(RegisterRequest(name, email, password))
+                val response = api.registerUser(RegisterRequest(name, email, password))
                 // Verificar la respuesta del servidor
                 if (response.isSuccessful) {
                     val registerResponse = response.body()
-                    if (registerResponse?.user != null) {
+                    if (registerResponse?.registerUser != null) {
                         // Registro exitoso, actualizar el estado
-                        _registerState.value = RegisterState.Success(registerResponse.user)
+                        _registerState.value = RegisterState.Success(registerResponse.registerUser)
+                        //creamos el carrito para el usuario
+                        api.createCart(CartModelRequest(registerResponse.registerUser.user_id))
                     } else {
                         // Respuesta del servidor pero sin usuario válido
                         _registerState.value = RegisterState.Error("Error: validacion")
