@@ -71,8 +71,8 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -83,12 +83,13 @@ var myUserId: Int ?= null;
 
 @Composable
 
-fun HomeScreen(navController: NavController, userId: Int) {
+fun HomeScreen(navController: NavController, userIdViewModel: UserIdViewModel) {
 
     //val scrollState = rememberScrollState()
 
     myNavController = navController
-    myUserId = userId
+    myUserId = userIdViewModel.userId
+    println(myUserId)
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen
@@ -412,6 +413,6 @@ private fun HeaderPortrait(vertical: Boolean) {
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController(), 0)
+    HomeScreen(navController = rememberNavController(), viewModel())
 }
 
