@@ -3,7 +3,6 @@ package com.example.restaurantproyectdam.data.controller
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-//import com.example.projecto1.data.network.RetrofitClient
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import com.example.restaurantproyectdam.data.model.LoginRequest
 import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
