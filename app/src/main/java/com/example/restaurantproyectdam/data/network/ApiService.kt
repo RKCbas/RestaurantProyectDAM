@@ -1,5 +1,4 @@
-package com.example.projecto1.data.network
-
+package com.example.restaurantproyectdam.data.network
 
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CartModelActionResponse
@@ -7,6 +6,7 @@ import com.example.restaurantproyectdam.data.model.CartModelRequest
 import com.example.restaurantproyectdam.data.model.CartModelResponse
 import com.example.restaurantproyectdam.data.model.CartModelWithContent
 import com.example.restaurantproyectdam.data.model.CartOnlyContent
+import com.example.restaurantproyectdam.data.model.CategoryModel
 import com.example.restaurantproyectdam.data.model.DeleteCartModelResponse
 import com.example.restaurantproyectdam.data.model.DishWithPivot
 import com.example.restaurantproyectdam.data.model.LoginRequest
@@ -22,13 +22,15 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
+
+
 interface ApiService {
     //User
-        //login
+    //login
     @POST("users/login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
-        //register
+    //register
     @POST("users")
     suspend fun registerUser(@Body registerRequest: RegisterRequest): Response<RegisterResponse>
 
@@ -61,4 +63,7 @@ interface ApiService {
         @Path("dish_id") dish_id: Int
     ): Response<CartModelActionResponse>
 
+    //Categories
+    @GET("categories")
+    suspend fun getCategories(): Response<List<CategoryModel>>
 }

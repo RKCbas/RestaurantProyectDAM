@@ -59,9 +59,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.example.projecto1.data.controller.LoginState
-import com.example.projecto1.data.controller.LoginViewModel
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.LoginState
+import com.example.restaurantproyectdam.data.controller.LoginViewModel
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import kotlinx.coroutines.launch
 

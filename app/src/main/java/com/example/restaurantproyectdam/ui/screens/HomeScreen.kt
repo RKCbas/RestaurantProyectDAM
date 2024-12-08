@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,8 +73,17 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +94,14 @@ var myUserId: Int ?= null;
 
 @Composable
 
-fun HomeScreen(navController: NavController, userIdViewModel: UserIdViewModel) {
+
+fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+
 
     //val scrollState = rememberScrollState()
 
@@ -101,6 +119,16 @@ fun HomeScreen(navController: NavController, userIdViewModel: UserIdViewModel) {
         bottomBar = { BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding ->
+
+        LaunchedEffect(Unit) {
+            categories =  withContext(Dispatchers.IO) {
+                viewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+        }
+
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -110,25 +138,25 @@ fun HomeScreen(navController: NavController, userIdViewModel: UserIdViewModel) {
         ){
             if(width == WindowWidthSizeClass.COMPACT) {
                 //PORTAIT
-                ContentPortrait()
+                ContentPortrait(categories)
 
             }else if(height == WindowHeightSizeClass.COMPACT) {
                 //LANDSCAPE
                 //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
-                ContentLandscape()
+                ContentLandscape(categories)
             }else{
 
                 //Posts(post, "PhoneL")
-                ContentLandscape()
+                ContentLandscape(categories)
             }
             //Content()
         }
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-private fun ContentPortrait() {
+private fun ContentPortrait(categories: List<CategoryEntity>) {
 
     Column(
         modifier = Modifier
@@ -137,14 +165,14 @@ private fun ContentPortrait() {
         //.padding(25.dp)
     ) {
         HeaderPortrait(true)
-        MainContent()
+        MainContent(categories)
     }
 
 }
 
-@Preview(showBackground = true)
+
 @Composable
-private fun ContentLandscape() {
+private fun ContentLandscape(categories: List<CategoryEntity>) {
 
     Row(
         modifier = Modifier
@@ -153,7 +181,7 @@ private fun ContentLandscape() {
         //.padding(25.dp)
     ) {
         HeaderPortrait(false)
-        MainContent()
+        MainContent(categories)
     }
     
 }
@@ -161,7 +189,7 @@ private fun ContentLandscape() {
 
 //@Preview(showBackground=true)
 @Composable
-private fun CategoryItem(category: CategoryModel) {
+private fun CategoryItem(category_id: Int, name: String, category_image: String?) {
 
     Button(
         // Pattern that applies to all the 10 items
@@ -176,7 +204,7 @@ private fun CategoryItem(category: CategoryModel) {
         //.background(Color.White),
         //elevation = 6.dp // adds a shadow
         onClick = {
-            myNavController?.navigate("categoryProducts/${category.id}")
+            myNavController?.navigate("categoryProducts/${category_id}")
         },
         //MaterialTheme.colorScheme.surface
         //ButtonDefaults.buttonColors(Primary)
@@ -193,10 +221,10 @@ private fun CategoryItem(category: CategoryModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = category.image,
+            AsyncImage(
+                model = category_image,
                 //painterResource(id = R.drawable.sushi),
-                contentDescription = category.name,
+                contentDescription = name,
                 //contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
@@ -205,7 +233,7 @@ private fun CategoryItem(category: CategoryModel) {
             //Spacer(modifier = Modifier.padding(5.dp)) //Leaves some space
 
             Text(
-                text = category.name,
+                text = name,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 //color=Color.Black,
@@ -218,8 +246,7 @@ private fun CategoryItem(category: CategoryModel) {
 }
 
 @Composable
-private fun MainContent() {
-    val categories = createArrayCategories()
+private fun MainContent(categoryList: List<CategoryEntity>) {
     LazyColumn(modifier = Modifier.fillMaxHeight(1f)) {
         item {
             Text(
@@ -230,9 +257,8 @@ private fun MainContent() {
         }
         item {
             LazyRow {
-
-                items(categories.size) { index ->
-                    CategoryItem(categories[index])
+                items(categoryList){ category ->
+                    CategoryItem(category.category_id, category.name, category.category_image)
                 }
             }
         }
