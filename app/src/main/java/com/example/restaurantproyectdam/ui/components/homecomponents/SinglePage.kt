@@ -43,12 +43,14 @@ import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.ui.screens.naveController
 
 @Composable
-fun SinglePage(page: DishEntity, navController: NavController, userId:Int?){
+fun SinglePage(page: DishEntity, navController: NavController){
 
     Button(
         modifier = Modifier.clip(RoundedCornerShape(30.dp)),
         onClick={
-            navController.navigate("singleProduct/${page.dish_id}/${userId}")
+
+            navController.navigate("singleProduct/${page.dish_id}")
+
         },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation

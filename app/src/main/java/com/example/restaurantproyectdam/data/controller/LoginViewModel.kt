@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import com.example.restaurantproyectdam.data.model.LoginRequest
+import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
 import com.example.restaurantproyectdam.data.model.User
 import com.example.restaurantproyectdam.data.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +27,17 @@ class LoginViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse?.user != null) {
-                        // Login exitoso, actualizar el estado
-                        _loginState.value = LoginState.Success(loginResponse.user)
+                        val cartResponse = RetrofitClient.api.showCart(loginResponse.user.user_id)
+                        if(cartResponse.isSuccessful){
+                            val cartResponseBody = cartResponse.body()
+                            println(cartResponseBody)
+
+                            if(cartResponseBody != null){
+                                // Login exitoso, actualizar el estado
+                                _loginState.value = LoginState.Success(loginResponse.user, cartResponseBody)
+                            }
+                        }
+
                     } else {
                         // Respuesta del servidor pero sin usuario válido
                         _loginState.value = LoginState.Error("Usuario o contraseña incorrectos")
@@ -53,6 +63,6 @@ class LoginViewModel : ViewModel() {
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
-    data class Success(val user: User) : LoginState()
+    data class Success(val user: User, val cart: ShowCartModelResponse) : LoginState()
     data class Error(val message: String) : LoginState()
 }

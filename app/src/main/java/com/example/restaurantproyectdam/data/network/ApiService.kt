@@ -47,7 +47,7 @@ interface ApiService {
     @DELETE("carts/{id}")
     suspend fun deleteCart(@Path("id") id :Int): Response<DeleteCartModelResponse>
 
-    @POST("carts/{cart_id}dishes/{dish_id}")
+    @POST("carts/{cart_id}/dishes/{dish_id}")
     suspend fun addToCart(
         @Path("cart_id") cart_id : Int,
         @Path("dish_id") dish_id: Int,
