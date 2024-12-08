@@ -60,11 +60,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.controller.DishViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.CategoryEntity
+import com.example.restaurantproyectdam.data.model.DishEntity
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
@@ -85,13 +88,15 @@ fun PreviewSingleProductScreen(){
 }
 
 @Composable
-fun SingleProductScreen (navController: NavController, id: Int, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun SingleProductScreen (navController: NavController, id: Int, categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
+    val dishDao = db.dishDao()
 
     var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
 
+    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList())  }
 
     naveController = navController
     idProduct = id
@@ -103,9 +108,14 @@ fun SingleProductScreen (navController: NavController, id: Int, viewModel: Categ
 
         LaunchedEffect(Unit) {
             categories =  withContext(Dispatchers.IO) {
-                viewModel.getCategories(db)
+                categoryViewModel.getCategories(db)
                 categoryDao.getCategories()
             }
+            dishes =  withContext(Dispatchers.IO) {
+                dishViewModel.getDishes(db)
+                dishDao.getDishes()
+            }
+
         }
         val listState = rememberLazyListState()
 
@@ -114,24 +124,23 @@ fun SingleProductScreen (navController: NavController, id: Int, viewModel: Categ
                 //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content(categories)
+            content(categories, dishes)
         }
     }
 }
 
 @Composable
-fun content(categories: List<CategoryEntity>){
+fun content(categories: List<CategoryEntity>, dishes: List<DishEntity>){
     Header("")
-    InfoCategory(categories)
-    SendSingleId()
+    InfoCategory(categories, dishes)
+    SendSingleId(dishes)
     ButtonsProduct()
 }
 
 
 @Composable
-fun SendSingleId() {
+fun SendSingleId(dishes: List<DishEntity>) {
     if (idProduct != null) {
-        val arrayProducts = createArrayProducts()
 
         LazyColumn(
             modifier = Modifier
@@ -139,11 +148,11 @@ fun SendSingleId() {
                 .padding(26.dp)
 
         ) {
-            items(arrayProducts) { product ->
-                if (product.id == idProduct) {
+            items(dishes) { dish ->
+                if (dish.dish_id == idProduct) {
                     InfoProduct(
-                        product.id, product.title, product.description,
-                        product.cost.toString(), product.image, product.category
+                        dish.dish_id, dish.name, dish.description,
+                        dish.price.toString(), dish.dish_image, dish.category_id
                     )
                 }
             }
@@ -154,7 +163,7 @@ fun SendSingleId() {
 }
 
 @Composable
-fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Painter, category:Int){
+fun InfoProduct(dish_id:Int, name:String, description:String, price:String, dish_image:String, category_id:Int){
     Column (modifier = Modifier
         .fillMaxSize())
     {
@@ -164,8 +173,8 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
                 .align(Alignment.CenterHorizontally)
         )
         {
-            Image(
-                painter = image,
+            AsyncImage(
+                model = dish_image,
                 contentDescription = "Product Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -174,7 +183,7 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
             )
         }
         Column (){
-            Text(title,
+            Text(name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(20.dp,6.dp,20.dp,7.dp))
@@ -182,7 +191,7 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
                 .fillMaxWidth()
                 .padding(top = 8.dp)
                 ,contentAlignment = Alignment.TopCenter){
-                Text("$" + cost.toString(),
+                Text("$" + price.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 19.sp)
@@ -265,13 +274,11 @@ fun ButtonsProduct(){
 }
 
 @Composable
-fun InfoCategory(categories: List<CategoryEntity>) {
-    val arrayProductss = createArrayProducts()
-
-    for (product in arrayProductss ){
-        if (product.id == idProduct) {
+fun InfoCategory(categories: List<CategoryEntity>, dishes: List<DishEntity>) {
+    for (dish in dishes ){
+        if (dish.dish_id == idProduct) {
             for(category in categories){
-                if(category.category_id == product.category){
+                if(category.category_id == dish.category_id){
                     ShowCategory(category.name)
                 }
             }
