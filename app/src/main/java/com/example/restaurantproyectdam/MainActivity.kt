@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,7 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.ui.components.maps.MapsSearchView
 import com.example.restaurantproyectdam.ui.components.maps.SearchViewModel
 import com.example.restaurantproyectdam.ui.screens.AddressesScreen
@@ -46,10 +45,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RestaurantProyectDAMTheme {
-                val userIdViewModel: UserIdViewModel = viewModel()
+                val userViewModel: UserViewModel = viewModel()
                 val viewModel: SearchViewModel by viewModels()
 
-                ComposeMultiScreenApp(viewModel, userIdViewModel)
+                ComposeMultiScreenApp(viewModel, userViewModel)
 
             }
         }
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ComposeMultiScreenApp(
     viewModel: SearchViewModel,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) { // MAIN CONTENT
     val navController = rememberNavController()
 
@@ -74,7 +73,7 @@ fun ComposeMultiScreenApp(
     //       modifier = Modifier.padding(innerPadding)
     //    ){
     RestaurantProyectDAMTheme {
-        SetupNavGraph(navController = navController, viewModel, userIdViewModel)
+        SetupNavGraph(navController = navController, viewModel, userViewModel)
     }
     //    }
     //}
@@ -84,15 +83,15 @@ fun ComposeMultiScreenApp(
 fun SetupNavGraph(
     navController: NavHostController,
     viewModel: SearchViewModel,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     NavHost(navController = navController, startDestination = "onboarding") {
 
         composable("onboarding") { WelcomeScreen(navController = navController) }
-        composable("home") { HomeScreen(navController, userIdViewModel) }
+        composable("home") { HomeScreen(navController, userViewModel) }
 
-        composable("login") { LoginScreen(navController, userIdViewModel) }
-        composable("register") { RegisterScreen(navController, userIdViewModel) }
+        composable("login") { LoginScreen(navController, userViewModel) }
+        composable("register") { RegisterScreen(navController, userViewModel) }
 
 
 
@@ -112,7 +111,7 @@ fun SetupNavGraph(
 
 
         composable("cart"){
-            CartScreen(navController,userIdViewModel)
+            CartScreen(navController,userViewModel)
         }
 
         composable("adminProducts") { AdminProductsScreen(navController) }
@@ -135,7 +134,7 @@ fun SetupNavGraph(
         composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
-                SingleProductScreen(navController, userIdViewModel, it)
+                SingleProductScreen(navController, userViewModel, it)
             }
         }
 

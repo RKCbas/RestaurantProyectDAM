@@ -64,7 +64,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.graphics.shapes.android)
 
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    //async image
+    implementation(libs.coil.compose)
 
     //QR
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
