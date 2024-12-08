@@ -1,17 +1,8 @@
 package com.example.projecto1.data.controller
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.projecto1.data.database.AppDatabase
 //import com.example.projecto1.data.model.ServiceModel
 //import com.example.projecto1.data.model.toServiceEntity
 //import com.example.projecto1.data.model.toServiceEntityList
-import kotlinx.coroutines.launch
-import com.example.projecto1.data.network.RetrofitClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import retrofit2.Response
 
 //class ServiceViewModel : ViewModel() {
 //    val api = RetrofitClient.api

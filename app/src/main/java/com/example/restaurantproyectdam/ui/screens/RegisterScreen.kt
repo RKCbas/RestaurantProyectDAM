@@ -1,5 +1,7 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import android.graphics.Paint.Align
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
@@ -32,6 +35,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,11 +62,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.RegisterState
+import com.example.restaurantproyectdam.data.controller.RegisterViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
     val windowWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
 
@@ -68,6 +79,8 @@ fun RegisterScreen(navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
+
+    val registerState by viewModel.registerState.collectAsState()
 
     if (windowWidth == WindowWidthSizeClass.COMPACT) {
         PortraitRegister(
@@ -79,7 +92,15 @@ fun RegisterScreen(navController: NavController) {
             password = password,
             onPasswordChange = { password = it },
             confirmPassword = confirmPassword,
-            onConfirmPasswordChange = { confirmPassword = it }
+            onConfirmPasswordChange = { confirmPassword = it },
+            registerState = registerState,
+            onRegisterClick = {
+                viewModel.register(
+                    email = email,
+                    password = password,
+                    name = username
+                )
+            }
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeRegister(
@@ -91,7 +112,15 @@ fun RegisterScreen(navController: NavController) {
             password = password,
             onPasswordChange = { password = it },
             confirmPassword = confirmPassword,
-            onConfirmPasswordChange = { confirmPassword = it }
+            onConfirmPasswordChange = { confirmPassword = it },
+            registerState = registerState,
+            onRegisterClick = {
+                viewModel.register(
+                    email = email,
+                    password = password,
+                    name = username
+                )
+            }
         )
     } else {
         LandscapeRegister(
@@ -103,7 +132,15 @@ fun RegisterScreen(navController: NavController) {
             password = password,
             onPasswordChange = { password = it },
             confirmPassword = confirmPassword,
-            onConfirmPasswordChange = { confirmPassword = it }
+            onConfirmPasswordChange = { confirmPassword = it },
+            registerState = registerState,
+            onRegisterClick = {
+                viewModel.register(
+                    email = email,
+                    password = password,
+                    name = username
+                )
+            }
         )
     }
 }
@@ -118,7 +155,9 @@ fun PortraitRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit
+    onConfirmPasswordChange: (String) -> Unit,
+    registerState: RegisterState,
+    onRegisterClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -136,24 +175,26 @@ fun PortraitRegister(
             password,
             onPasswordChange,
             confirmPassword,
-            onConfirmPasswordChange
+            onConfirmPasswordChange,
+            registerState = registerState,
+            onRegisterClick = onRegisterClick
         )
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(
                 text = "Do you have an account?",
                 modifier = Modifier.align(Alignment.CenterVertically),
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            TextButton(onClick = {navController.navigate("login")}) {
-                Text(text = "Login",   fontSize = 17.sp)
+            TextButton(onClick = { navController.popBackStack() }) {
+                Text(text = "Login", fontSize = 17.sp)
             }
 
         }
-      
+
     }
 }
 
@@ -166,7 +207,7 @@ fun TopElementsRegister(navController: NavController) {
             Icons.Filled.ArrowBack,
             contentDescription = "Icon of arrow back",
             modifier = Modifier
-                .clickable { navController.navigate("home") }
+                .clickable { navController.popBackStack() }
                 .padding(top = 28.dp, start = 23.dp),
             tint = MaterialTheme.colorScheme.onSurface,
         )
@@ -209,7 +250,9 @@ fun MidElementsRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit
+    onConfirmPasswordChange: (String) -> Unit,
+    registerState: RegisterState,
+    onRegisterClick: () -> Unit
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -268,11 +311,17 @@ fun MidElementsRegister(
                         username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
                             snackState.showSnackbar("Please fill all fields")
                         }
+
+                        password.length < 6 && confirmPassword.length < 6 -> {
+                            snackState.showSnackbar("The passwords must be longer than 6 characters")
+                        }
+
                         password != confirmPassword -> {
                             snackState.showSnackbar("The passwords are not equal")
                         }
+
                         else -> {
-                            navController.navigate("home")
+                            onRegisterClick()
                         }
                     }
                 }
@@ -284,6 +333,34 @@ fun MidElementsRegister(
         ) {
             Text(text = "Sign Up")
         }
+        when (registerState) {
+            is RegisterState.Idle -> {
+
+            }
+
+            is RegisterState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
+            is RegisterState.Success -> {
+                val context = LocalContext.current
+                LaunchedEffect(Unit) {
+                    Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
+                    navController.navigate("home/${registerState.registerUser.user_id}") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
+            }
+
+            is RegisterState.Error -> {
+                val context = LocalContext.current
+                Toast.makeText(context, registerState.message, Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
     }
 }
 
@@ -297,7 +374,9 @@ fun LandscapeRegister(
     password: String,
     onPasswordChange: (String) -> Unit,
     confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit
+    onConfirmPasswordChange: (String) -> Unit,
+    registerState: RegisterState,
+    onRegisterClick: () -> Unit
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -420,11 +499,17 @@ fun LandscapeRegister(
                                 username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
                                     snackState.showSnackbar("Please fill all fields")
                                 }
+
+                                password.length < 6 && confirmPassword.length < 6 -> {
+                                    snackState.showSnackbar("The passwords must be longer than 6 characters")
+                                }
+
                                 password != confirmPassword -> {
                                     snackState.showSnackbar("The passwords are not equal")
                                 }
+
                                 else -> {
-                                    navController.navigate("home")
+                                    onRegisterClick()
                                 }
                             }
                         }
@@ -436,22 +521,51 @@ fun LandscapeRegister(
                     Text(text = "Sign Up")
                 }
             }
-            item{
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Do you have an account?",
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                TextButton(onClick = { navController.navigate("login") }) {
-                    Text(text = "Login", fontSize = 17.sp)
-                }
+            item {
+                when (registerState) {
+                    is RegisterState.Idle -> {
 
+                    }
+
+                    is RegisterState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                    }
+
+                    is RegisterState.Success -> {
+                        val context = LocalContext.current
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
+                            navController.navigate("home/${registerState.registerUser.user_id}") {
+                                popUpTo("register") { inclusive = true }
+                            }
+                        }
+                    }
+
+                    is RegisterState.Error -> {
+                        val context = LocalContext.current
+                        Toast.makeText(context, registerState.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                }
             }
-        }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Do you have an account?",
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    TextButton(onClick = { navController.navigate("login") }) {
+                        Text(text = "Login", fontSize = 17.sp)
+                    }
+
+                }
+            }
         }
     }
 }
