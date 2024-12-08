@@ -61,9 +61,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.CartViewModel
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.controller.LoginViewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
@@ -78,14 +82,18 @@ import kotlinx.coroutines.withContext
 var idProduct: Int ?=null
 
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun PreviewSingleProductScreen(){
     SingleProductScreen(navController = rememberNavController(), id = 1)
-}
+}*/
 
 @Composable
-fun SingleProductScreen (navController: NavController, id: Int, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun SingleProductScreen (navController: NavController,
+                         id: Int,
+                         userIdViewModel: UserIdViewModel,
+                         viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
@@ -114,17 +122,19 @@ fun SingleProductScreen (navController: NavController, id: Int, viewModel: Categ
                 //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content(categories)
+            content(categories,userIdViewModel.cartId,id)
         }
     }
 }
 
 @Composable
-fun content(categories: List<CategoryEntity>){
+fun content(categories: List<CategoryEntity>, cart_id: Int?, product_id: Int){
     Header("")
     InfoCategory(categories)
     SendSingleId()
-    ButtonsProduct()
+    if (cart_id != null) {
+        ButtonsProduct(cart_id,product_id)
+    }
 }
 
 
@@ -204,9 +214,14 @@ fun InfoProduct(id:Int, title:String, description:String, cost:String, image:Pai
 }
 
 @SuppressLint("RememberReturnType")
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun ButtonsProduct(){
+fun ButtonsProduct(cart_id: Int,
+                   product_id: Int,
+                   viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+                   //onNewDish  = { viewModel.api.addToCart(email, password) }
+
+){
     val snackState = remember{ SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
 
@@ -228,7 +243,14 @@ fun ButtonsProduct(){
 
         OutlinedButton(onClick = {
             //Aquí se agrega al carrito
-
+            if (cart_id != null) {
+                println("entra")
+                viewModel.addToCart(
+                    cart_id,
+                    dish_id = product_id,
+                    AddToCartModelRequest(1)
+                )
+            }
 
             launchSnackBar()
         },

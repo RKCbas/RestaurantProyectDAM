@@ -112,7 +112,7 @@ fun SetupNavGraph(
 
 
         composable("cart"){
-            CartScreen(navController)
+            CartScreen(navController,userIdViewModel)
         }
 
         composable("adminProducts") { AdminProductsScreen(navController) }
@@ -135,7 +135,7 @@ fun SetupNavGraph(
         composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
-                SingleProductScreen(navController, it)
+                SingleProductScreen(navController, it, userIdViewModel)
             }
         }
 

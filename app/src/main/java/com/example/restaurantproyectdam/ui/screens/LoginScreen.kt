@@ -64,6 +64,7 @@ import com.example.restaurantproyectdam.data.controller.LoginState
 import com.example.restaurantproyectdam.data.controller.LoginViewModel
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @Composable
 fun LoginScreen(
@@ -207,7 +208,9 @@ fun LandscapeLogin(
 
                 is LoginState.Success -> {
                     LaunchedEffect(Unit) {
+                        println("carrito desde screen"+loginState.cart.cart_id)
                         userIdViewModel.UpdateUserId(loginState.user.user_id)
+                        userIdViewModel.UpdateCartId(loginState.cart.cart_id)
                         navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
@@ -389,6 +392,7 @@ fun UserInputs(
             is LoginState.Success -> {
                 LaunchedEffect(Unit) {
                     userIdViewModel.UpdateUserId(loginState.user.user_id)
+                    userIdViewModel.UpdateCartId(loginState.cart.cart_id)
                     println(userIdViewModel.userId)
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
