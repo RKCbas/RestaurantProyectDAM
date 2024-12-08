@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.screens.myUserId
 
 sealed class BottomBarOpt(
     val route: String,
@@ -35,7 +36,7 @@ sealed class BottomBarOpt(
         icon = R.drawable.bag
     )
     object Home : BottomBarOpt(
-        route ="home",
+        route ="home/{$myUserId}",
         title = "Home",
         icon = Icons.Outlined.Home
     )

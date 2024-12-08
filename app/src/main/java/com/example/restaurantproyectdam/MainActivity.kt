@@ -87,10 +87,8 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
         composable("register") { RegisterScreen(navController) }
 
 
-        composable("orders/{userId}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let { OrdersScreen(navController, userId = it) }
-        }
+        composable("orders") { OrdersScreen(navController) }
+
         composable("order/{orderId}"){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("orderId")?.toIntOrNull()
             id?.let { OrderScreen(navController, orderId = it) }
@@ -103,9 +101,8 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
         composable("adminOrders") { AdminOrdersScreen(navController) }
 
 
-        composable("cart/{userId}"){ backStackEntry ->
-            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let {CartScreen(navController, userId = it)}
+        composable("cart"){
+            CartScreen(navController)
         }
 
         composable("adminProducts") { AdminProductsScreen(navController) }
@@ -113,9 +110,13 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
 
         //composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
-        composable("menu/{userId}") {backStackEntry ->
+        composable("menu") {
+
+            /*backStackEntry ->
             val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let { MenuScreen(navController, userId = it) }
+            id?.let { MenuScreen(navController, userId = it)
+             */
+            MenuScreen(navController)
         }
 
         //Ruta con parametro para CategoryProducts
@@ -125,11 +126,10 @@ fun SetupNavGraph(navController: NavHostController, viewModel: SearchViewModel) 
                 CategoryProductsScreen(navController, it)
             }
         }
-        composable("singleProduct/{id}/{userId}") { backStackEntry ->
+        composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
-            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
             id?.let {
-                SingleProductScreen(navController, it,userId)
+                SingleProductScreen(navController, it)
             }
         }
 
