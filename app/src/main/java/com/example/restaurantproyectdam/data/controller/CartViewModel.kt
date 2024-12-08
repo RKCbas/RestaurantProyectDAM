@@ -28,7 +28,9 @@ class CartViewModel: ViewModel() {
         }
     }
 
-    fun showCart(id: Int, onResult: (Response<ShowCartModelResponse>) -> Unit ){
+    fun showCart(id: Int,
+                 onResult: (Response<ShowCartModelResponse>) -> Unit
+    ){
         viewModelScope.launch {
             try {
                 val response = api.showCart(id)
@@ -39,7 +41,9 @@ class CartViewModel: ViewModel() {
         }
     }
 
-    fun deleteCart(id: Int, onResult: (Response<DeleteCartModelResponse>) -> Unit){
+    fun deleteCart(id: Int,
+                   onResult: (Response<DeleteCartModelResponse>) -> Unit
+    ){
         try {
             viewModelScope.launch {
                 val response = api.deleteCart(id)
@@ -54,12 +58,13 @@ class CartViewModel: ViewModel() {
         cart_id: Int,
         dish_id:Int,
         addToCartModel: AddToCartModelRequest,
-        onResult: (Response<CartModelActionResponse>) -> Unit
+        //onResult: (Response<CartModelActionResponse>) -> Unit
     ){
         try {
             viewModelScope.launch {
                 val response = api.addToCart(cart_id,dish_id,addToCartModel)
-                onResult(response)
+                println(response)
+                //onResult(response)
             }
         }catch(exception : Exception){
             print(exception)
@@ -69,12 +74,12 @@ class CartViewModel: ViewModel() {
     fun removeFromCart(
         cart_id: Int,
         dish_id:Int,
-        onResult: (Response<CartModelActionResponse>) -> Unit
+        //onResult: (Response<CartModelActionResponse>) -> Unit
     ){
         try {
             viewModelScope.launch {
                 val response = api.removeDishFromCart(cart_id,dish_id)
-                onResult(response)
+                //onResult(response)
             }
         }catch(exception : Exception){
             print(exception)

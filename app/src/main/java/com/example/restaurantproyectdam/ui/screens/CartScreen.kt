@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -29,25 +31,46 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.CartViewModel
+import com.example.restaurantproyectdam.data.controller.LoginViewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.model.CartOnlyContent
+import com.example.restaurantproyectdam.data.model.DishWithPivot
 import com.example.restaurantproyectdam.data.model.OrderCardModel
 import com.example.restaurantproyectdam.data.model.OrderProduct
 import com.example.restaurantproyectdam.data.model.ProductModel
+import com.example.restaurantproyectdam.data.model.RegisterRequest
+import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
+import com.example.restaurantproyectdam.data.network.RetrofitClient
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
+import kotlinx.coroutines.launch
+
 
 @Composable
-fun CartScreen(navController: NavController) {
+fun CartScreen(
+    navController: NavController,
+    userIdViewModel: UserIdViewModel,
+    viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
@@ -58,14 +81,43 @@ fun CartScreen(navController: NavController) {
                 .fillMaxSize()
         ) {
             Header("CART")
-            Content(navController)
+            if(userIdViewModel.cartId != null){
+                Content(navController, userIdViewModel.cartId!!)
+            }
+
         }
     }
 }
 
 
 @Composable
-private fun Content(navController: NavController){
+private fun Content(
+    navController: NavController,
+    cartId: Int,
+    cartViewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    ){
+
+    var products by remember { mutableStateOf<List<DishWithPivot>>(emptyList()) }
+    /**
+     * image
+     * title
+     * description
+     * quantity
+     * cost
+     */
+    //lateinit var products: CartOnlyContent
+
+    cartViewModel.showCartContent(cartId){ response->
+        if(response.isSuccessful){
+            val dishes = response.body()!!
+            products = dishes.dishes ?: emptyList()
+        }else{
+            println("Failed to load items")
+        }
+    }
+
+    //val items = cartViewModel.showCart(cartId)
+
     val id = 1
     val orderProductsArray = arrayOf(
         OrderProduct(
@@ -94,7 +146,7 @@ private fun Content(navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Column{
             // Encabezado con icono de navegación y detalles de la orden
@@ -104,12 +156,18 @@ private fun Content(navController: NavController){
                     modifier = Modifier.padding(10.dp)
 
                 ) {
-                    specificOrder?.orderProducts?.let { products ->
+                    products.let{ it ->
+                        items(it){
+                            ProductCart(it)
+                        }
+
+                    }
+                    /*specificOrder?.orderProducts?.let { products ->
                         items(products) { item ->
                             ProductCart(item)
                         }
 
-                    }
+                    }*/
 
                 }
                 Button(
@@ -125,11 +183,17 @@ private fun Content(navController: NavController){
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    specificOrder?.orderProducts?.let { products ->
+                    products.let{ it ->
+                        items(it){
+                            ProductCart(it, Modifier.width(300.dp))
+                        }
+
+                    }
+                    /*specificOrder?.orderProducts?.let { products ->
                         items(products) { item ->
                             ProductCart(item, Modifier.width(300.dp))
                         }
-                    }
+                    }*/
                 }
                 Button(
                     modifier = Modifier.width(300.dp),
@@ -142,7 +206,8 @@ private fun Content(navController: NavController){
     }
 }
 @Composable
-private fun ProductCart(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWidth()) {
+private fun ProductCart(
+    item: DishWithPivot, modifier: Modifier = Modifier.fillMaxWidth()) {
     Card(
         modifier = modifier.padding(5.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
@@ -153,7 +218,17 @@ private fun ProductCart(item: OrderProduct, modifier: Modifier = Modifier.fillMa
 }
 
 @Composable
-private fun CardContent(item: OrderProduct){
+private fun CardContent(
+    item: DishWithPivot,
+    viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+){
+    /**
+     * image
+     * title
+     * description
+     * quantity
+     * cost
+     */
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,14 +244,18 @@ private fun CardContent(item: OrderProduct){
                 modifier = Modifier
                     .weight(1f)
             ) {
-                Image(
+
+                AsyncImage(
+                    model = item.dish_image,
+                    //painterResource(id = R.drawable.sushi),
+                    contentDescription = item.name,
+                    //contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
                         .padding(end = 10.dp),
-                    painter = item.orderProduct.image,
-                    contentDescription = "product Image",
                 )
+
             }
 
             // Columna de los detalles del producto
@@ -188,22 +267,22 @@ private fun CardContent(item: OrderProduct){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = item.orderProduct.title,
+                    text = item.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = item.orderProduct.description,
+                    text = item.description,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                 )
                 Text(
-                    text = "Quantity: ${item.amount}",
+                    text = "Quantity: ${item.pivot.quantity}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                 )
                 Text(
-                    text = "Total Cost: ${item.amount * item.orderProduct.cost}",
+                    text = "Total Cost: ${item.pivot.total_price}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                 )
@@ -218,6 +297,7 @@ private fun CardContent(item: OrderProduct){
                 Button(
 
                     onClick = {
+                        viewModel.removeFromCart(item.pivot.cart_id, item.dish_id)
                         //Cancelar
                     },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
@@ -233,5 +313,5 @@ private fun CardContent(item: OrderProduct){
 @Preview(showBackground = true)
 @Composable
 private fun CartScreenPreview() {
-    CartScreen(navController = rememberNavController())
+    //CartScreen(navController = rememberNavController())
 }

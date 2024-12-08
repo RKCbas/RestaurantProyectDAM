@@ -357,6 +357,7 @@ fun MidElementsRegister(
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
                     userIdViewModel.UpdateUserId(registerState.registerUser.user_id)
+                    registerState.cart?.let { userIdViewModel.UpdateCartId(it.cart_id) }
                     Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
                     navController.navigate("home") {
                         popUpTo("register") { inclusive = true }
