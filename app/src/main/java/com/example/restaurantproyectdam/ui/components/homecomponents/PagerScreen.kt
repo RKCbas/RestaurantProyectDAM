@@ -31,7 +31,7 @@ fun PagerScreen(navController : NavController,userId: Int?, dishes: List<DishEnt
         verticalArrangement = Arrangement.Center
     ){
         HorizontalPager(state=pagerState) { pageIndex->
-            SinglePage(page = limitDishes[pageIndex], navController,userId)
+            SinglePage(page = limitDishes[pageIndex], navController)
         }
 
         Spacer(modifier=Modifier.size(16.dp))
