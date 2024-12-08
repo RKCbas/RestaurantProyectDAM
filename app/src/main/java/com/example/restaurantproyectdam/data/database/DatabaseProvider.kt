@@ -11,7 +11,8 @@ object DatabaseProvider {
             val db = Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java, "app-db"
-            ).build()
+            ).fallbackToDestructiveMigration()
+                .build()
             instance = db
             db
         }
