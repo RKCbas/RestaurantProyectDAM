@@ -95,11 +95,10 @@ fun SetupNavGraph(
         composable("register") { RegisterScreen(navController, userIdViewModel) }
 
 
-        composable("orders/{userId}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let { OrdersScreen(navController, userId = it) }
-        }
-        composable("order/{orderId}") { backStackEntry ->
+
+        composable("orders") { OrdersScreen(navController) }
+
+        composable("order/{orderId}"){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("orderId")?.toIntOrNull()
             id?.let { OrderScreen(navController, orderId = it) }
         }
@@ -111,9 +110,9 @@ fun SetupNavGraph(
         composable("adminOrders") { AdminOrdersScreen(navController) }
 
 
-        composable("cart/{userId}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let { CartScreen(navController, userId = it) }
+
+        composable("cart"){
+            CartScreen(navController)
         }
 
         composable("adminProducts") { AdminProductsScreen(navController) }
@@ -121,9 +120,9 @@ fun SetupNavGraph(
 
         //composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
-        composable("menu/{userId}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-            id?.let { MenuScreen(navController, userId = it) }
+
+        composable("menu") {
+            MenuScreen(navController)
         }
 
         //Ruta con parametro para CategoryProducts
@@ -133,9 +132,8 @@ fun SetupNavGraph(
                 CategoryProductsScreen(navController, it)
             }
         }
-        composable("singleProduct/{id}/{userId}") { backStackEntry ->
+        composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
-            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
             id?.let {
                 SingleProductScreen(navController, it, userId)
             }

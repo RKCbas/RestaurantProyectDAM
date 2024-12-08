@@ -47,7 +47,7 @@ import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
 
 @Composable
-fun CartScreen(navController: NavController,userId:Int) {
+fun CartScreen(navController: NavController) {
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
@@ -233,5 +233,5 @@ private fun CardContent(item: OrderProduct){
 @Preview(showBackground = true)
 @Composable
 private fun CartScreenPreview() {
-    CartScreen(navController = rememberNavController(),1)
+    CartScreen(navController = rememberNavController())
 }

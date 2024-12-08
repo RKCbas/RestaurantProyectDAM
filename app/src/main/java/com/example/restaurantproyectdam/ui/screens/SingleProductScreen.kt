@@ -69,11 +69,11 @@ var idProduct: Int ?=null
 @Preview(showBackground = true)
 @Composable
 fun PreviewSingleProductScreen(){
-    SingleProductScreen(navController = rememberNavController(), id = 1,1)
+    SingleProductScreen(navController = rememberNavController(), id = 1)
 }
 
 @Composable
-fun SingleProductScreen (navController: NavController, id: Int, userId:Int?) {
+fun SingleProductScreen (navController: NavController, id: Int) {
     naveController = navController
     myUserId = userId
     println(userId)
