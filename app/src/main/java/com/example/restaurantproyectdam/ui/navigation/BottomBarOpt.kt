@@ -36,7 +36,7 @@ sealed class BottomBarOpt(
         icon = R.drawable.bag
     )
     object Home : BottomBarOpt(
-        route ="home/{$myUserId}",
+        route ="home",
         title = "Home",
         icon = Icons.Outlined.Home
     )
