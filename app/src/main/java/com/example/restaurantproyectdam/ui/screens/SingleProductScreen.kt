@@ -75,8 +75,6 @@ fun PreviewSingleProductScreen(){
 @Composable
 fun SingleProductScreen (navController: NavController, id: Int) {
     naveController = navController
-    myUserId = userId
-    println(userId)
     idProduct = id
     Scaffold (
         //color = Color.White
