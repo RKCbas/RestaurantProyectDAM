@@ -81,6 +81,9 @@ import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -91,17 +94,20 @@ var myUserId: Int ?= null;
 
 @Composable
 
-fun HomeScreen(navController: NavController, userId: Int, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
 
     var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
 
+
     //val scrollState = rememberScrollState()
 
     myNavController = navController
-    myUserId = userId
+    myUserId = userIdViewModel.userId
+    println(myUserId)
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen
@@ -433,6 +439,6 @@ private fun HeaderPortrait(vertical: Boolean) {
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController(), 0)
+    HomeScreen(navController = rememberNavController(), viewModel())
 }
 

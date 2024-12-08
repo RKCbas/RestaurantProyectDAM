@@ -54,20 +54,22 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.LoginState
 import com.example.restaurantproyectdam.data.controller.LoginViewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    userIdViewModel: UserIdViewModel,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
 
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
@@ -85,7 +87,8 @@ fun LoginScreen(
             password = password,
             onPasswordChange = { password = it },
             loginState = loginState,
-            onLoginClick = { viewModel.login(email, password) }
+            onLoginClick = { viewModel.login(email, password) },
+            userIdViewModel
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeLogin(
@@ -95,7 +98,8 @@ fun LoginScreen(
             password = password,
             onPasswordChange = { password = it },
             loginState = loginState,
-            onLoginClick = { viewModel.login(email, password) }
+            onLoginClick = { viewModel.login(email, password) },
+            userIdViewModel
         )
     } else {
         LandscapeLogin(
@@ -105,7 +109,8 @@ fun LoginScreen(
             password = password,
             onPasswordChange = { password = it },
             loginState = loginState,
-            onLoginClick = { viewModel.login(email, password) }
+            onLoginClick = { viewModel.login(email, password) },
+            userIdViewModel
         )
     }
 }
@@ -118,7 +123,8 @@ fun LandscapeLogin(
     password: String,
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
     Row(
         modifier = Modifier
@@ -201,7 +207,8 @@ fun LandscapeLogin(
 
                 is LoginState.Success -> {
                     LaunchedEffect(Unit) {
-                        navController.navigate("home/${loginState.user.user_id}") {
+                        userIdViewModel.UpdateUserId(loginState.user.user_id)
+                        navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
                     }
@@ -248,7 +255,8 @@ fun PortraitLogin(
     password: String,
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
     Column(
         modifier = Modifier
@@ -265,7 +273,8 @@ fun PortraitLogin(
             password,
             onPasswordChange,
             loginState,
-            onLoginClick
+            onLoginClick,
+            userIdViewModel
         )
         BottomElement(navController)
 
@@ -327,7 +336,8 @@ fun UserInputs(
     password: String,
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
 
     Column(
@@ -378,7 +388,9 @@ fun UserInputs(
 
             is LoginState.Success -> {
                 LaunchedEffect(Unit) {
-                    navController.navigate("home/${loginState.user.user_id}") {
+                    userIdViewModel.UpdateUserId(loginState.user.user_id)
+                    println(userIdViewModel.userId)
+                    navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
