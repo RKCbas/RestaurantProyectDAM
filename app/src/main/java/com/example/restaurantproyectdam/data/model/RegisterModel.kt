@@ -8,7 +8,7 @@ data class RegisterRequest(
 
 data class RegisterResponse(
     val message: String,
-    val registerUser: RegisterUser
+    val user: RegisterUser
 )
 
 data class RegisterUser(

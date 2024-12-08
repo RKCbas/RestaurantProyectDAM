@@ -25,11 +25,11 @@ class RegisterViewModel : ViewModel() {
                 // Verificar la respuesta del servidor
                 if (response.isSuccessful) {
                     val registerResponse = response.body()
-                    if (registerResponse?.registerUser != null) {
+                    if (registerResponse?.user != null) {
                         // Registro exitoso, actualizar el estado
-                        _registerState.value = RegisterState.Success(registerResponse.registerUser)
-                        //creamos el carrito para el usuario
-                        api.createCart(CartModelRequest(registerResponse.registerUser.user_id))
+                        _registerState.value = RegisterState.Success(registerResponse.user)
+                        // creamos el carrito con el registro del usuario
+                        api.createCart(CartModelRequest(registerResponse.user.user_id))
                     } else {
                         // Respuesta del servidor pero sin usuario válido
                         _registerState.value = RegisterState.Error("Error: validacion")
