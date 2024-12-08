@@ -82,9 +82,8 @@ import com.example.restaurantproyectdam.data.model.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.restaurantproyectdam.data.controller.DishViewModel
 import com.example.restaurantproyectdam.data.controller.UserIdViewModel
-import com.example.restaurantproyectdam.data.model.DishEntity
+
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -96,14 +95,12 @@ var myUserId: Int ?= null;
 @Composable
 
 
-fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
-    val dishDao = db.dishDao()
 
     var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
-    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList()) }
 
 
     //val scrollState = rememberScrollState()
@@ -126,14 +123,9 @@ fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, 
 
         LaunchedEffect(Unit) {
             categories =  withContext(Dispatchers.IO) {
-                categoryViewModel.getCategories(db)
+                viewModel.getCategories(db)
                 categoryDao.getCategories()
             }
-            dishes =  withContext(Dispatchers.IO) {
-                dishViewModel.getDishes(db)
-                dishDao.getDishes()
-            }
-
         }
 
         val listState = rememberLazyListState()
@@ -147,16 +139,16 @@ fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, 
         ){
             if(width == WindowWidthSizeClass.COMPACT) {
                 //PORTAIT
-                ContentPortrait(categories, dishes)
+                ContentPortrait(categories)
 
             }else if(height == WindowHeightSizeClass.COMPACT) {
                 //LANDSCAPE
                 //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
-                ContentLandscape(categories, dishes)
+                ContentLandscape(categories)
             }else{
 
                 //Posts(post, "PhoneL")
-                ContentLandscape(categories, dishes)
+                ContentLandscape(categories)
             }
             //Content()
         }
@@ -165,7 +157,7 @@ fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, 
 
 
 @Composable
-private fun ContentPortrait(categories: List<CategoryEntity>, dishes: List<DishEntity>) {
+private fun ContentPortrait(categories: List<CategoryEntity>) {
 
     Column(
         modifier = Modifier
@@ -174,14 +166,14 @@ private fun ContentPortrait(categories: List<CategoryEntity>, dishes: List<DishE
         //.padding(25.dp)
     ) {
         HeaderPortrait(true)
-        MainContent(categories, dishes)
+        MainContent(categories)
     }
 
 }
 
 
 @Composable
-private fun ContentLandscape(categories: List<CategoryEntity>, dishes: List<DishEntity>) {
+private fun ContentLandscape(categories: List<CategoryEntity>) {
 
     Row(
         modifier = Modifier
@@ -190,7 +182,7 @@ private fun ContentLandscape(categories: List<CategoryEntity>, dishes: List<Dish
         //.padding(25.dp)
     ) {
         HeaderPortrait(false)
-        MainContent(categories, dishes)
+        MainContent(categories)
     }
     
 }
@@ -255,7 +247,7 @@ private fun CategoryItem(category_id: Int, name: String, category_image: String?
 }
 
 @Composable
-private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEntity>) {
+private fun MainContent(categoryList: List<CategoryEntity>) {
     LazyColumn(modifier = Modifier.fillMaxHeight(1f)) {
         item {
             Text(
@@ -281,7 +273,7 @@ private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEnt
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it, myUserId, dishes) }
+                myNavController?.let { PagerScreen(it, myUserId) }
             }
 
         }
@@ -294,7 +286,7 @@ private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEnt
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it,myUserId,dishes) }
+                myNavController?.let { PagerScreen(it,myUserId) }
             }
         }
         item {
@@ -306,7 +298,7 @@ private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEnt
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it,myUserId, dishes) }
+                myNavController?.let { PagerScreen(it,myUserId) }
             }
 
         }

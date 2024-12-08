@@ -35,21 +35,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.R
-import com.example.restaurantproyectdam.data.model.DishEntity
-import com.example.restaurantproyectdam.data.model.DishModel
 import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.ui.screens.naveController
 
 @Composable
-fun SinglePage(page: DishEntity, navController: NavController, userId:Int?){
+fun SinglePage(page: ProductModel,navController: NavController,userId:Int?){
 
     Button(
         modifier = Modifier.clip(RoundedCornerShape(30.dp)),
         onClick={
             navController.navigate("singleProduct/${page.id}")
-
         },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
@@ -64,8 +60,8 @@ fun SinglePage(page: DishEntity, navController: NavController, userId:Int?){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            AsyncImage(
-                model = page.dish_image,
+            Image(
+                painter = page.image,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -76,7 +72,7 @@ fun SinglePage(page: DishEntity, navController: NavController, userId:Int?){
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start,
             ){
-                Text(text=page.name,
+                Text(text=page.title,
                     style= MaterialTheme.typography.titleLarge,
                     //fontFamily= FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
@@ -91,7 +87,7 @@ fun SinglePage(page: DishEntity, navController: NavController, userId:Int?){
                 )
                 Spacer(modifier = Modifier.size((12.dp)))
                 Text(
-                    text = "$"+page.price.toString()+"MXN",
+                    text = "$"+page.cost.toString()+"MXN",
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyMedium
                 )

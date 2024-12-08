@@ -14,16 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.restaurantproyectdam.data.model.DishEntity
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerScreen(navController : NavController,userId: Int?, dishes: List<DishEntity>){
-
-    val limitDishes = dishes.take(5)
-
-    val pagerState : PagerState = rememberPagerState(pageCount = { limitDishes.size})
+fun PagerScreen(navController : NavController,userId: Int?){
+    val items :List<ProductData>
+    //pages.size
+    val products = createArrayProducts()
+    val pagerState : PagerState = rememberPagerState(pageCount = { products.size})
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -31,11 +30,12 @@ fun PagerScreen(navController : NavController,userId: Int?, dishes: List<DishEnt
         verticalArrangement = Arrangement.Center
     ){
         HorizontalPager(state=pagerState) { pageIndex->
-            SinglePage(page = limitDishes[pageIndex], navController,userId)
+            SinglePage(page = products[pageIndex], navController,userId)
         }
 
         Spacer(modifier=Modifier.size(16.dp))
 
-        PageIndicator(pagerState = pagerState, pageCount = limitDishes.size)
+        //PreviousNextButtons(pagerState = pagerState,pages.size)
+        PageIndicator(pagerState = pagerState, pageCount = pages.size)
     }
 }
