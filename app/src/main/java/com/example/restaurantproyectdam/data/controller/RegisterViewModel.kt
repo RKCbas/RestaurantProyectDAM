@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.example.restaurantproyectdam.data.model.CartModelRequest
+import com.example.restaurantproyectdam.data.model.CartModelResponse
 import com.example.restaurantproyectdam.data.model.RegisterRequest
 import com.example.restaurantproyectdam.data.model.RegisterUser
+import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
 import com.example.restaurantproyectdam.data.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,10 +29,14 @@ class RegisterViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val registerResponse = response.body()
                     if (registerResponse?.user != null) {
-                        // Registro exitoso, actualizar el estado
-                        _registerState.value = RegisterState.Success(registerResponse.user)
                         // creamos el carrito con el registro del usuario
-                        api.createCart(CartModelRequest(registerResponse.user.user_id))
+                        val cartResponse = api.createCart(CartModelRequest(registerResponse.user.user_id))
+
+                        // Registro exitoso, actualizar el estado
+                        _registerState.value = RegisterState.Success(registerResponse.user,cartResponse.body())
+
+
+
                     } else {
                         // Respuesta del servidor pero sin usuario válido
                         _registerState.value = RegisterState.Error("Error: validacion")
@@ -53,6 +59,6 @@ class RegisterViewModel : ViewModel() {
 sealed class RegisterState {
     object Idle : RegisterState()
     object Loading : RegisterState()
-    data class Success(val registerUser: RegisterUser) : RegisterState()
+    data class Success(val registerUser: RegisterUser,val cart : CartModelResponse?) : RegisterState()
     data class Error(val message: String) : RegisterState()
 }

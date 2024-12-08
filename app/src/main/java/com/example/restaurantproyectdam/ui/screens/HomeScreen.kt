@@ -108,6 +108,7 @@ fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, 
     myNavController = navController
     myUserId = userIdViewModel.userId
     println(myUserId)
+    println("carrito:"+userIdViewModel.cartId)
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen

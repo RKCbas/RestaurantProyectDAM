@@ -8,9 +8,15 @@ import androidx.lifecycle.ViewModel
 class UserIdViewModel : ViewModel() {
     var userId by mutableStateOf<Int?>(null)
         private set
+    var cartId by mutableStateOf<Int?>(null)
+        private set
 
     fun UpdateUserId(id: Int){
         userId = id
+    }
+
+    fun UpdateCartId(id: Int){
+        cartId = id
     }
 
     fun clearUserId() {

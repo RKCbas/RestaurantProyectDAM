@@ -45,7 +45,7 @@ fun SinglePage(page: ProductModel,navController: NavController,userId:Int?){
     Button(
         modifier = Modifier.clip(RoundedCornerShape(30.dp)),
         onClick={
-            navController.navigate("singleProduct/${page.id}/${userId}")
+            navController.navigate("singleProduct/${page.id}")
         },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
