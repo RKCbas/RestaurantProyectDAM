@@ -6,6 +6,7 @@ import com.example.restaurantproyectdam.data.model.CartModelRequest
 import com.example.restaurantproyectdam.data.model.CartModelResponse
 import com.example.restaurantproyectdam.data.model.CartModelWithContent
 import com.example.restaurantproyectdam.data.model.CartOnlyContent
+import com.example.restaurantproyectdam.data.model.CategoryModel
 import com.example.restaurantproyectdam.data.model.DeleteCartModelResponse
 import com.example.restaurantproyectdam.data.model.DishWithPivot
 import com.example.restaurantproyectdam.data.model.LoginRequest
@@ -61,4 +62,8 @@ interface ApiService {
         @Path("cart_id") cart_id : Int,
         @Path("dish_id") dish_id: Int
     ): Response<CartModelActionResponse>
+
+    //Categories
+    @GET("categories")
+    suspend fun getCategories(): Response<List<CategoryModel>>
 }

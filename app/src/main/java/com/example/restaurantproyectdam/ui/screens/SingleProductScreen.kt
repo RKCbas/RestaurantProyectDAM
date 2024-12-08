@@ -244,7 +244,7 @@ fun InfoCategory() {
     for (product in arrayProductss ){
         if (product.id == idProduct) {
             for(category in arrayCategoriess){
-                if(category.id == product.category){
+                if(category.category_id == product.category){
                     ShowCategory(category.name)
                 }
             }

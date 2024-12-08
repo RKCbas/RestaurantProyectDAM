@@ -138,7 +138,7 @@ fun CategoriesInfo(){
             .padding(26.dp)
     ){
         items(arrayCategories){category ->
-            CategorySelected(category.id,category.name)
+            CategorySelected(category.category_id,category.name)
         }
     }
 }
