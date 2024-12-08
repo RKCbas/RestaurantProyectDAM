@@ -51,7 +51,7 @@ import com.example.restaurantproyectdam.ui.components.SearchButton
 var naveController: NavController ?=null
 
 @Composable
-fun MenuScreen (navController: NavController,userId:Int) {
+fun MenuScreen (navController: NavController) {
     naveController = navController
     Scaffold (
         //color = Color.White
