@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
@@ -64,12 +65,14 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.RegisterState
 import com.example.restaurantproyectdam.data.controller.RegisterViewModel
+import com.example.restaurantproyectdam.data.controller.UserIdViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
+    userIdViewModel: UserIdViewModel,
     viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
@@ -100,7 +103,8 @@ fun RegisterScreen(
                     password = password,
                     name = username
                 )
-            }
+            },
+            userIdViewModel
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeRegister(
@@ -120,7 +124,8 @@ fun RegisterScreen(
                     password = password,
                     name = username
                 )
-            }
+            },
+            userIdViewModel
         )
     } else {
         LandscapeRegister(
@@ -140,7 +145,8 @@ fun RegisterScreen(
                     password = password,
                     name = username
                 )
-            }
+            },
+            userIdViewModel
         )
     }
 }
@@ -158,6 +164,7 @@ fun PortraitRegister(
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
     onRegisterClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
     Column(
         modifier = Modifier
@@ -177,7 +184,8 @@ fun PortraitRegister(
             confirmPassword,
             onConfirmPasswordChange,
             registerState = registerState,
-            onRegisterClick = onRegisterClick
+            onRegisterClick = onRegisterClick,
+            userIdViewModel
         )
         Spacer(modifier = Modifier.height(15.dp))
         Row(
@@ -252,7 +260,8 @@ fun MidElementsRegister(
     confirmPassword: String,
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -347,8 +356,9 @@ fun MidElementsRegister(
             is RegisterState.Success -> {
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
+                    userIdViewModel.UpdateUserId(registerState.registerUser.user_id)
                     Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
-                    navController.navigate("home/${registerState.registerUser.user_id}") {
+                    navController.navigate("home") {
                         popUpTo("register") { inclusive = true }
                     }
                 }
@@ -376,7 +386,8 @@ fun LandscapeRegister(
     confirmPassword: String,
     onConfirmPasswordChange: (String) -> Unit,
     registerState: RegisterState,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    userIdViewModel: UserIdViewModel
 ) {
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
@@ -536,8 +547,9 @@ fun LandscapeRegister(
                     is RegisterState.Success -> {
                         val context = LocalContext.current
                         LaunchedEffect(Unit) {
+                            userIdViewModel.UpdateUserId(registerState.registerUser.user_id)
                             Toast.makeText(context, "Usuario ${registerState.registerUser.name} creado exitosamente", Toast.LENGTH_SHORT).show()
-                            navController.navigate("home/${registerState.registerUser.user_id}") {
+                            navController.navigate("home") {
                                 popUpTo("register") { inclusive = true }
                             }
                         }
