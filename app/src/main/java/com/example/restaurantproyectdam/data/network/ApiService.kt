@@ -1,17 +1,24 @@
 package com.example.restaurantproyectdam.data.network
 
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
+import com.example.restaurantproyectdam.data.model.AddToOrderModelRequest
+import com.example.restaurantproyectdam.data.model.AddToOrderModelResponse
 import com.example.restaurantproyectdam.data.model.CartModelActionResponse
 import com.example.restaurantproyectdam.data.model.CartModelRequest
 import com.example.restaurantproyectdam.data.model.CartModelResponse
 import com.example.restaurantproyectdam.data.model.CartModelWithContent
 import com.example.restaurantproyectdam.data.model.CartOnlyContent
 import com.example.restaurantproyectdam.data.model.CategoryModel
+import com.example.restaurantproyectdam.data.model.CreateOrderRequest
+import com.example.restaurantproyectdam.data.model.CreateOrderResponse
 import com.example.restaurantproyectdam.data.model.DeleteCartModelResponse
+import com.example.restaurantproyectdam.data.model.DeleteDishFromOrderResponse
 import com.example.restaurantproyectdam.data.model.DishModel
 import com.example.restaurantproyectdam.data.model.DishWithPivot
 import com.example.restaurantproyectdam.data.model.LoginRequest
 import com.example.restaurantproyectdam.data.model.LoginResponse
+import com.example.restaurantproyectdam.data.model.Order
+import com.example.restaurantproyectdam.data.model.OrderContent
 import com.example.restaurantproyectdam.data.model.RegisterRequest
 import com.example.restaurantproyectdam.data.model.RegisterResponse
 import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
@@ -79,7 +86,36 @@ interface ApiService {
         @Path("cart_id") cart_id : Int,
         @Path("dish_id") dish_id: Int
     ): Response<CartModelActionResponse>
+    //////////////////////////////////////////////////////////////////////
+    // Orders
 
+    @POST("orders")
+    suspend fun createOrder(@Body order: CreateOrderRequest): Response<CreateOrderResponse>
+
+    @GET("orders/user/{user_id}")
+    suspend fun getOrdersFromUser(
+        @Path("user_id") user_id: Int
+    ): Response<List<Order>>
+
+    @GET("orders/{order_id}/dishes")
+    suspend fun getDishesFromOrder(
+        @Path("order_id") order_id: Int
+    ):Response<OrderContent>
+
+    @DELETE("orders/{order_id}/dishes/{dish_id}")
+    suspend fun deleteDishFromOrder(
+        @Path("order_id") order_id: Int,
+        @Path("dish_id") dish_id: Int
+    ):Response<DeleteDishFromOrderResponse>
+
+    @POST("orders/{order_id}/dishes/{dish_id}")
+    suspend fun addDishToOrder(
+        @Path("order_id") order_id: Int,
+        @Path("dish_id") dish_id: Int,
+        @Body addToOrderModelRequest: AddToOrderModelRequest
+    ): Response<AddToOrderModelResponse>
+
+    //////////////////////////////////////////////////////////////////////
     //Categories
     @GET("categories")
     suspend fun getCategories(): Response<List<CategoryModel>>

@@ -134,7 +134,7 @@ fun searchBar(route:String){
                     .padding(4.dp)
             )
         }*/
-        var query by remember { mutableStateOf("") }
+        /*var query by remember { mutableStateOf("") }
         Material3SearchBar(
             modifier = Modifier.padding(top = 0.dp),
             query = query,
@@ -144,7 +144,7 @@ fun searchBar(route:String){
             onSearch = { searchQuery ->
                 // Perform search logic
             }
-        )
+        )*/
     }
 
 }

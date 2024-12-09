@@ -457,7 +457,7 @@ private fun HeaderPortrait(vertical: Boolean, userViewModel: UserViewModel, cont
 
 
         var query by remember { mutableStateOf("") }
-        Material3SearchBar(
+        /*Material3SearchBar(
             modifier = Modifier.padding(top = 0.dp),
             query = query,
             onQueryChanged = { newQuery ->
@@ -466,7 +466,7 @@ private fun HeaderPortrait(vertical: Boolean, userViewModel: UserViewModel, cont
             onSearch = { searchQuery ->
                 // Perform search logic
             }
-        )
+        )*/
     }
 }
 
