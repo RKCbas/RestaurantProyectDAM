@@ -1,7 +1,7 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,19 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-import androidx.compose.material3.AlertDialog
-
-import androidx.compose.foundation.verticalScroll
+import android.widget.Toast
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -51,17 +49,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.CaptureActivityPortrait
 import com.example.restaurantproyectdam.R
-import com.example.restaurantproyectdam.data.model.CategoryModel
-import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Material3SearchBar
-import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
 
 import com.example.restaurantproyectdam.ui.components.homecomponents.PermissionRequiredDialog
@@ -70,22 +64,54 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 
-
+import com.example.restaurantproyectdam.data.controller.DishViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
+import com.example.restaurantproyectdam.data.model.DishEntity
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
 
 var myNavController: NavController? = null;
+var myUserId: Int? = null;
+
 
 @Composable
 
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val context = LocalContext.current
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+    val dishDao = db.dishDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList()) }
+
 
     //val scrollState = rememberScrollState()
 
     myNavController = navController
+    myUserId = userViewModel.userId
+    println(myUserId)
+
+    println("carrito:" + userViewModel.cartId)
+
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen
@@ -97,67 +123,92 @@ fun HomeScreen(navController: NavController) {
         bottomBar = { BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding ->
+
+        LaunchedEffect(Unit) {
+            categories = withContext(Dispatchers.IO) {
+                categoryViewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+            dishes = withContext(Dispatchers.IO) {
+                dishViewModel.getDishes(db)
+                dishDao.getDishes()
+            }
+
+        }
+
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
 
-                //.verticalScroll(scrollState)
+            //.verticalScroll(scrollState)
 
-        ){
-            if(width == WindowWidthSizeClass.COMPACT) {
+        ) {
+            if (width == WindowWidthSizeClass.COMPACT) {
                 //PORTAIT
-                ContentPortrait()
+                ContentPortrait(categories, dishes, userViewModel, context)
 
-            }else if(height == WindowHeightSizeClass.COMPACT) {
+            } else if (height == WindowHeightSizeClass.COMPACT) {
                 //LANDSCAPE
                 //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
-                ContentLandscape()
-            }else{
+                ContentLandscape(categories, dishes, userViewModel, context)
+            } else {
 
                 //Posts(post, "PhoneL")
-                ContentLandscape()
+                ContentLandscape(categories, dishes, userViewModel, context)
             }
             //Content()
         }
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-private fun ContentPortrait() {
+private fun ContentPortrait(
+    categories: List<CategoryEntity>,
+    dishes: List<DishEntity>,
+    userViewModel: UserViewModel,
+    context: Context
+) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+        //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
-        HeaderPortrait(true)
-        MainContent()
+        HeaderPortrait(true, userViewModel, context)
+        MainContent(categories, dishes)
     }
 
 }
 
-@Preview(showBackground = true)
+
 @Composable
-private fun ContentLandscape() {
+private fun ContentLandscape(
+    categories: List<CategoryEntity>,
+    dishes: List<DishEntity>,
+    userViewModel: UserViewModel,
+    context: Context
+) {
 
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+        //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
-        HeaderPortrait(false)
-        MainContent()
+        HeaderPortrait(false, userViewModel, context)
+        MainContent(categories, dishes)
     }
-    
+
 }
 
 
 //@Preview(showBackground=true)
 @Composable
-private fun CategoryItem(category: CategoryModel) {
+private fun CategoryItem(category_id: Int, name: String, category_image: String?) {
 
     Button(
         // Pattern that applies to all the 10 items
@@ -165,17 +216,19 @@ private fun CategoryItem(category: CategoryModel) {
             .width(150.dp)
             .height(150.dp)
             .padding(10.dp, 5.dp, 5.dp, 0.dp)
-            .clip(RoundedCornerShape(10.dp)), // Like border radius
-        //.background(color = MaterialTheme.colorScheme.surface),
+            .clip(RoundedCornerShape(10.dp)) // Like border radius
+            .background(color = MaterialTheme.colorScheme.surface),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+        //color = MaterialTheme.colorScheme.surface
         //.background(Color.White),
         //elevation = 6.dp // adds a shadow
         onClick = {
-            myNavController?.navigate("categoryProducts/${category.id}")
+            myNavController?.navigate("categoryProducts/${category_id}")
         },
         //MaterialTheme.colorScheme.surface
         //ButtonDefaults.buttonColors(Primary)
         //colors = MaterialTheme.colorScheme.surface,
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
         shape = MaterialTheme.shapes.medium, // Use the shape of a Card
         //contentPadding = PaddingValues(16.dp) // You can adjust padding to match a Card's style
@@ -183,13 +236,14 @@ private fun CategoryItem(category: CategoryModel) {
         Column(
             modifier = Modifier
                 .padding(5.dp),
+            //.background(color = MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = category.image,
+            AsyncImage(
+                model = category_image,
                 //painterResource(id = R.drawable.sushi),
-                contentDescription = category.name,
+                contentDescription = name,
                 //contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
@@ -198,7 +252,7 @@ private fun CategoryItem(category: CategoryModel) {
             //Spacer(modifier = Modifier.padding(5.dp)) //Leaves some space
 
             Text(
-                text = category.name,
+                text = name,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 //color=Color.Black,
@@ -211,8 +265,7 @@ private fun CategoryItem(category: CategoryModel) {
 }
 
 @Composable
-private fun MainContent() {
-    val categories = createArrayCategories()
+private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEntity>) {
     LazyColumn(modifier = Modifier.fillMaxHeight(1f)) {
         item {
             Text(
@@ -223,9 +276,8 @@ private fun MainContent() {
         }
         item {
             LazyRow {
-
-                items(categories.size) { index ->
-                    CategoryItem(categories[index])
+                items(categoryList) { category ->
+                    CategoryItem(category.category_id, category.name, category.category_image)
                 }
             }
         }
@@ -239,7 +291,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
 
         }
@@ -252,7 +304,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
         }
         item {
@@ -264,7 +316,7 @@ private fun MainContent() {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
 
         }
@@ -276,13 +328,10 @@ private fun MainContent() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun HeaderPortrait(vertical: Boolean) {
-    var selectedOption: Int by remember {
-        mutableIntStateOf(R.string.to_go)
-    }
+private fun HeaderPortrait(vertical: Boolean, userViewModel: UserViewModel, context: Context) {
 
-    var QRinfo by remember {
-        mutableStateOf("")
+    var selectedOption: Int by remember {
+        mutableIntStateOf(R.string.pick_up)
     }
 
     val permissions = rememberMultiplePermissionsState(
@@ -298,7 +347,20 @@ private fun HeaderPortrait(vertical: Boolean) {
         onResult = { result ->
             val aux = result.contents ?: ""
 
-            QRinfo = aux
+            val tabId: Int? = try {
+                aux.toInt()
+            } catch (e: NumberFormatException) {
+                // Mostramos un Toast si la conversión falla
+                Toast.makeText(context, "QR inválido", Toast.LENGTH_SHORT).show()
+                null // Retornamos null si la conversión falla
+            }
+
+            tabId?.let {
+                selectedOption = R.string.eat_here
+            }
+
+            userViewModel.updateTableId(tabId)
+
         }
     )
 
@@ -322,7 +384,7 @@ private fun HeaderPortrait(vertical: Boolean) {
         Text(
             "JAPANESE",
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.inversePrimary,
+            //color = MaterialTheme.colorScheme.inversePrimary,
             //fontSize = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -330,14 +392,14 @@ private fun HeaderPortrait(vertical: Boolean) {
         Text(
             "Restaurant",
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.inversePrimary,
+            //color = MaterialTheme.colorScheme.inversePrimary,
         )
 
         Row(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.padding(top = 4.dp, bottom = 0.dp)
         ) {
-            listOf(R.string.eat_here, R.string.to_go, R.string.pick_up).forEach { option ->
+            listOf(R.string.eat_here, R.string.pick_up).forEach { option ->
 
                 Button(
                     onClick = {
@@ -361,7 +423,7 @@ private fun HeaderPortrait(vertical: Boolean) {
                         contentColor = if (selectedOption == option) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onSurface
                     ),
-                    modifier = Modifier.padding(end = 2.dp, )
+                    modifier = Modifier.padding(end = 2.dp)
                 ) {
                     Text(text = stringResource(id = option))
                 }
@@ -381,14 +443,21 @@ private fun HeaderPortrait(vertical: Boolean) {
             )
         }
 
+
         //Temporal arrangement before we implement the QR
         Text(
-            text = QRinfo,
+            text =
+            if (userViewModel.tableId != null) {
+                userViewModel.tableId.toString()
+            } else {
+                "comer aquí"
+            },
             modifier = Modifier.padding(0.dp)
         )
 
+
         var query by remember { mutableStateOf("") }
-        Material3SearchBar(
+        /*Material3SearchBar(
             modifier = Modifier.padding(top = 0.dp),
             query = query,
             onQueryChanged = { newQuery ->
@@ -397,13 +466,13 @@ private fun HeaderPortrait(vertical: Boolean) {
             onSearch = { searchQuery ->
                 // Perform search logic
             }
-        )
+        )*/
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen(navController = rememberNavController(), viewModel())
 }
 

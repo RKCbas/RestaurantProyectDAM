@@ -8,25 +8,28 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.example.restaurantproyectdam.data.controller.LoginViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.model.ProfileOptionsModel
 import com.example.restaurantproyectdam.ui.components.BottomBar
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, ) {
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
     ) { innerPadding ->
@@ -34,20 +37,20 @@ fun ProfileScreen(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            Content(navController)
+            Content(navController,userViewModel)
         }
     }
 }
 
 
 @Composable
-private fun Content(navController: NavController) {
+private fun Content(navController: NavController, userViewModel: UserViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
-        TopContentProfile()
+        TopContentProfile(userViewModel)
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(
             modifier = Modifier
@@ -63,12 +66,15 @@ private fun Content(navController: NavController) {
                 .padding(horizontal = 10.dp) // Aumentar padding del separador
         )
         Spacer(modifier = Modifier.height(20.dp))
-        BotContentProfile(navController)
+        BotContentProfile(navController,userViewModel)
     }
 }
 
 @Composable
-private fun TopContentProfile() {
+private fun TopContentProfile(
+    userViewModel: UserViewModel,
+    loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,9 +82,26 @@ private fun TopContentProfile() {
             .height(80.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.primary
+            contentColor = MaterialTheme.colorScheme.primary,
+
         )
     ) {
+        var name by rememberSaveable { mutableStateOf("") }
+        var phone by rememberSaveable { mutableStateOf("") }
+        var email by rememberSaveable { mutableStateOf("") }
+        LaunchedEffect(Unit) {
+            loginViewModel.getUser(userViewModel.userId!!) { response ->
+                if (response.isSuccessful) {
+                    name = response.body()?.name.toString() ?: ""
+                    phone = response.body()?.phone.toString() ?: ""
+                    email = response.body()?.email.toString() ?:""
+
+                } else {
+                    println("something went wrong")
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,15 +120,15 @@ private fun TopContentProfile() {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
-                    text = "Armando Vallejo",
+                    text = name,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "juanarmandovh20@gmail.com",
+                    text = email,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "4492616564",
+                    text = phone,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -118,9 +141,9 @@ private fun MidContentProfile(navController: NavController) {
     val context = LocalContext.current
 
     val options = listOf(
-        ProfileOptionsModel(1, "My Profile", Icons.Filled.Person, "profile"),
-        ProfileOptionsModel(2, "My Adresses", Icons.Filled.LocationOn, "addresses"),
-        ProfileOptionsModel(3, "My Payment Methods", Icons.Filled.Email, "payment_methods"),
+        ProfileOptionsModel(1, "My Profile", Icons.Filled.Person, "edit_profile"),
+        //ProfileOptionsModel(2, "My Adresses", Icons.Filled.LocationOn, "addresses"),
+        //ProfileOptionsModel(3, "My Payment Methods", Icons.Filled.Email, "payment_methods"),
         ProfileOptionsModel(4, "My Orders", Icons.Filled.ShoppingCart, "orders"),
         ProfileOptionsModel(5, "Rate Us on PlayStore", Icons.Filled.Favorite, "rate_us"),
         ProfileOptionsModel(6, "Contact Us", Icons.Filled.Edit, "contact_us")
@@ -199,20 +222,24 @@ private fun OptionCard(title: String, icon: ImageVector, onClick: () -> Unit) {
 }
 
 @Composable
-private fun BotContentProfile(navController: NavController) {
+private fun BotContentProfile(navController: NavController, userViewModel: UserViewModel,) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
     ) {
         Button(
-            onClick = { navController.navigate("login") },
+            onClick = {
+                    userViewModel.clearUserId()
+                    userViewModel.clearCartId()
+                    navController.navigate("login")
+                      },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(300.dp)
         ) {
-            Text(text = "Login")
+            Text(text = "Log out")
         }
-        Spacer(modifier = Modifier.height(30.dp))
+        /*Spacer(modifier = Modifier.height(30.dp))
         Button(
             onClick = { /*TODO*/ },
             modifier = Modifier
@@ -220,6 +247,6 @@ private fun BotContentProfile(navController: NavController) {
                 .width(300.dp)
         ) {
             Text(text = "Delete Account")
-        }
+        }*/
     }
 }

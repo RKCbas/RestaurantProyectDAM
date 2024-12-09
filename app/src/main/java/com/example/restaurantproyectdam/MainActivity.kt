@@ -4,17 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.restaurantproyectdam.data.controller.UserViewModel
+import com.example.restaurantproyectdam.ui.components.maps.MapsSearchView
+import com.example.restaurantproyectdam.ui.components.maps.SearchViewModel
 import com.example.restaurantproyectdam.ui.screens.AddressesScreen
 import com.example.restaurantproyectdam.ui.screens.AdminOrdersScreen
 import com.example.restaurantproyectdam.ui.screens.AdminProductsScreen
+import com.example.restaurantproyectdam.ui.screens.CartScreen
 import com.example.restaurantproyectdam.ui.screens.CategoryProductsScreen
 import com.example.restaurantproyectdam.ui.screens.ContactUsScreen
+import com.example.restaurantproyectdam.ui.screens.CustomProfileScreen
 import com.example.restaurantproyectdam.ui.screens.HomeScreen
 import com.example.restaurantproyectdam.ui.screens.LoginScreen
 import com.example.restaurantproyectdam.ui.screens.MenuScreen
@@ -36,46 +44,86 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RestaurantProyectDAMTheme{
-                ComposeMultiScreenApp()
+            RestaurantProyectDAMTheme {
+                val userViewModel: UserViewModel = viewModel()
+                val viewModel: SearchViewModel by viewModels()
+
+                ComposeMultiScreenApp(viewModel, userViewModel)
+
             }
         }
     }
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun ComposeMultiScreenApp(){ // MAIN CONTENT
+fun ComposeMultiScreenApp(
+    viewModel: SearchViewModel,
+    userViewModel: UserViewModel
+) { // MAIN CONTENT
     val navController = rememberNavController()
+
     //Scaffold (
-        //color = Color.White
+    //color = Color.White
     //    bottomBar={ BottomBar(navController = navController) },
     //    floatingActionButton = { SearchButton(onClick = {}) }
     //) { innerPadding->
     //    Column(
     //       modifier = Modifier.padding(innerPadding)
     //    ){
-    RestaurantProyectDAMTheme{
-            SetupNavGraph(navController = navController)
+    RestaurantProyectDAMTheme {
+        SetupNavGraph(navController = navController, viewModel, userViewModel)
     }
     //    }
     //}
 }
 
 @Composable
-fun SetupNavGraph (navController: NavHostController){
-    NavHost(navController = navController, startDestination = "onboarding"){
-        composable("home"){ HomeScreen(navController) }
-        composable("login"){ LoginScreen(navController) }
-        composable("register") { RegisterScreen(navController) }
+fun SetupNavGraph(
+    navController: NavHostController,
+    viewModel: SearchViewModel,
+    userViewModel: UserViewModel
+) {
+    NavHost(navController = navController, startDestination = "onboarding") {
+
+        composable("onboarding") { WelcomeScreen(navController = navController) }
+        composable("home") { HomeScreen(navController, userViewModel) }
+
+        composable("login") { LoginScreen(navController, userViewModel) }
+        composable("register") { RegisterScreen(navController, userViewModel) }
+
+
+
         composable("orders") { OrdersScreen(navController) }
+
+        composable("order/{orderId}"){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("orderId")?.toIntOrNull()
+            id?.let { OrderScreen(navController, orderId = it) }
+        }
+
+
+
+
+
         composable("adminOrders") { AdminOrdersScreen(navController) }
+
+
+
+        composable("cart"){
+            CartScreen(navController,userViewModel)
+        }
+
         composable("adminProducts") { AdminProductsScreen(navController) }
-        composable("profile") { ProfileScreen(navController) }
+
+
+        //composable("profile") { ProfileScreen(navController) }
         //composable("menu") { CategoriesScreen(navController) }
-        composable("menu") { MenuScreen(navController) }
-        composable("onboarding"){ WelcomeScreen(navController = navController)}
+
+        composable("menu") {
+            MenuScreen(navController)
+        }
+
         //Ruta con parametro para CategoryProducts
         composable("categoryProducts/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
@@ -86,7 +134,9 @@ fun SetupNavGraph (navController: NavHostController){
         composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
-                SingleProductScreen(navController, it)
+
+                SingleProductScreen(navController, it, userViewModel)
+
             }
         }
 
@@ -103,16 +153,29 @@ fun SetupNavGraph (navController: NavHostController){
 //                OrderScreen(navController, id)
 //            }
 //        }
-        composable("OrderScreen") { OrderScreen(navController = navController) }
+        //composable("OrderScreen") { OrderScreen(navController = navController) }
 
-        
 
-        composable("profile") { ProfileScreen(navController) }
-        composable("addresses") { AddressesScreen(navController) }
+        //Profile
+        composable("profile") { ProfileScreen(navController, userViewModel) }
+        composable("addresses") { AddressesScreen(navController, viewModel) }
         composable("payment_methods") { PaymentMethodsScreen(navController) }
-        composable("orders") { OrdersScreen(navController) }
+        //composable("orders") { OrdersScreen(navController) }
+        composable("edit_profile") { CustomProfileScreen(navController = navController,userViewModel) }
         composable("contact_us") { ContactUsScreen(navController) }
 
+        //maps
+        composable("MapsSearchView/{lat}/{long}/{address}", arguments = listOf(
+            navArgument("lat") { type = NavType.FloatType },
+            navArgument("long") { type = NavType.FloatType },
+            navArgument("address") { type = NavType.StringType }
+        )) {
+            // Obtención de los argumentos con valores predeterminados en caso de que falten
+            val lat = it.arguments?.getFloat("lat") ?: 0.0
+            val long = it.arguments?.getFloat("long") ?: 0.0
+            val address = it.arguments?.getString("address") ?: ""
+            MapsSearchView(lat.toDouble(), long.toDouble(), address, navController)
+        }
 
     }
 }

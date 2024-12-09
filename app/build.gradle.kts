@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.restaurantproyectdam"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.restaurantproyectdam"
@@ -63,6 +64,9 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.graphics.shapes.android)
 
+    //async image
+    implementation(libs.coil.compose)
+
     //QR
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
@@ -76,4 +80,25 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // ------------------------------
+    //Location
+    //Mapas
+    implementation("com.google.maps.android:maps-compose:2.14.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Places
+    implementation("com.google.android.libraries.places:places:4.0.0")
+    // ------------------------------
+
+    val room_version = "2.6.1"
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+
 }

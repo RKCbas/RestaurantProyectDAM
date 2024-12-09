@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.ui.screens.myUserId
 
 sealed class BottomBarOpt(
     val route: String,
@@ -32,7 +33,7 @@ sealed class BottomBarOpt(
     object Orders : BottomBarOpt(
         route ="orders",
         title = "Orders",
-        icon = Icons.Outlined.ShoppingCart
+        icon = R.drawable.bag
     )
     object Home : BottomBarOpt(
         route ="home",
@@ -43,6 +44,11 @@ sealed class BottomBarOpt(
         route ="profile",
         title = "Profile",
         icon = Icons.Outlined.Person
+    )
+    object Cart: BottomBarOpt(
+        route = "cart",
+        title = "Cart",
+        icon = Icons.Outlined.ShoppingCart
     )
 
 }

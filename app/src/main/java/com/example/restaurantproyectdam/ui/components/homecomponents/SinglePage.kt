@@ -35,17 +35,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.model.DishEntity
+import com.example.restaurantproyectdam.data.model.DishModel
 import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.ui.screens.naveController
 
 @Composable
-fun SinglePage(page: ProductModel,navController: NavController){
+fun SinglePage(page: DishEntity, navController: NavController){
 
     Button(
         modifier = Modifier.clip(RoundedCornerShape(30.dp)),
         onClick={
-            navController.navigate("singleProduct/${page.id}")
+
+            navController.navigate("singleProduct/${page.dish_id}")
+
         },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp), // Mimicking Card elevation
@@ -60,8 +65,8 @@ fun SinglePage(page: ProductModel,navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Image(
-                painter = page.image,
+            AsyncImage(
+                model = page.dish_image,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -72,7 +77,7 @@ fun SinglePage(page: ProductModel,navController: NavController){
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start,
             ){
-                Text(text=page.title,
+                Text(text=page.name,
                     style= MaterialTheme.typography.titleLarge,
                     //fontFamily= FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
@@ -87,7 +92,7 @@ fun SinglePage(page: ProductModel,navController: NavController){
                 )
                 Spacer(modifier = Modifier.size((12.dp)))
                 Text(
-                    text = "$"+page.cost.toString()+"MXN",
+                    text = "$"+page.price.toString()+"MXN",
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyMedium
                 )

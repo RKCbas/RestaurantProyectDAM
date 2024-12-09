@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,19 +23,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,22 +46,27 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
-import kotlinx.coroutines.launch
+import com.example.restaurantproyectdam.data.controller.LoginState
+import com.example.restaurantproyectdam.data.controller.LoginViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 
 @Composable
-fun LoginScreen (navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
 
     val windowHeight = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
     val windowWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
 
+    val loginState by viewModel.loginState.collectAsState()
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
@@ -73,23 +76,32 @@ fun LoginScreen (navController: NavController) {
             email = email,
             onEmailChange = { email = it },
             password = password,
-            onPasswordChange = { password = it }
+            onPasswordChange = { password = it },
+            loginState = loginState,
+            onLoginClick = { viewModel.login(email, password) },
+            userViewModel
         )
-    } else if (windowHeight == WindowHeightSizeClass.COMPACT){
+    } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeLogin(
             navController = navController,
             email = email,
             onEmailChange = { email = it },
             password = password,
-            onPasswordChange = { password = it }
+            onPasswordChange = { password = it },
+            loginState = loginState,
+            onLoginClick = { viewModel.login(email, password) },
+            userViewModel
         )
-    } else{
+    } else {
         LandscapeLogin(
             navController = navController,
             email = email,
             onEmailChange = { email = it },
             password = password,
-            onPasswordChange = { password = it }
+            onPasswordChange = { password = it },
+            loginState = loginState,
+            onLoginClick = { viewModel.login(email, password) },
+            userViewModel
         )
     }
 }
@@ -100,8 +112,11 @@ fun LandscapeLogin(
     email: String,
     onEmailChange: (String) -> Unit,
     password: String,
-    onPasswordChange: (String) -> Unit
-){
+    onPasswordChange: (String) -> Unit,
+    loginState: LoginState,
+    onLoginClick: () -> Unit,
+    userViewModel: UserViewModel
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +127,7 @@ fun LandscapeLogin(
             Icons.Filled.ArrowBack,
             contentDescription = "Icon of arrow back",
             modifier = Modifier
-                .clickable { navController.navigate("home") }
+                .clickable { navController.popBackStack() }
                 .padding(top = 30.dp, start = 30.dp)
                 .size(28.dp),
             tint = MaterialTheme.colorScheme.onSurface,
@@ -160,31 +175,48 @@ fun LandscapeLogin(
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
-            val snackState = remember{ SnackbarHostState() }
-            val snackScope = rememberCoroutineScope()
 
-            SnackbarHost(hostState = snackState, Modifier)
-
-            fun launchSnackBar(){
-                snackScope.launch { snackState.showSnackbar("Fill both fields please") }
-            }
             Spacer(modifier = Modifier.height(10.dp))
 
-            Button(onClick = {
-                if (email.isBlank() || password.isBlank()) {
-                    launchSnackBar()
-                } else {
-                    navController.navigate("home")
-                }
-            }
-                , modifier = Modifier
+            Button(
+                onClick = { onLoginClick() },
+                modifier = Modifier
                     .width(200.dp)
                     .align(Alignment.CenterHorizontally)
-            ){
+            ) {
                 Text(text = "Log In")
             }
-            BottomElement(navController)
 
+            when (loginState) {
+                is LoginState.Idle -> {}
+
+                is LoginState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                is LoginState.Success -> {
+                    LaunchedEffect(Unit) {
+                        println("carrito desde screen"+loginState.cart.cart_id)
+                        userViewModel.UpdateUserId(loginState.user.user_id)
+                        userViewModel.UpdateCartId(loginState.cart.cart_id)
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                }
+
+                is LoginState.Error -> {
+                    Text(
+                        text = loginState.message,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+
+            BottomElement(navController)
 
         }
         Column(
@@ -214,8 +246,11 @@ fun PortraitLogin(
     email: String,
     onEmailChange: (String) -> Unit,
     password: String,
-    onPasswordChange: (String) -> Unit
-){
+    onPasswordChange: (String) -> Unit,
+    loginState: LoginState,
+    onLoginClick: () -> Unit,
+    userViewModel: UserViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -229,7 +264,10 @@ fun PortraitLogin(
             email,
             onEmailChange,
             password,
-            onPasswordChange
+            onPasswordChange,
+            loginState,
+            onLoginClick,
+            userViewModel
         )
         BottomElement(navController)
 
@@ -248,7 +286,7 @@ fun TopElement(navController: NavController) {
             Icons.Filled.ArrowBack,
             contentDescription = "Icon of arrow back",
             modifier = Modifier
-                .clickable { navController.navigate("home") }
+                .clickable { navController.popBackStack() }
                 .padding(top = 28.dp, start = 23.dp),
             tint = MaterialTheme.colorScheme.onSurface,
         )
@@ -289,8 +327,11 @@ fun UserInputs(
     email: String,
     onEmailChange: (String) -> Unit,
     password: String,
-    onPasswordChange: (String) -> Unit
-){
+    onPasswordChange: (String) -> Unit,
+    loginState: LoginState,
+    onLoginClick: () -> Unit,
+    userViewModel: UserViewModel
+) {
 
     Column(
         modifier = Modifier
@@ -320,50 +361,65 @@ fun UserInputs(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
-        val snackState = remember{ SnackbarHostState() }
-        val snackScope = rememberCoroutineScope()
-
-        SnackbarHost(hostState = snackState, Modifier)
-
-        fun launchSnackBar(){
-            snackScope.launch { snackState.showSnackbar("Fill both fields please") }
-        }
-
-        Button(onClick = {
-            if (email.isBlank() || password.isBlank()) {
-                launchSnackBar()
-            } else {
-                navController.navigate("home")
-            } 
-                         }
-            , modifier = Modifier
-                .width(270.dp)
+        Button(
+            onClick = { onLoginClick() },
+            modifier = Modifier
+                .width(200.dp)
                 .align(Alignment.CenterHorizontally)
-        ){
+        ) {
             Text(text = "Log In")
         }
+
+        when (loginState) {
+            is LoginState.Idle -> {}
+
+            is LoginState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
+            is LoginState.Success -> {
+                LaunchedEffect(Unit) {
+                    userViewModel.UpdateUserId(loginState.user.user_id)
+                    userViewModel.UpdateCartId(loginState.cart.cart_id)
+                    println(userViewModel.userId)
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                }
+            }
+
+            is LoginState.Error -> {
+                Text(
+                    text = loginState.message,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+        }
+
     }
 }
 
 
 @Composable
-fun BottomElement(navController: NavController){
+fun BottomElement(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
-    ){
+    ) {
         Text(
             text = "Don't have any account yet?",
             modifier = Modifier.align(Alignment.CenterVertically),
             color = MaterialTheme.colorScheme.onSurface,
-            )
-        TextButton(onClick = {navController.navigate("register")}) {
-            Text(text = "Sign Up",   fontSize = 17.sp)
+        )
+        TextButton(onClick = { navController.navigate("register") }) {
+            Text(text = "Sign Up", fontSize = 17.sp)
         }
 
     }
 
 }
-
 
 

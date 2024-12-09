@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
@@ -28,24 +29,47 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.controller.DishViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
+import com.example.restaurantproyectdam.data.model.DishEntity
 import com.example.restaurantproyectdam.data.model.ProductModel
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 var idd: Int ?=null
 
 @Composable
-fun CategoryProductsScreen (navController: NavController, id: Int) {
+fun CategoryProductsScreen (navController: NavController, id: Int, categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+    val dishDao = db.dishDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList()) }
+
     naveController = navController
     idd = id
     Scaffold (
@@ -53,42 +77,53 @@ fun CategoryProductsScreen (navController: NavController, id: Int) {
         bottomBar={ BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
+
+        LaunchedEffect(Unit) {
+            categories =  withContext(Dispatchers.IO) {
+                categoryViewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+            dishes =  withContext(Dispatchers.IO) {
+                dishViewModel.getDishes(db)
+                dishDao.getDishes()
+            }
+        }
+
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier.padding(innerPadding)
         )
         {
-            Contents()
+            Contents(categories, dishes)
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Contents(){
+fun Contents(categories: List<CategoryEntity>, dishes: List<DishEntity>){
     Column(modifier = Modifier.fillMaxSize()
         //.background(Color.LightGray)
     ) {
         searchBar("menu")
-        CategoriesInfo()
-        Products()
+        CategoriesInfo(categories)
+        Products(dishes)
     }
 }
 
 @Composable
-fun Products(){
+fun Products(dishes: List<DishEntity>){
 if (idd!=null){
     val arrayProducts = createArrayProducts()
-
     LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
-
     ){
-        items(arrayProducts){product ->
-            if(product.category == idd){
-                ProductDataa(product.id, product.title, product.description,
-                    product.cost, product.image, product.category)
+        items(dishes){dish ->
+            if(dish.category_id == idd){
+                ProductDataa(dish.dish_id, dish.name, dish.description,
+                    dish.price, dish.dish_image, dish.category_id)
             }
         }
     }
@@ -98,7 +133,7 @@ if (idd!=null){
 }
 
 @Composable
-fun ProductDataa(id:Int, title:String, description:String, cost:Float, image:Painter, category:Int){
+fun ProductDataa(id:Int, name:String, description:String, price:Float, image:String, category_id:Int){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
@@ -109,17 +144,17 @@ fun ProductDataa(id:Int, title:String, description:String, cost:Float, image:Pai
         Column (modifier = Modifier
             .weight(2f)
             .padding(end = 10.dp)) {
-            Text(title, style = MaterialTheme.typography.titleLarge,
+            Text(name, style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold)
             Text(description, style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier.padding(top = 10.dp))
-            Text(cost.toString(), style = MaterialTheme.typography.titleLarge,
+            Text(price.toString(), style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 10.dp))
         }
-        Image(painter = image,
-            contentDescription = "$title image",
+        AsyncImage(model = image,
+            contentDescription = "$name image",
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(90.dp)
                 .weight(1f)
@@ -130,15 +165,14 @@ fun ProductDataa(id:Int, title:String, description:String, cost:Float, image:Pai
 }
 
 @Composable
-fun CategoriesInfo(){
-    val arrayCategories = createArrayCategories()
+fun CategoriesInfo(categories: List<CategoryEntity>){
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
     ){
-        items(arrayCategories){category ->
-            CategorySelected(category.id,category.name)
+        items(categories){category ->
+            CategorySelected(category.category_id,category.name)
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.KeyboardArrowLeft
 import androidx.compose.material.icons.sharp.Search
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,45 +37,69 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.R
+import com.example.restaurantproyectdam.data.controller.CategoryViewModel
+import com.example.restaurantproyectdam.data.database.AppDatabase
+import com.example.restaurantproyectdam.data.database.DatabaseProvider
+import com.example.restaurantproyectdam.data.model.CategoryEntity
 import com.example.restaurantproyectdam.data.model.CategoryModel
 import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Material3SearchBar
 import com.example.restaurantproyectdam.ui.components.SearchButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 var naveController: NavController ?=null
 
 @Composable
-fun MenuScreen (navController: NavController) {
+fun MenuScreen (navController: NavController, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val categoryDao = db.categoryDao()
+
+    var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+
     naveController = navController
     Scaffold (
         //color = Color.White
         bottomBar={ BottomBar(navController = navController) },
         //floatingActionButton = { SearchButton(onClick = {}) }
     ) { innerPadding->
+
+        LaunchedEffect(Unit) {
+            categories =  withContext(Dispatchers.IO) {
+                viewModel.getCategories(db)
+                categoryDao.getCategories()
+            }
+        }
+
+        val listState = rememberLazyListState()
+
         Column(
             modifier = Modifier.padding(innerPadding)
         ){
-            Content()
+            Content(categories)
         }
     }
 }
 
 @Composable
-private fun Content(){ //CÓDIGO DE YAHAIRA
+private fun Content(categories: List<CategoryEntity>){ //CÓDIGO DE YAHAIRA
         val arrayCategories = createArrayCategories()
         Column(modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             searchBar("home")
-            CategoriesGrid(arrayCategories)
+            CategoriesGrid(categories)
         }
 }
 
@@ -83,7 +109,7 @@ fun searchBar(route:String){
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxWidth()
-            .padding(12.dp,0.dp),
+            .padding(12.dp, 0.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
         Icon(
@@ -108,7 +134,7 @@ fun searchBar(route:String){
                     .padding(4.dp)
             )
         }*/
-        var query by remember { mutableStateOf("") }
+        /*var query by remember { mutableStateOf("") }
         Material3SearchBar(
             modifier = Modifier.padding(top = 0.dp),
             query = query,
@@ -118,21 +144,21 @@ fun searchBar(route:String){
             onSearch = { searchQuery ->
                 // Perform search logic
             }
-        )
+        )*/
     }
 
 }
 
 @Composable
-fun CategoriesGrid(arrayCategories: Array<CategoryModel>){
+fun CategoriesGrid(categories: List<CategoryEntity>){
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp)
     ){
-        items(arrayCategories){category ->
-            CategoryCard(category.id, category.name, category.image)
+        items(categories){category ->
+            CategoryCard(category.category_id, category.name, category.category_image)
         }
     }
 }
@@ -140,7 +166,7 @@ fun CategoriesGrid(arrayCategories: Array<CategoryModel>){
 
 
 @Composable
-fun CategoryCard(id:Int, name:String, image: Painter){
+fun CategoryCard(id:Int, name:String, image: String?){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,14 +174,14 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             .clickable {
                 naveController?.navigate("categoryProducts/$id")
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
         /*colors = CardDefaults.cardColors(
             containerColor = Color.White,
             contentColor = Color.Black
         )*/
     ) {
-        Image(
-            painter = image,
+        AsyncImage(
+            model = image,
             contentDescription = "Logo",
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -169,7 +195,8 @@ fun CategoryCard(id:Int, name:String, image: Painter){
             color=MaterialTheme.colorScheme.primary,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp)
                 .align(Alignment.CenterHorizontally)
         )
     }

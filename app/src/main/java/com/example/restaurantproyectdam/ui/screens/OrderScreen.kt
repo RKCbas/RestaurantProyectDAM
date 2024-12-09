@@ -28,12 +28,13 @@ import com.example.restaurantproyectdam.data.model.OrderCardModel
 import com.example.restaurantproyectdam.data.model.OrderProduct
 import com.example.restaurantproyectdam.data.model.ProductModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun OrderScreen(navController: NavController) {
+fun OrderScreen(navController: NavController, orderId:Int) {
     val id = 1
     val orderProductsArray = arrayOf(
         OrderProduct(
@@ -69,7 +70,7 @@ fun OrderScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.inversePrimary)
+                    //.background(MaterialTheme.colorScheme.surface)
                     .padding(10.dp, 25.dp, 15.dp, 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -83,13 +84,16 @@ fun OrderScreen(navController: NavController) {
                 Column {
                     Text(
                         text = "Order",
-                        color = Color.Black,
+                        //color = Color.Black,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
                     Text(
                         text = "id # $id",
-                        color = Color.Black,
+                        style = MaterialTheme.typography.titleSmall,
+
+                        //color = Color.Black,
                         fontSize = 14.sp
                     )
                 }
@@ -127,7 +131,8 @@ fun OrderScreen(navController: NavController) {
 @Composable
 fun OrderProductCard(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWidth()) {
     Card(
-        modifier = modifier.padding(5.dp)
+        modifier = modifier.padding(5.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             // Columna de la imagen del producto
@@ -182,5 +187,5 @@ fun OrderProductCard(item: OrderProduct, modifier: Modifier = Modifier.fillMaxWi
 @Preview(showBackground = true)
 @Composable
 private fun OrderScreenPreview() {
-    OrderScreen(navController = rememberNavController())
+    OrderScreen(navController = rememberNavController(),1)
 }
