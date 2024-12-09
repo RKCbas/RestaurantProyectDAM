@@ -134,7 +134,9 @@ fun SetupNavGraph(
         composable("singleProduct/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             id?.let {
+
                 SingleProductScreen(navController, it, userViewModel)
+
             }
         }
 

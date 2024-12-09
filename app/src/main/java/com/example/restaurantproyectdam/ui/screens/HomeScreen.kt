@@ -1,5 +1,6 @@
 package com.example.restaurantproyectdam.ui.screens
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+
+import android.widget.Toast
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -70,25 +73,30 @@ import com.example.restaurantproyectdam.data.model.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+
+import com.example.restaurantproyectdam.data.controller.DishViewModel
 import com.example.restaurantproyectdam.data.controller.UserViewModel
+import com.example.restaurantproyectdam.data.model.DishEntity
 
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
 
 var myNavController: NavController? = null;
-var myUserId: Int ?= null;
+var myUserId: Int? = null;
 
 
 @Composable
 
-
 fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
+    val dishDao = db.dishDao()
 
     var categories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
+    var dishes by remember { mutableStateOf<List<DishEntity>>(emptyList()) }
 
 
     //val scrollState = rememberScrollState()
@@ -96,7 +104,9 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewM
     myNavController = navController
     myUserId = userViewModel.userId
     println(myUserId)
-    println("carrito:"+userViewModel.cartId)
+
+    println("carrito:" + userViewModel.cartId)
+
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen
@@ -110,10 +120,15 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewM
     ) { innerPadding ->
 
         LaunchedEffect(Unit) {
-            categories =  withContext(Dispatchers.IO) {
-                viewModel.getCategories(db)
+            categories = withContext(Dispatchers.IO) {
+                categoryViewModel.getCategories(db)
                 categoryDao.getCategories()
             }
+            dishes = withContext(Dispatchers.IO) {
+                dishViewModel.getDishes(db)
+                dishDao.getDishes()
+            }
+
         }
 
         val listState = rememberLazyListState()
@@ -122,21 +137,21 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewM
             modifier = Modifier
                 .padding(innerPadding)
 
-                //.verticalScroll(scrollState)
+            //.verticalScroll(scrollState)
 
-        ){
-            if(width == WindowWidthSizeClass.COMPACT) {
+        ) {
+            if (width == WindowWidthSizeClass.COMPACT) {
                 //PORTAIT
-                ContentPortrait(categories)
+                ContentPortrait(categories, dishes, userViewModel, context)
 
-            }else if(height == WindowHeightSizeClass.COMPACT) {
+            } else if (height == WindowHeightSizeClass.COMPACT) {
                 //LANDSCAPE
                 //Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
-                ContentLandscape(categories)
-            }else{
+                ContentLandscape(categories, dishes, userViewModel, context)
+            } else {
 
                 //Posts(post, "PhoneL")
-                ContentLandscape(categories)
+                ContentLandscape(categories, dishes, userViewModel, context)
             }
             //Content()
         }
@@ -145,34 +160,44 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewM
 
 
 @Composable
-private fun ContentPortrait(categories: List<CategoryEntity>) {
+private fun ContentPortrait(
+    categories: List<CategoryEntity>,
+    dishes: List<DishEntity>,
+    userViewModel: UserViewModel,
+    context: Context
+) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.background(MaterialTheme.colorScheme.primaryContainer)
+        //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
-        HeaderPortrait(true)
-        MainContent(categories)
+        HeaderPortrait(true, userViewModel, context)
+        MainContent(categories, dishes)
     }
 
 }
 
 
 @Composable
-private fun ContentLandscape(categories: List<CategoryEntity>) {
+private fun ContentLandscape(
+    categories: List<CategoryEntity>,
+    dishes: List<DishEntity>,
+    userViewModel: UserViewModel,
+    context: Context
+) {
 
     Row(
         modifier = Modifier
             .fillMaxSize()
-            //.background(MaterialTheme.colorScheme.primaryContainer)
+        //.background(MaterialTheme.colorScheme.primaryContainer)
         //.padding(25.dp)
     ) {
-        HeaderPortrait(false)
-        MainContent(categories)
+        HeaderPortrait(false, userViewModel, context)
+        MainContent(categories, dishes)
     }
-    
+
 }
 
 
@@ -206,7 +231,7 @@ private fun CategoryItem(category_id: Int, name: String, category_image: String?
         Column(
             modifier = Modifier
                 .padding(5.dp),
-                //.background(color = MaterialTheme.colorScheme.surface),
+            //.background(color = MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -235,7 +260,7 @@ private fun CategoryItem(category_id: Int, name: String, category_image: String?
 }
 
 @Composable
-private fun MainContent(categoryList: List<CategoryEntity>) {
+private fun MainContent(categoryList: List<CategoryEntity>, dishes: List<DishEntity>) {
     LazyColumn(modifier = Modifier.fillMaxHeight(1f)) {
         item {
             Text(
@@ -246,7 +271,7 @@ private fun MainContent(categoryList: List<CategoryEntity>) {
         }
         item {
             LazyRow {
-                items(categoryList){ category ->
+                items(categoryList) { category ->
                     CategoryItem(category.category_id, category.name, category.category_image)
                 }
             }
@@ -261,7 +286,7 @@ private fun MainContent(categoryList: List<CategoryEntity>) {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it, myUserId) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
 
         }
@@ -274,7 +299,7 @@ private fun MainContent(categoryList: List<CategoryEntity>) {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it,myUserId) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
         }
         item {
@@ -286,7 +311,7 @@ private fun MainContent(categoryList: List<CategoryEntity>) {
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-                myNavController?.let { PagerScreen(it,myUserId) }
+                myNavController?.let { PagerScreen(it, myUserId, dishes) }
             }
 
         }
@@ -298,13 +323,10 @@ private fun MainContent(categoryList: List<CategoryEntity>) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun HeaderPortrait(vertical: Boolean) {
-    var selectedOption: Int by remember {
-        mutableIntStateOf(R.string.to_go)
-    }
+private fun HeaderPortrait(vertical: Boolean, userViewModel: UserViewModel, context: Context) {
 
-    var QRinfo by remember {
-        mutableStateOf("")
+    var selectedOption: Int by remember {
+        mutableIntStateOf(R.string.pick_up)
     }
 
     val permissions = rememberMultiplePermissionsState(
@@ -320,7 +342,20 @@ private fun HeaderPortrait(vertical: Boolean) {
         onResult = { result ->
             val aux = result.contents ?: ""
 
-            QRinfo = aux
+            val tabId: Int? = try {
+                aux.toInt()
+            } catch (e: NumberFormatException) {
+                // Mostramos un Toast si la conversión falla
+                Toast.makeText(context, "QR inválido", Toast.LENGTH_SHORT).show()
+                null // Retornamos null si la conversión falla
+            }
+
+            tabId?.let {
+                selectedOption = R.string.eat_here
+            }
+
+            userViewModel.updateTableId(tabId)
+
         }
     )
 
@@ -359,7 +394,7 @@ private fun HeaderPortrait(vertical: Boolean) {
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.padding(top = 4.dp, bottom = 0.dp)
         ) {
-            listOf(R.string.eat_here, R.string.to_go, R.string.pick_up).forEach { option ->
+            listOf(R.string.eat_here, R.string.pick_up).forEach { option ->
 
                 Button(
                     onClick = {
@@ -383,7 +418,7 @@ private fun HeaderPortrait(vertical: Boolean) {
                         contentColor = if (selectedOption == option) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onSurface
                     ),
-                    modifier = Modifier.padding(end = 2.dp, )
+                    modifier = Modifier.padding(end = 2.dp)
                 ) {
                     Text(text = stringResource(id = option))
                 }
@@ -404,12 +439,17 @@ private fun HeaderPortrait(vertical: Boolean) {
         }
 
 
-
         //Temporal arrangement before we implement the QR
         Text(
-            text = QRinfo,
+            text =
+            if (userViewModel.tableId != null) {
+                userViewModel.tableId.toString()
+            } else {
+                "comer aquí"
+            },
             modifier = Modifier.padding(0.dp)
         )
+
 
         var query by remember { mutableStateOf("") }
         Material3SearchBar(
