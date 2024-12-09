@@ -28,6 +28,10 @@ class UserViewModel : ViewModel() {
         cartId = id
     }
 
+    fun clearCartId(){
+        cartId = null
+    }
+
     //Table ID for the order
     var tableId by mutableStateOf<Int?>(0)
         private set

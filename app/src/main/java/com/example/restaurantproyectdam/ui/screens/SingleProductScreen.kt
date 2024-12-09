@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 import coil.compose.AsyncImage
@@ -62,6 +63,7 @@ import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
+import com.example.restaurantproyectdam.data.model.DishEntity
 
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 
@@ -83,11 +85,12 @@ fun PreviewSingleProductScreen(){
 
 @Composable
 
-fun SingleProductScreen (navController: NavController,
-                         id: Int,
-                         userViewModel: UserViewModel,
-                         viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-
+fun SingleProductScreen(
+    navController: NavController,
+    id: Int,
+    userViewModel: UserViewModel,
+    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    dishViewModel: DishViewModel = viewModel()
 ) {
 
 
@@ -125,7 +128,7 @@ fun SingleProductScreen (navController: NavController,
             //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content(categories,userViewModel.cartId,id)
+            content(categories, userViewModel.cartId, id, dishes)
 
         }
     }
