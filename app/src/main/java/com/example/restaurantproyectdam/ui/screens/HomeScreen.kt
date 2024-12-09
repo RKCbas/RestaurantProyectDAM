@@ -1,7 +1,6 @@
 package com.example.restaurantproyectdam.ui.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,19 +16,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-import androidx.compose.material3.AlertDialog
-
-import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -53,17 +46,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.CaptureActivityPortrait
 import com.example.restaurantproyectdam.R
-import com.example.restaurantproyectdam.data.model.CategoryModel
-import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Material3SearchBar
-import com.example.restaurantproyectdam.ui.components.SearchButton
 import com.example.restaurantproyectdam.ui.components.homecomponents.PagerScreen
 
 import com.example.restaurantproyectdam.ui.components.homecomponents.PermissionRequiredDialog
@@ -72,7 +61,6 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
@@ -82,7 +70,7 @@ import com.example.restaurantproyectdam.data.model.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 
 
 
@@ -95,7 +83,7 @@ var myUserId: Int ?= null;
 @Composable
 
 
-fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
@@ -106,9 +94,9 @@ fun HomeScreen(navController: NavController,  userIdViewModel: UserIdViewModel, 
     //val scrollState = rememberScrollState()
 
     myNavController = navController
-    myUserId = userIdViewModel.userId
+    myUserId = userViewModel.userId
     println(myUserId)
-    println("carrito:"+userIdViewModel.cartId)
+    println("carrito:"+userViewModel.cartId)
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen

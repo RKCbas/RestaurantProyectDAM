@@ -1,11 +1,8 @@
 package com.example.restaurantproyectdam.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,11 +26,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.SnackbarHost
@@ -46,35 +38,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.CartViewModel
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
-import com.example.restaurantproyectdam.data.controller.LoginViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
-import com.example.restaurantproyectdam.data.model.createArrayCategories
 import com.example.restaurantproyectdam.data.model.createArrayProducts
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
-import com.example.restaurantproyectdam.ui.components.SearchButton
-import com.example.restaurantproyectdam.ui.components.homecomponents.ProductData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,7 +71,7 @@ fun PreviewSingleProductScreen(){
 @Composable
 fun SingleProductScreen (navController: NavController,
                          id: Int,
-                         userIdViewModel: UserIdViewModel,
+                         userViewModel: UserViewModel,
                          viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
@@ -122,7 +102,7 @@ fun SingleProductScreen (navController: NavController,
                 //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content(categories,userIdViewModel.cartId,id)
+            content(categories,userViewModel.cartId,id)
         }
     }
 }

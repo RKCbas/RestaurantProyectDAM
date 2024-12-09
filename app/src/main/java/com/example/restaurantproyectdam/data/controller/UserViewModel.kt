@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-class UserIdViewModel : ViewModel() {
+class UserViewModel : ViewModel() {
     var userId by mutableStateOf<Int?>(null)
         private set
     var cartId by mutableStateOf<Int?>(null)
