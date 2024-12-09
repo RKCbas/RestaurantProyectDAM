@@ -29,10 +29,13 @@ import com.example.restaurantproyectdam.ui.components.ordercomponents.OrderTabs
 import kotlinx.coroutines.launch
 import android.content.res.Configuration
 import androidx.compose.ui.platform.LocalConfiguration
+import com.example.restaurantproyectdam.data.controller.OrderViewModel
 
 
 @Composable
-fun OrdersScreen(navController: NavController,) {
+fun OrdersScreen(navController: NavController,
+
+                 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -116,6 +119,7 @@ private fun OrderTabsView(navController: NavController) {
             verticalAlignment = Alignment.Top
         ) { page ->
             when (page) {
+                //pending
                 0 -> {
                     val orderProductsArray = arrayOf(
                         OrderProduct(
@@ -147,6 +151,7 @@ private fun OrderTabsView(navController: NavController) {
                         Text("Go to Details")
                     }
                 }
+                //ready
                 1, 2 -> {
                     Text(
                         text = "There are no orders",

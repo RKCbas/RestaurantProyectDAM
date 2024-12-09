@@ -56,16 +56,20 @@ import com.example.restaurantproyectdam.data.controller.CartViewModel
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
 
 import com.example.restaurantproyectdam.data.controller.DishViewModel
+import com.example.restaurantproyectdam.data.controller.OrderViewModel
 
 
 import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
+import com.example.restaurantproyectdam.data.model.AddToOrderModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
+import com.example.restaurantproyectdam.data.model.CreateOrderRequest
 import com.example.restaurantproyectdam.data.model.DishEntity
 
 import com.example.restaurantproyectdam.data.model.createArrayProducts
+import com.example.restaurantproyectdam.data.network.RetrofitClient
 
 
 import com.example.restaurantproyectdam.ui.components.BottomBar
@@ -128,7 +132,7 @@ fun SingleProductScreen(
             //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-            content(categories, userViewModel.cartId, id, dishes)
+            content(categories, userViewModel.cartId,userViewModel.userId,userViewModel.tableId, id, dishes)
 
         }
     }
@@ -138,6 +142,8 @@ fun SingleProductScreen(
 fun content(
     categories: List<CategoryEntity>,
     cart_id: Int?,
+    user_id: Int?,
+    table_id: Int?,
     product_id: Int,
     dishes: List<DishEntity>
 ) {
@@ -145,7 +151,7 @@ fun content(
     InfoCategory(categories, dishes)
     SendSingleId(dishes)
     if (cart_id != null) {
-        ButtonsProduct(cart_id, product_id)
+        ButtonsProduct(cart_id, user_id,table_id,product_id)
     }
 
 }
@@ -248,11 +254,16 @@ fun InfoProduct(
 @Composable
 fun ButtonsProduct(
     cart_id: Int,
+    user_id: Int?,
+    table_id: Int?,
     product_id: Int,
     viewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    orderViewModel: OrderViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     //onNewDish  = { viewModel.api.addToCart(email, password) }
 
 ) {
+    val api = RetrofitClient.api
+
     val snackState = remember { SnackbarHostState() }
     val snackScope = rememberCoroutineScope()
 
@@ -305,7 +316,21 @@ fun ButtonsProduct(
         }
         OutlinedButton(
             onClick = {
-                naveController?.navigate("payment/$idProduct")
+                user_id?.let {
+                    CreateOrderRequest(
+                        it, table_id = table_id, "pending"
+                    )
+                }?.let {
+                    val response = orderViewModel.createOrder(it,{ result ->
+                        orderViewModel.addDishToOrder(
+                            result.body()!!.order_id,
+                            product_id,
+                            AddToOrderModelRequest(1),
+                            {}
+                        )
+                    })
+                }
+                //naveController?.navigate("payment/$idProduct")
             },
             border = BorderStroke(2.dp, color = MaterialTheme.colorScheme.error),
         ) {
