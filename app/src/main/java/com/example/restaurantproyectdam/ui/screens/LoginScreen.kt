@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,8 +26,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -38,8 +35,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,25 +46,20 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.restaurantproyectdam.R
 import com.example.restaurantproyectdam.data.controller.LoginState
 import com.example.restaurantproyectdam.data.controller.LoginViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
-import kotlinx.coroutines.launch
-import kotlin.math.log
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    userIdViewModel: UserIdViewModel,
+    userViewModel: UserViewModel,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
 
@@ -89,7 +79,7 @@ fun LoginScreen(
             onPasswordChange = { password = it },
             loginState = loginState,
             onLoginClick = { viewModel.login(email, password) },
-            userIdViewModel
+            userViewModel
         )
     } else if (windowHeight == WindowHeightSizeClass.COMPACT) {
         LandscapeLogin(
@@ -100,7 +90,7 @@ fun LoginScreen(
             onPasswordChange = { password = it },
             loginState = loginState,
             onLoginClick = { viewModel.login(email, password) },
-            userIdViewModel
+            userViewModel
         )
     } else {
         LandscapeLogin(
@@ -111,7 +101,7 @@ fun LoginScreen(
             onPasswordChange = { password = it },
             loginState = loginState,
             onLoginClick = { viewModel.login(email, password) },
-            userIdViewModel
+            userViewModel
         )
     }
 }
@@ -125,7 +115,7 @@ fun LandscapeLogin(
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
     onLoginClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     Row(
         modifier = Modifier
@@ -209,8 +199,8 @@ fun LandscapeLogin(
                 is LoginState.Success -> {
                     LaunchedEffect(Unit) {
                         println("carrito desde screen"+loginState.cart.cart_id)
-                        userIdViewModel.UpdateUserId(loginState.user.user_id)
-                        userIdViewModel.UpdateCartId(loginState.cart.cart_id)
+                        userViewModel.UpdateUserId(loginState.user.user_id)
+                        userViewModel.UpdateCartId(loginState.cart.cart_id)
                         navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
@@ -259,7 +249,7 @@ fun PortraitLogin(
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
     onLoginClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
     Column(
         modifier = Modifier
@@ -277,7 +267,7 @@ fun PortraitLogin(
             onPasswordChange,
             loginState,
             onLoginClick,
-            userIdViewModel
+            userViewModel
         )
         BottomElement(navController)
 
@@ -340,7 +330,7 @@ fun UserInputs(
     onPasswordChange: (String) -> Unit,
     loginState: LoginState,
     onLoginClick: () -> Unit,
-    userIdViewModel: UserIdViewModel
+    userViewModel: UserViewModel
 ) {
 
     Column(
@@ -391,9 +381,9 @@ fun UserInputs(
 
             is LoginState.Success -> {
                 LaunchedEffect(Unit) {
-                    userIdViewModel.UpdateUserId(loginState.user.user_id)
-                    userIdViewModel.UpdateCartId(loginState.cart.cart_id)
-                    println(userIdViewModel.userId)
+                    userViewModel.UpdateUserId(loginState.user.user_id)
+                    userViewModel.UpdateCartId(loginState.cart.cart_id)
+                    println(userViewModel.userId)
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }

@@ -1,6 +1,5 @@
 package com.example.restaurantproyectdam.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,26 +11,19 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.restaurantproyectdam.R
-import com.example.restaurantproyectdam.data.controller.LoginState
 import com.example.restaurantproyectdam.data.controller.LoginViewModel
 import com.example.restaurantproyectdam.data.controller.UpdateState
 import com.example.restaurantproyectdam.data.controller.UpdateViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
-import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun CustomProfileScreen(
     navController: NavController,
-    userIdViewModel: UserIdViewModel,
+    userViewModel: UserViewModel,
     viewModel: UpdateViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
@@ -43,7 +35,7 @@ fun CustomProfileScreen(
 
 
     LaunchedEffect(Unit) {
-        loginViewModel.getUser(userIdViewModel.userId!!) { response ->
+        loginViewModel.getUser(userViewModel.userId!!) { response ->
             if (response.isSuccessful) {
                 name = response.body()?.name.toString() ?: ""
                 password = ""
@@ -57,7 +49,7 @@ fun CustomProfileScreen(
     }
 
 
-    println("id is {${userIdViewModel.userId}}")
+    println("id is {${userViewModel.userId}}")
     println("name is {}")
     // State variables to hold user input
 
@@ -73,7 +65,7 @@ fun CustomProfileScreen(
         phone= phone,
         onPhoneChange = { phone = it},
         updateState = updateState,
-        onUpdateClick = { viewModel.update(userIdViewModel.userId!!,name,password, phone) },
+        onUpdateClick = { viewModel.update(userViewModel.userId!!,name,password, phone) },
 
 
         )

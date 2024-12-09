@@ -8,8 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -21,19 +19,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.restaurantproyectdam.data.controller.LoginViewModel
-import com.example.restaurantproyectdam.data.controller.UserIdViewModel
+import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.model.ProfileOptionsModel
 import com.example.restaurantproyectdam.ui.components.BottomBar
 
 @Composable
-fun ProfileScreen(navController: NavController, userIdViewModel: UserIdViewModel, ) {
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, ) {
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
     ) { innerPadding ->
@@ -41,20 +37,20 @@ fun ProfileScreen(navController: NavController, userIdViewModel: UserIdViewModel
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            Content(navController,userIdViewModel)
+            Content(navController,userViewModel)
         }
     }
 }
 
 
 @Composable
-private fun Content(navController: NavController,userIdViewModel: UserIdViewModel) {
+private fun Content(navController: NavController, userViewModel: UserViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
-        TopContentProfile(userIdViewModel)
+        TopContentProfile(userViewModel)
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(
             modifier = Modifier
@@ -70,13 +66,13 @@ private fun Content(navController: NavController,userIdViewModel: UserIdViewMode
                 .padding(horizontal = 10.dp) // Aumentar padding del separador
         )
         Spacer(modifier = Modifier.height(20.dp))
-        BotContentProfile(navController,userIdViewModel)
+        BotContentProfile(navController,userViewModel)
     }
 }
 
 @Composable
 private fun TopContentProfile(
-    userIdViewModel: UserIdViewModel,
+    userViewModel: UserViewModel,
     loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     Card(
@@ -94,7 +90,7 @@ private fun TopContentProfile(
         var phone by rememberSaveable { mutableStateOf("") }
         var email by rememberSaveable { mutableStateOf("") }
         LaunchedEffect(Unit) {
-            loginViewModel.getUser(userIdViewModel.userId!!) { response ->
+            loginViewModel.getUser(userViewModel.userId!!) { response ->
                 if (response.isSuccessful) {
                     name = response.body()?.name.toString() ?: ""
                     phone = response.body()?.phone.toString() ?: ""
@@ -226,15 +222,15 @@ private fun OptionCard(title: String, icon: ImageVector, onClick: () -> Unit) {
 }
 
 @Composable
-private fun BotContentProfile(navController: NavController,userIdViewModel: UserIdViewModel,) {
+private fun BotContentProfile(navController: NavController, userViewModel: UserViewModel,) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
     ) {
         Button(
             onClick = {
-                    userIdViewModel.clearUserId()
-                    userIdViewModel.clearCartId()
+                    userViewModel.clearUserId()
+                    userViewModel.clearCartId()
                     navController.navigate("login")
                       },
             modifier = Modifier
