@@ -22,4 +22,7 @@ class UserIdViewModel : ViewModel() {
     fun clearUserId() {
         userId = null
     }
+    fun clearCartId(){
+        cartId = null
+    }
 }

@@ -9,10 +9,12 @@ import com.example.restaurantproyectdam.data.model.LoginRequest
 import com.example.restaurantproyectdam.data.model.ShowCartModelResponse
 import com.example.restaurantproyectdam.data.model.User
 import com.example.restaurantproyectdam.data.network.RetrofitClient
+import com.example.restaurantproyectdam.data.network.RetrofitClient.api
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class LoginViewModel : ViewModel() {
 
@@ -58,6 +60,22 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+
+
+    fun getUser(user_id: Int, onResult: (Response<User>) -> Unit
+    ){
+        viewModelScope.launch {
+            try {
+                val response = api.showUser(user_id)
+                if(response.isSuccessful){
+                    println(response.body())
+                }
+                onResult(response)
+            }catch (expection: Exception){
+                print(expection)
+            }
+        }
+    }
 }
 
 

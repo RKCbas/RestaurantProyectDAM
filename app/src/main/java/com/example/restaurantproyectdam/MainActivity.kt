@@ -156,11 +156,11 @@ fun SetupNavGraph(
 
 
         //Profile
-        composable("profile") { ProfileScreen(navController) }
+        composable("profile") { ProfileScreen(navController, userIdViewModel) }
         composable("addresses") { AddressesScreen(navController, viewModel) }
         composable("payment_methods") { PaymentMethodsScreen(navController) }
         //composable("orders") { OrdersScreen(navController) }
-        composable("edit_profile") { CustomProfileScreen(navController = navController) }
+        composable("edit_profile") { CustomProfileScreen(navController = navController,userIdViewModel) }
         composable("contact_us") { ContactUsScreen(navController) }
 
         //maps
