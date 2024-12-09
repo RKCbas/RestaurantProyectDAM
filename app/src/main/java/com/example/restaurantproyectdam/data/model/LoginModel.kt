@@ -20,3 +20,13 @@ data class User(
     val updated_at: String
 )
 
+data class UserUpdateRequest(
+    val name :String ? ="",
+    val password: String ? ="",
+    val phone: String ? =""
+)
+data class UserUpdateResponse(
+    val message: String="",
+    val user: User
+)
+

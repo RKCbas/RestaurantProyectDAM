@@ -2,6 +2,9 @@ package com.example.restaurantproyectdam.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
+
+import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,24 +40,32 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+
+import androidx.compose.ui.graphics.painter.Painter
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+
 import coil.compose.AsyncImage
 import com.example.restaurantproyectdam.data.controller.CartViewModel
 import com.example.restaurantproyectdam.data.controller.CategoryViewModel
 
 import com.example.restaurantproyectdam.data.controller.DishViewModel
 
+
 import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.database.AppDatabase
 import com.example.restaurantproyectdam.data.database.DatabaseProvider
 import com.example.restaurantproyectdam.data.model.AddToCartModelRequest
 import com.example.restaurantproyectdam.data.model.CategoryEntity
-import com.example.restaurantproyectdam.data.model.DishEntity
+
+import com.example.restaurantproyectdam.data.model.createArrayProducts
+
+
 import com.example.restaurantproyectdam.ui.components.BottomBar
 import com.example.restaurantproyectdam.ui.components.Header
 import kotlinx.coroutines.Dispatchers
@@ -72,12 +83,11 @@ fun PreviewSingleProductScreen(){
 
 @Composable
 
-fun SingleProductScreen(
-    navController: NavController,
-    userViewModel: UserViewModel,
-    id: Int,
-    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+fun SingleProductScreen (navController: NavController,
+                         id: Int,
+                         userViewModel: UserViewModel,
+                         viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+
 ) {
 
 
@@ -115,8 +125,7 @@ fun SingleProductScreen(
             //.background(MaterialTheme.colorScheme.primaryContainer)
         )
         {
-
-            content(categories, userViewModel.cartId, id, dishes)
+            content(categories,userViewModel.cartId,id)
 
         }
     }

@@ -19,7 +19,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import android.widget.Toast
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -71,9 +73,11 @@ import com.example.restaurantproyectdam.data.model.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+
 import com.example.restaurantproyectdam.data.controller.DishViewModel
 import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.model.DishEntity
+
 
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -84,15 +88,8 @@ var myUserId: Int? = null;
 
 @Composable
 
+fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
-fun HomeScreen(
-    navController: NavController,
-    userViewModel: UserViewModel,
-    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-) {
-
-    val context = LocalContext.current
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
@@ -107,7 +104,9 @@ fun HomeScreen(
     myNavController = navController
     myUserId = userViewModel.userId
     println(myUserId)
+
     println("carrito:" + userViewModel.cartId)
+
     // Stores the dimensions of the actual screen
     var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
     //Sets variables with the height and width of the screen

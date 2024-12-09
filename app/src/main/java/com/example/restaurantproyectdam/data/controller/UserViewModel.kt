@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 
 class UserViewModel : ViewModel() {
 
+
     //User ID for the session
     var userId by mutableStateOf<Int?>(null)
         private set
@@ -34,7 +35,6 @@ class UserViewModel : ViewModel() {
     fun updateTableId(id: Int?) {
         tableId = id
     }
-
 
 
 }
