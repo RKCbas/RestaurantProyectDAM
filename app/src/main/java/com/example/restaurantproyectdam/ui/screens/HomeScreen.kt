@@ -79,7 +79,6 @@ import com.example.restaurantproyectdam.data.controller.UserViewModel
 import com.example.restaurantproyectdam.data.model.DishEntity
 
 
-
 //@OptIn(ExperimentalMaterial3Api::class)
 
 var myNavController: NavController? = null;
@@ -88,8 +87,14 @@ var myUserId: Int? = null;
 
 @Composable
 
-fun HomeScreen(navController: NavController, userViewModel: UserViewModel, viewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun HomeScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    dishViewModel: DishViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
 
+    val context = LocalContext.current
 
     val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
     val categoryDao = db.categoryDao()
